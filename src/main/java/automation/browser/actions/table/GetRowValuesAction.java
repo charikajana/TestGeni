@@ -21,10 +21,12 @@ public class GetRowValuesAction implements BrowserAction {
     
     @Override
     public boolean execute(Page page, SmartLocator locator, ActionPlan plan) {
-        if (!(plan instanceof EnhancedActionPlan enhancedPlan)) {
+        if (!(plan instanceof EnhancedActionPlan)) {
             logger.failure("GetRowValuesAction requires EnhancedActionPlan");
             return false;
         }
+        
+        EnhancedActionPlan enhancedPlan = (EnhancedActionPlan) plan;
         
         String conditionColumn = enhancedPlan.getRowConditionColumn();
         String conditionValue = enhancedPlan.getRowConditionValue();

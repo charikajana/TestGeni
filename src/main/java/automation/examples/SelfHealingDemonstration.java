@@ -62,10 +62,10 @@ public class SelfHealingDemonstration {
             System.out.println("SIMULATING UI CHANGE: ID attribute changed!");
             System.out.println("=".repeat(60) + "\n");
             
-            page.evaluate("""
-                document.getElementById('username').id = 'user-input-new-123';
-                console.log('ID changed: username → user-input-new-123');
-            """);
+            page.evaluate(
+                "document.getElementById('username').id = 'user-input-new-123';" +
+                "console.log('ID changed: username → user-input-new-123');"
+            );
             
             System.out.println("❌ Old ID (#username) is now INVALID\n");
             Thread.sleep(2000);
@@ -93,13 +93,13 @@ public class SelfHealingDemonstration {
             System.out.println("SIMULATING MAJOR UI CHANGE: Multiple attributes changed!");
             System.out.println("=".repeat(60) + "\n");
             
-            page.evaluate("""
-                var elem = document.querySelector('input[name="username"]');
-                elem.id = 'completely-new-id-xyz';
-                elem.name = 'user_name_new';
-                elem.placeholder = 'Your username here';
-                console.log('Major change: ID, name, placeholder all changed!');
-            """);
+            page.evaluate(
+                "var elem = document.querySelector('input[name=\"username\"]');" +
+                "elem.id = 'completely-new-id-xyz';" +
+                "elem.name = 'user_name_new';" +
+                "elem.placeholder = 'Your username here';" +
+                "console.log('Major change: ID, name, placeholder all changed!');"
+            );
             
             System.out.println("❌ ID changed again");
             System.out.println("❌ name attribute changed");
@@ -152,91 +152,37 @@ public class SelfHealingDemonstration {
      * Create a dynamic HTML form for testing (Version 1)
      */
     private static String createDynamicFormHTML_Version1() {
-        return """
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Self-Healing Test</title>
-            <style>
-                body { 
-                    font-family: Arial; 
-                    padding: 50px;
-                    background: #f5f5f5;
-                }
-                .form-container {
-                    background: white;
-                    padding: 30px;
-                    border-radius: 8px;
-                    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-                    max-width: 400px;
-                }
-                h2 { color: #333; }
-                label { 
-                    display: block; 
-                    margin: 15px 0 5px;
-                    font-weight: bold;
-                }
-                input {
-                    width: 100%;
-                    padding: 10px;
-                    border: 1px solid #ddd;
-                    border-radius: 4px;
-                    box-sizing: border-box;
-                }
-                button {
-                    background: #4CAF50;
-                    color: white;
-                    padding: 12px 30px;
-                    border: none;
-                    border-radius: 4px;
-                    cursor: pointer;
-                    margin-top: 20px;
-                }
-                button:hover { background: #45a049; }
-                .info {
-                    background: #e3f2fd;
-                    padding: 10px;
-                    border-radius: 4px;
-                    margin-bottom: 20px;
-                }
-            </style>
-        </head>
-        <body>
-            <div class="form-container">
-                <div class="info">
-                    <strong>Self-Healing Demo</strong><br>
-                    This form will change dynamically to test healing
-                </div>
-                
-                <h2>Login Form</h2>
-                
-                <label for="username">Username</label>
-                <input 
-                    type="text" 
-                    id="username" 
-                    name="username" 
-                    placeholder="Enter username"
-                    aria-label="Username field"
-                    data-testid="username-input"
-                />
-                
-                <label for="password">Password</label>
-                <input 
-                    type="password" 
-                    id="password" 
-                    name="password" 
-                    placeholder="Enter password"
-                    aria-label="Password field"
-                />
-                
-                <button id="submit" type="submit">Login</button>
-            </div>
-            
-            <script>
-                console.log('Form loaded with initial attributes');
-            </script>
-        </body>
-        </html>
-        """;
+        return "<!DOCTYPE html>" +
+               "<html>" +
+               "<head>" +
+               "    <title>Self-Healing Test</title>" +
+               "    <style>" +
+               "        body { font-family: Arial; padding: 50px; background: #f5f5f5; }" +
+               "        .form-container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 400px; }" +
+               "        h2 { color: #333; }" +
+               "        label { display: block; margin: 15px 0 5px; font-weight: bold; }" +
+               "        input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }" +
+               "        button { background: #4CAF50; color: white; padding: 12px 30px; border: none; border-radius: 4px; cursor: pointer; margin-top: 20px; }" +
+               "        button:hover { background: #45a049; }" +
+               "        .info { background: #e3f2fd; padding: 10px; border-radius: 4px; margin-bottom: 20px; }" +
+               "    </style>" +
+               "</head>" +
+               "<body>" +
+               "    <div class='form-container'>" +
+               "        <div class='info'>" +
+               "            <strong>Self-Healing Demo</strong><br>" +
+               "            This form will change dynamically to test healing" +
+               "        </div>" +
+               "        <h2>Login Form</h2>" +
+               "        <label for='username'>Username</label>" +
+               "        <input type='text' id='username' name='username' placeholder='Enter username' aria-label='Username field' data-testid='username-input' />" +
+               "        <label for='password'>Password</label>" +
+               "        <input type='password' id='password' name='password' placeholder='Enter password' aria-label='Password field' />" +
+               "        <button id='submit' type='submit'>Login</button>" +
+               "    </div>" +
+               "    <script>console.log('Form loaded with initial attributes');</script>" +
+               "</body>" +
+               "</html>";
     }
+
 }

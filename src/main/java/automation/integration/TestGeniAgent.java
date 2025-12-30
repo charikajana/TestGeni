@@ -15,21 +15,71 @@ public class TestGeniAgent {
     
     private static final LoggerUtil logger = LoggerUtil.getLogger(TestGeniAgent.class);
     
+    // Static instance for shared use across step definitions
+    private static TestGeniAgent instance;
+    
     private Page page;
     private SmartLocator smartLocator;
     private BrowserService browserService;
     private SmartStepParser stepParser;
     
     /**
-     * Initialize with external Playwright Page (from Selenium/Playwright BDD tests)
+     * Initialize with external Playwright Page (from host framework)
+     * 
+     * @param page - Playwright Page instance from host framework (Cucumber/TestNG hooks)
      */
     public TestGeniAgent(Page page) {
+        if (page == null) {
+            throw new IllegalArgumentException("Page instance cannot be null. Initialize Playwright in your host framework first.");
+        }
+        
         this.page = page;
         this.smartLocator = new SmartLocator(page);
         this.browserService = new BrowserService(page, smartLocator);
         this.stepParser = new SmartStepParser();
         
-        logger.info("SmartAutomationAgent initialized");
+        logger.info("TestGeniAgent initialized with external Page instance");
+    }
+    
+    /**
+     * Get or create a shared TestGeniAgent instance
+     * Useful for sharing across multiple step definition classes
+     * 
+     * @param page - Playwright Page from host framework
+     * @return Shared TestGeniAgent instance
+     */
+    public static TestGeniAgent getInstance(Page page) {
+        if (instance == null || instance.page != page) {
+            instance = new TestGeniAgent(page);
+        }
+        return instance;
+    }
+    
+    /**
+     * Update the Page instance (useful when switching tabs/windows in host framework)
+     * 
+     * @param newPage - New Page instance from host framework
+     */
+    public void updatePage(Page newPage) {
+        if (newPage == null) {
+            throw new IllegalArgumentException("Page instance cannot be null");
+        }
+        
+        if (this.page != newPage) {
+            logger.info("Updating TestGeniAgent to use new Page instance");
+            this.page = newPage;
+            this.smartLocator.setPage(newPage);
+            this.browserService = new BrowserService(newPage, smartLocator);
+        }
+    }
+    
+    /**
+     * Get the current Page instance being used
+     * 
+     * @return Current Playwright Page
+     */
+    public Page getPage() {
+        return this.page;
     }
     
     /**
@@ -62,6 +112,66 @@ public class TestGeniAgent {
             logger.error("Smart automation error: {}", e.getMessage());
             return false;
         }
+    }
+    
+    /**
+     * Execute a step using a template with parameters (for Cucumber integration)
+     * 
+     * @param stepTemplate - Template with %s placeholders (e.g., "I enter %s in %s field")
+     * @param args - Arguments to fill the template
+     * @return true if step executed successfully, false if it failed
+     * 
+     * Example:
+     *   agent.executeTemplate("I enter \"%s\" in \"%s\" field", "john@example.com", "Email")
+     *   Becomes: "I enter \"john@example.com\" in \"Email\" field"
+     */
+    public boolean executeTemplate(String stepTemplate, Object... args) {
+        String fullStep = String.format(stepTemplate, args);
+        return execute(fullStep);
+    }
+    
+    /**
+     * Execute the current step automatically using captured step text (EASIEST METHOD!)
+     * Uses ThreadLocal storage set by host framework's hooks.
+     * 
+     * Returns complete details including:
+     * - stepName: The full step text
+     * - status: PASSED, FAILED, SKIPPED
+     * - timestamp: Execution time
+     * - targetedElement: Element description
+     * - locatorUsed: Actual selector used
+     * - expectedText: Expected value (for verify steps)
+     * - actualText: Actual value (for verify steps)
+     * - duration: Execution time in milliseconds
+     * 
+     * @return StepExecutionReport with all execution details
+     * 
+     * Example in your step definition:
+     *   @When("I enter {string} in {string} field")
+     *   public void enterField(String value, String field) {
+     *       StepExecutionReport report = testGeni.executeCurrentStep();
+     *       
+     *       if (!"PASSED".equals(report.getStatus())) {
+     *           // Fallback to your own logic
+     *           customEnterField(value, field);
+     *       }
+     *   }
+     * 
+     * Note: Requires CucumberStepContext.setCurrentStepText() in @BeforeStep hook
+     */
+    public StepExecutionReport executeCurrentStep() {
+        String stepText = CucumberStepContext.getCurrentStepText();
+        
+        if (stepText == null || stepText.isEmpty()) {
+            logger.error("No step text available. Did you call CucumberStepContext.setCurrentStepText() in @BeforeStep hook?");
+            return new StepExecutionReport()
+                .stepName(stepText)
+                .status("FAILED")
+                .errorMessage("No step text available in CucumberStepContext")
+                .duration(0L);
+        }
+        
+        return executeWithReport(stepText);
     }
     
     /**

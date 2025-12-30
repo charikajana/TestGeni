@@ -94,10 +94,17 @@ public class DirectRowActionHandler implements BrowserAction {
      */
     private String mapActionToButtonText(String actionType) {
         String normalized = actionType.toLowerCase();
-        return switch (normalized) {
-            case "edit", "update", "modify" -> "Edit";
-            case "delete", "remove" -> "Delete";
-            default -> actionType; // Use as-is if not recognized
-        };
+        switch (normalized) {
+            case "edit":
+            case "update":
+            case "modify":
+                return "Edit";
+            case "delete":
+            case "remove":
+                return "Delete";
+            default:
+                return actionType; // Use as-is if not recognized
+        }
     }
+
 }

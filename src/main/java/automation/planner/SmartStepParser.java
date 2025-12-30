@@ -483,26 +483,57 @@ public class SmartStepParser {
         if (value == null) return;
         
         switch (fieldName) {
-            case "tableName" -> plan.setTableName(value);
-            case "columnName" -> plan.setColumnName(value);
-            case "conditionColumn" -> plan.setRowConditionColumn(value);
-            case "conditionValue" -> plan.setRowConditionValue(value);
-            case "targetColumn" -> plan.setTargetColumnName(value);
-            case "expectedValue" -> plan.setExpectedValue(value);
-            case "value" -> plan.setValue(value);
-            case "rowNumber" -> plan.setRowNumber(Integer.parseInt(value));
-            case "rowCount" -> plan.setExpectedRowCount(Integer.parseInt(value));
-            case "sortOrder" -> plan.setSortOrder(value);
-            case "filterValue" -> plan.setFilterValue(value);
-            case "pageNumber" -> plan.setPageNumber(Integer.parseInt(value));
-            case "bulkAction" -> {
+            case "tableName":
+                plan.setTableName(value);
+                break;
+            case "columnName":
+                plan.setColumnName(value);
+                break;
+            case "conditionColumn":
+                plan.setRowConditionColumn(value);
+                break;
+            case "conditionValue":
+                plan.setRowConditionValue(value);
+                break;
+            case "targetColumn":
+                plan.setTargetColumnName(value);
+                break;
+            case "expectedValue":
+                plan.setExpectedValue(value);
+                break;
+            case "value":
+                plan.setValue(value);
+                break;
+            case "rowNumber":
+                plan.setRowNumber(Integer.parseInt(value));
+                break;
+            case "rowCount":
+                plan.setExpectedRowCount(Integer.parseInt(value));
+                break;
+            case "sortOrder":
+                plan.setSortOrder(value);
+                break;
+            case "filterValue":
+                plan.setFilterValue(value);
+                break;
+            case "pageNumber":
+                plan.setPageNumber(Integer.parseInt(value));
+                break;
+            case "bulkAction":
                 plan.setIsBulkAction(true);
                 plan.setBulkActionType(value);
-            }
-            case "buttonName", "frameName", "elementName" -> plan.setElementName(value);
-            case "searchValue" -> plan.setValue(value);
+                break;
+            case "buttonName":
+            case "frameName":
+            case "elementName":
+                plan.setElementName(value);
+                break;
+            case "searchValue":
+                plan.setValue(value);
+                break;
         }
     }
+
     
     /**
      * Intent-based classification using keyword matching

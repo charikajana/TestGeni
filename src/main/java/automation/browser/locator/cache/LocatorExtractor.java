@@ -45,194 +45,195 @@ public class LocatorExtractor {
         
         try {
             @SuppressWarnings("unchecked")
-            Map<String, Object> extractedData = (Map<String, Object>) locator.first().evaluate("""
-                element => {
-                    const result = {};
-                    
-                    // 1. ID - Highest priority
-                    if (element.id) {
-                        result.id = '#' + element.id;
-                    }
-                    
-                    // 2. data-testid (common in React/modern frameworks)
-                    if (element.hasAttribute('data-testid')) {
-                        result['data-testid'] = '[data-testid="' + element.getAttribute('data-testid') + '"]';
-                    }
-                    
-                    // 3. data-test (alternative)
-                    if (element.hasAttribute('data-test')) {
-                        result['data-test'] = '[data-test="' + element.getAttribute('data-test') + '"]';
-                    }
-                    
-                    // 4. data-cy (Cypress convention)
-                    if (element.hasAttribute('data-cy')) {
-                        result['data-cy'] = '[data-cy="' + element.getAttribute('data-cy') + '"]';
-                    }
-                    
-                    // 5. name attribute (forms)
-                    if (element.name) {
-                        result.name = '[name="' + element.name + '"]';
-                    }
-                    
-                    // 6. aria-label (accessibility)
-                    if (element.hasAttribute('aria-label')) {
-                        result['aria-label'] = '[aria-label="' + element.getAttribute('aria-label') + '"]';
-                    }
-                    
-                    // 7. aria-labelledby (accessibility)
-                    if (element.hasAttribute('aria-labelledby')) {
-                        result['aria-labelledby'] = '[aria-labelledby="' + element.getAttribute('aria-labelledby') + '"]';
-                    }
-                    
-                    // 8. role + accessible name (ARIA)
-                    if (element.hasAttribute('role')) {
-                        const role = element.getAttribute('role');
-                        const accessibleName = element.getAttribute('aria-label') || element.textContent.trim().substring(0, 30);
-                        if (accessibleName) {
-                            result.role = '[role="' + role + '"][aria-label*="' + accessibleName + '"]';
-                        }
-                    }
-                    
-                    // 9. placeholder (inputs)
-                    if (element.placeholder) {
-                        result.placeholder = '[placeholder="' + element.placeholder + '"]';
-                    }
-                    
-                    // 10. title attribute
-                    if (element.title) {
-                        result.title = '[title="' + element.title + '"]';
-                    }
-                    
-                    // 11. alt attribute (images)
-                    if (element.alt) {
-                        result.alt = 'img[alt="' + element.alt + '"]';
-                    }
-                    
-                    // 12. value attribute (for inputs with values)
-                    if (element.value && element.value.trim()) {
-                        result.value = '[value="' + element.value + '"]';
-                    }
-                    
-                    // 13. text content (if unique and not too long)
-                    const textContent = element.textContent.trim();
-                    if (textContent && textContent.length < 50 && textContent.length > 0) {
-                        const tag = element.tagName.toLowerCase();
-                        if (['button', 'a', 'span', 'label', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(tag)) {
-                            result.text = tag + ':has-text("' + textContent + '")';
-                        }
-                    }
-                    
-                    // 14. CSS class (only if stable-looking - not auto-generated)
-                    if (element.className && typeof element.className === 'string') {
-                        const classes = element.className.trim().split(/\\s+/).filter(cls => {
-                            // Filter out auto-generated classes (with random chars/numbers)
-                            return !cls.match(/^[a-z0-9]{6,}$/i) && // Not random hash
-                                   !cls.match(/^css-[a-z0-9]+$/i) && // Not CSS-in-JS
-                                   cls.length < 30; // Not too long
-                        });
-                        
-                        if (classes.length > 0 && classes.length <= 3) {
-                            result['css-class'] = '.' + classes.join('.');
-                        }
-                    }
-                    
-                    // 15. Custom CSS selector (tag + unique combination)
-                    const buildCssSelector = () => {
-                        let selector = element.tagName.toLowerCase();
-                        
-                        // Add type for inputs
-                        if (element.type) {
-                            selector += '[type="' + element.type + '"]';
-                        }
-                        
-                        // Add first stable class if exists
-                        if (element.className && typeof element.className === 'string') {
-                            const firstClass = element.className.trim().split(/\\s+/)[0];
-                            if (firstClass && !firstClass.match(/^[a-z0-9]{6,}$/i)) {
-                                selector += '.' + firstClass;
-                            }
-                        }
-                        
-                        return selector;
-                    };
-                    result['css-custom'] = buildCssSelector();
-                    
-                    // 16. Relative XPath (most flexible, works even with DOM changes)
-                    const buildRelativeXPath = () => {
-                        const tag = element.tagName.toLowerCase();
-                        const attributes = [];
-                        
-                        // Prefer structural attributes for XPath
-                        if (element.id) {
-                            return '//' + tag + '[@id="' + element.id + '"]';
-                        }
-                        
-                        if (element.hasAttribute('data-testid')) {
-                            return '//' + tag + '[@data-testid="' + element.getAttribute('data-testid') + '"]';
-                        }
-                        
-                        if (element.name) {
-                            attributes.push('@name="' + element.name + '"');
-                        }
-                        
-                        if (element.type) {
-                            attributes.push('@type="' + element.type + '"');
-                        }
-                        
-                        if (element.className && typeof element.className === 'string') {
-                            const firstClass = element.className.trim().split(/\\s+/)[0];
-                            if (firstClass && !firstClass.match(/^[a-z0-9]{6,}$/i)) {
-                                attributes.push('contains(@class, "' + firstClass + '")');
-                            }
-                        }
-                        
-                        if (element.placeholder) {
-                            attributes.push('@placeholder="' + element.placeholder + '"');
-                        }
-                        
-                        if (element.hasAttribute('aria-label')) {
-                            attributes.push('@aria-label="' + element.getAttribute('aria-label') + '"');
-                        }
-                        
-                        // If we have attributes, use them
-                        if (attributes.length > 0) {
-                            return '//' + tag + '[' + attributes.join(' and ') + ']';
-                        }
-                        
-                        // Fallback: use text content for clickable elements
-                        const text = element.textContent.trim();
-                        if (text && text.length < 50 && ['button', 'a', 'span', 'label'].includes(tag)) {
-                            return '//' + tag + '[contains(text(), "' + text + '")]';
-                        }
-                        
-                        // Last resort: tag with position
-                        let position = 1;
-                        let sibling = element.previousElementSibling;
-                        while (sibling) {
-                            if (sibling.tagName === element.tagName) {
-                                position++;
-                            }
-                            sibling = sibling.previousElementSibling;
-                        }
-                        
-                        return '//' + tag + '[' + position + ']';
-                    };
-                    result.xpath = buildRelativeXPath();
-                    
-                    // 17. Link text (for anchor tags)
-                    if (element.tagName.toLowerCase() === 'a' && element.textContent.trim()) {
-                        result['link-text'] = 'text="' + element.textContent.trim() + '"';
-                    }
-                    
-                    // Additional metadata
-                    result._tag = element.tagName.toLowerCase();
-                    result._hasId = !!element.id;
-                    result._hasStableClass = element.className && 
-                        !element.className.match(/^[a-z0-9]{6,}$/i);
-                    
-                    return result;
-                }
-            """);
+            Map<String, Object> extractedData = (Map<String, Object>) locator.first().evaluate(
+                "element => {" +
+                "    const result = {};" +
+                "    " +
+                "    // 1. ID - Highest priority" +
+                "    if (element.id) {" +
+                "        result.id = '#' + element.id;" +
+                "    }" +
+                "    " +
+                "    // 2. data-testid (common in React/modern frameworks)" +
+                "    if (element.hasAttribute('data-testid')) {" +
+                "        result['data-testid'] = '[data-testid=\"' + element.getAttribute('data-testid') + '\"]';" +
+                "    }" +
+                "    " +
+                "    // 3. data-test (alternative)" +
+                "    if (element.hasAttribute('data-test')) {" +
+                "        result['data-test'] = '[data-test=\"' + element.getAttribute('data-test') + '\"]';" +
+                "    }" +
+                "    " +
+                "    // 4. data-cy (Cypress convention)" +
+                "    if (element.hasAttribute('data-cy')) {" +
+                "        result['data-cy'] = '[data-cy=\"' + element.getAttribute('data-cy') + '\"]';" +
+                "    }" +
+                "    " +
+                "    // 5. name attribute (forms)" +
+                "    if (element.name) {" +
+                "        result.name = '[name=\"' + element.name + '\"]';" +
+                "    }" +
+                "    " +
+                "    // 6. aria-label (accessibility)" +
+                "    if (element.hasAttribute('aria-label')) {" +
+                "        result['aria-label'] = '[aria-label=\"' + element.getAttribute('aria-label') + '\"]';" +
+                "    }" +
+                "    " +
+                "    // 7. aria-labelledby (accessibility)" +
+                "    if (element.hasAttribute('aria-labelledby')) {" +
+                "        result['aria-labelledby'] = '[aria-labelledby=\"' + element.getAttribute('aria-labelledby') + '\"]';" +
+                "    }" +
+                "    " +
+                "    // 8. role + accessible name (ARIA)" +
+                "    if (element.hasAttribute('role')) {" +
+                "        const role = element.getAttribute('role');" +
+                "        const accessibleName = element.getAttribute('aria-label') || element.textContent.trim().substring(0, 30);" +
+                "        if (accessibleName) {" +
+                "            result.role = '[role=\"' + role + '\"][aria-label*=\"' + accessibleName + '\"]';" +
+                "        }" +
+                "    }" +
+                "    " +
+                "    // 9. placeholder (inputs)" +
+                "    if (element.placeholder) {" +
+                "        result.placeholder = '[placeholder=\"' + element.placeholder + '\"]';" +
+                "    }" +
+                "    " +
+                "    // 10. title attribute" +
+                "    if (element.title) {" +
+                "        result.title = '[title=\"' + element.title + '\"]';" +
+                "    }" +
+                "    " +
+                "    // 11. alt attribute (images)" +
+                "    if (element.alt) {" +
+                "        result.alt = 'img[alt=\"' + element.alt + '\"]';" +
+                "    }" +
+                "    " +
+                "    // 12. value attribute (for inputs with values)" +
+                "    if (element.value && element.value.trim()) {" +
+                "        result.value = '[value=\"' + element.value + '\"]';" +
+                "    }" +
+                "    " +
+                "    // 13. text content (if unique and not too long)" +
+                "    const textContent = element.textContent.trim();" +
+                "    if (textContent && textContent.length < 50 && textContent.length > 0) {" +
+                "        const tag = element.tagName.toLowerCase();" +
+                "        if (['button', 'a', 'span', 'label', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(tag)) {" +
+                "            result.text = tag + ':has-text(\"' + textContent + '\")';" +
+                "        }" +
+                "    }" +
+                "    " +
+                "    // 14. CSS class (only if stable-looking - not auto-generated)" +
+                "    if (element.className && typeof element.className === 'string') {" +
+                "        const classes = element.className.trim().split(/\\\\s+/).filter(cls => {" +
+                "            // Filter out auto-generated classes (with random chars/numbers)" +
+                "            return !cls.match(/^[a-z0-9]{6,}$/i) && // Not random hash" +
+                "                   !cls.match(/^css-[a-z0-9]+$/i) && // Not CSS-in-JS" +
+                "                   cls.length < 30; // Not too long" +
+                "        });" +
+                "        " +
+                "        if (classes.length > 0 && classes.length <= 3) {" +
+                "            result['css-class'] = '.' + classes.join('.');" +
+                "        }" +
+                "    }" +
+                "    " +
+                "    // 15. Custom CSS selector (tag + unique combination)" +
+                "    const buildCssSelector = () => {" +
+                "        let selector = element.tagName.toLowerCase();" +
+                "        " +
+                "        // Add type for inputs" +
+                "        if (element.type) {" +
+                "            selector += '[type=\"' + element.type + '\"]';" +
+                "        }" +
+                "        " +
+                "        // Add first stable class if exists" +
+                "        if (element.className && typeof element.className === 'string') {" +
+                "            const firstClass = element.className.trim().split(/\\\\s+/)[0];" +
+                "            if (firstClass && !firstClass.match(/^[a-z0-9]{6,}$/i)) {" +
+                "                selector += '.' + firstClass;" +
+                "            }" +
+                "        }" +
+                "        " +
+                "        return selector;" +
+                "    };" +
+                "    result['css-custom'] = buildCssSelector();" +
+                "    " +
+                "    // 16. Relative XPath (most flexible, works even with DOM changes)" +
+                "    const buildRelativeXPath = () => {" +
+                "        const tag = element.tagName.toLowerCase();" +
+                "        const attributes = [];" +
+                "        " +
+                "        // Prefer structural attributes for XPath" +
+                "        if (element.id) {" +
+                "            return '//' + tag + '[@id=\"' + element.id + '\"]';" +
+                "        }" +
+                "        " +
+                "        if (element.hasAttribute('data-testid')) {" +
+                "            return '//' + tag + '[@data-testid=\"' + element.getAttribute('data-testid') + '\"]';" +
+                "        }" +
+                "        " +
+                "        if (element.name) {" +
+                "            attributes.push('@name=\"' + element.name + '\"');" +
+                "        }" +
+                "        " +
+                "        if (element.type) {" +
+                "            attributes.push('@type=\"' + element.type + '\"');" +
+                "        }" +
+                "        " +
+                "        if (element.className && typeof element.className === 'string') {" +
+                "            const firstClass = element.className.trim().split(/\\\\s+/)[0];" +
+                "            if (firstClass && !firstClass.match(/^[a-z0-9]{6,}$/i)) {" +
+                "                attributes.push('contains(@class, \"' + firstClass + '\")');" +
+                "            }" +
+                "        }" +
+                "        " +
+                "        if (element.placeholder) {" +
+                "            attributes.push('@placeholder=\"' + element.placeholder + '\"');" +
+                "        }" +
+                "        " +
+                "        if (element.hasAttribute('aria-label')) {" +
+                "            attributes.push('@aria-label=\"' + element.getAttribute('aria-label') + '\"');" +
+                "        }" +
+                "        " +
+                "        // If we have attributes, use them" +
+                "        if (attributes.length > 0) {" +
+                "            return '//' + tag + '[' + attributes.join(' and ') + ']';" +
+                "        }" +
+                "        " +
+                "        // Fallback: use text content for clickable elements" +
+                "        const text = element.textContent.trim();" +
+                "        if (text && text.length < 50 && ['button', 'a', 'span', 'label'].includes(tag)) {" +
+                "            return '//' + tag + '[contains(text(), \"' + text + '\")]';" +
+                "        }" +
+                "        " +
+                "        // Last resort: tag with position" +
+                "        let position = 1;" +
+                "        let sibling = element.previousElementSibling;" +
+                "        while (sibling) {" +
+                "            if (sibling.tagName === element.tagName) {" +
+                "                position++;" +
+                "            }" +
+                "            sibling = sibling.previousElementSibling;" +
+                "        }" +
+                "        " +
+                "        return '//' + tag + '[' + position + ']';" +
+                "    };" +
+                "    result.xpath = buildRelativeXPath();" +
+                "    " +
+                "    // 17. Link text (for anchor tags)" +
+                "    if (element.tagName.toLowerCase() === 'a' && element.textContent.trim()) {" +
+                "        result['link-text'] = 'text=\"' + element.textContent.trim() + '\"';" +
+                "    }" +
+                "    " +
+                "    // Additional metadata" +
+                "    result._tag = element.tagName.toLowerCase();" +
+                "    result._hasId = !!element.id;" +
+                "    result._hasStableClass = element.className && " +
+                "        !element.className.match(/^[a-z0-9]{6,}$/i);" +
+                "    " +
+                "    return result;" +
+                "}"
+            );
+
             
             // Convert to String map and maintain order
             extractedData.forEach((key, value) -> {
@@ -313,27 +314,28 @@ public class LocatorExtractor {
         
         try {
             @SuppressWarnings("unchecked")
-            Map<String, Object> attrs = (Map<String, Object>) locator.first().evaluate("""
-                element => {
-                    return {
-                        'id': element.id || '',
-                        'class': element.className || '',
-                        'name': element.name || '',
-                        'type': element.type || '',
-                        'tag': element.tagName.toLowerCase(),
-                        'data-testid': element.getAttribute('data-testid') || '',
-                        'data-test': element.getAttribute('data-test') || '',
-                        'data-cy': element.getAttribute('data-cy') || '',
-                        'aria-label': element.getAttribute('aria-label') || '',
-                        'role': element.getAttribute('role') || '',
-                        'placeholder': element.placeholder || '',
-                        'title': element.title || '',
-                        'alt': element.alt || '',
-                        'href': element.href || '',
-                        'text': element.textContent ? element.textContent.trim().substring(0, 50) : ''
-                    };
-                }
-            """);
+            Map<String, Object> attrs = (Map<String, Object>) locator.first().evaluate(
+                "element => {" +
+                "    return {" +
+                "        'id': element.id || ''," +
+                "        'class': element.className || ''," +
+                "        'name': element.name || ''," +
+                "        'type': element.type || ''," +
+                "        'tag': element.tagName.toLowerCase()," +
+                "        'data-testid': element.getAttribute('data-testid') || ''," +
+                "        'data-test': element.getAttribute('data-test') || ''," +
+                "        'data-cy': element.getAttribute('data-cy') || ''," +
+                "        'aria-label': element.getAttribute('aria-label') || ''," +
+                "        'role': element.getAttribute('role') || ''," +
+                "        'placeholder': element.placeholder || ''," +
+                "        'title': element.title || ''," +
+                "        'alt': element.alt || ''," +
+                "        'href': element.href || ''," +
+                "        'text': element.textContent ? element.textContent.trim().substring(0, 50) : ''" +
+                "    };" +
+                "}"
+            );
+
             
             // Convert to string map, keeping only non-empty values
             attrs.forEach((key, value) -> {

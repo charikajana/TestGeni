@@ -120,19 +120,50 @@ public class SmartLocator {
             }
             
             // Map natural language to element types for DOM scanning
-            String mappedType = switch (typeHint) {
-                case "link" -> "link";
-                case "button" -> "button";
-                case "checkbox", "check box" -> "checkbox";
-                case "radio" -> "radio";
-                case "input", "field" -> "input";
-                case "dropdown", "drop down", "select" -> "select";
-                case "textarea", "text area" -> "textarea";
-                case "slider", "range" -> "slider";
-                case "progressbar", "progress bar" -> "progressbar";
-                case "icon" -> "element";
-                default -> parsedType; // Use original if no match
-            };
+            String mappedType;
+            switch (typeHint) {
+                case "link":
+                    mappedType = "link";
+                    break;
+                case "button":
+                    mappedType = "button";
+                    break;
+                case "checkbox":
+                case "check box":
+                    mappedType = "checkbox";
+                    break;
+                case "radio":
+                    mappedType = "radio";
+                    break;
+                case "input":
+                case "field":
+                    mappedType = "input";
+                    break;
+                case "dropdown":
+                case "drop down":
+                case "select":
+                    mappedType = "select";
+                    break;
+                case "textarea":
+                case "text area":
+                    mappedType = "textarea";
+                    break;
+                case "slider":
+                case "range":
+                    mappedType = "slider";
+                    break;
+                case "progressbar":
+                case "progress bar":
+                    mappedType = "progressbar";
+                    break;
+                case "icon":
+                    mappedType = "element";
+                    break;
+                default:
+                    mappedType = parsedType; // Use original if no match
+                    break;
+            }
+
             
             // Only override if we detected a valid type
             if (mappedType != null && !mappedType.equals(parsedType)) {

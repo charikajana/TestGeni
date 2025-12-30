@@ -6,11 +6,15 @@
 
     <groupId>org.autohelp</groupId>
     <artifactId>TestGeni</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0</version>
+    
+    <name>TestGeni</name>
+    <description>A Natural Language BDD Test Automation Framework powered by AI-enhanced element locators</description>
+    <url>https://github.com/charikajana/TestGeni</url>
 
     <properties>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
         <dependencies>
