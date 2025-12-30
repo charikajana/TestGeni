@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    
+    <!-- Console appender with colored output -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    
+    <timestamp key="bySecond" datePattern="yyyyMMdd_HHmmss"/>
+
+    <!-- File appender for detailed logs - New file per execution -->
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>logs/execution-${bySecond}.log</file>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    
+    <!-- Set logging levels -->
+    <logger name="automation" level="DEBUG"/>
+    <logger name="com.microsoft.playwright" level="WARN"/>
+    <logger name="org.slf4j" level="WARN"/>
+    
+    <!-- Root logger -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </root>
+    
+</configuration>
