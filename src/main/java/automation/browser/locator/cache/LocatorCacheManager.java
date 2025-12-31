@@ -1,6 +1,7 @@
 package automation.browser.locator.cache;
 
 import automation.utils.LoggerUtil;
+import automation.utils.SelectorUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
@@ -50,7 +51,17 @@ public class LocatorCacheManager {
             .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
         
         // Default cache file location
-        this.cacheFilePath = "config/locator_cache.json";
+        this.cacheFilePath = "CacheLocatorRepository/locator_cache.json";
+        
+        // Ensure directory exists
+        try {
+            File cacheDir = new File("CacheLocatorRepository");
+            if (!cacheDir.exists()) {
+                cacheDir.mkdirs();
+            }
+        } catch (Exception e) {
+            logger.debug("Could not create CacheLocatorRepository: {}", e.getMessage());
+        }
         
         // Load existing cache
         loadCache();
@@ -122,6 +133,12 @@ public class LocatorCacheManager {
             return;
         }
         
+        // FILTER: Do not cache locators that look dynamic or unstable
+        if (SelectorUtil.isUnstableSelector(selector, locatorStrategy)) {
+            logger.debug("Skipping cache for unstable/dynamic locator: {} ({})", selector, locatorStrategy);
+            return;
+        }
+
         // Check cache size limit
         if (cache.size() >= maxCacheSize) {
             logger.warn("Cache size limit reached ({}), cleaning old entries", maxCacheSize);
@@ -176,10 +193,10 @@ public class LocatorCacheManager {
         CachedLocator old = cache.get(elementKey);
         
         if (old != null) {
-            logger.warn("🔧 SELF-HEALING: {} | Old: {} | New: {}", 
+            logger.warn("SELF-HEALING: {} | Old: {} | New: {}", 
                 elementKey, old.getSelector(), newSelector);
         } else {
-            logger.info("🔧 SELF-HEALING: {} | New locator discovered: {}", 
+            logger.info("SELF-HEALING: {} | New locator discovered: {}", 
                 elementKey, newSelector);
         }
         

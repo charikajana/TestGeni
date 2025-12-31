@@ -1,0 +1,46 @@
+{
+  "strategyToIndex" : {
+    "css-custom" : 3,
+    "role" : 4,
+    "css-class" : 2,
+    "id" : 1,
+    "text" : 0
+  },
+  "indexToStrategy" : {
+    "0" : "text",
+    "1" : "id",
+    "2" : "css-class",
+    "3" : "css-custom",
+    "4" : "role"
+  },
+  "domainStrategyScores" : {
+    "www.flipkart.com" : {
+      "text" : 4
+    },
+    "demo.automationtesting.in" : {
+      "id" : 2
+    },
+    "demoqa.com" : {
+      "css-custom" : 2,
+      "role" : 2,
+      "css-class" : 12,
+      "text" : 21,
+      "id" : 27
+    },
+    "vinothqaacademy.com" : {
+      "text" : 2,
+      "id" : 8
+    },
+    "the-internet.herokuapp.com" : {
+      "text" : 3
+    }
+  },
+  "strategyFrequency" : {
+    "css-custom" : 2,
+    "role" : 2,
+    "css-class" : 12,
+    "id" : 37,
+    "text" : 30
+  },
+  "totalExamples" : 83
+}

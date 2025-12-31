@@ -40,19 +40,19 @@ public class CacheAndSelfHealingExample {
             var nameField = locator.findSmartElement("Full Name", "input", null, null, false);
             if (nameField != null) {
                 nameField.fill("John Doe");
-                System.out.println("✓ Filled Full Name field");
+                System.out.println("Filled Full Name field");
             }
             
             var emailField = locator.findSmartElement("Email", "input", null, null, false);
             if (emailField != null) {
                 emailField.fill("john@example.com");
-                System.out.println("✓ Filled Email field");
+                System.out.println("Filled Email field");
             }
             
             var submitButton = locator.findSmartElement("Submit", "button", null, null, false);
             if (submitButton != null) {
                 submitButton.click();
-                System.out.println("✓ Clicked Submit button");
+                System.out.println("Clicked Submit button");
             }
             
             // Print cache statistics
@@ -72,13 +72,13 @@ public class CacheAndSelfHealingExample {
             var cachedNameField = locator.findSmartElement("Full Name", "input", null, null, false);
             if (cachedNameField != null) {
                 cachedNameField.fill("Jane Smith");
-                System.out.println("✓ Filled Full Name (from cache)");
+                System.out.println("Filled Full Name (from cache)");
             }
             
             var cachedEmailField = locator.findSmartElement("Email", "input", null, null, false);
             if (cachedEmailField != null) {
                 cachedEmailField.fill("jane@example.com");
-                System.out.println("✓ Filled Email (from cache)");
+                System.out.println("Filled Email (from cache)");
             }
             
             // Print updated statistics
@@ -89,12 +89,12 @@ public class CacheAndSelfHealingExample {
             
             // View the JSON cache file
             System.out.println("\n========================================");
-            System.out.println("Cache File Location: config/locator_cache.json");
+            System.out.println("Cache File Location: CacheLocatorRepository/locator_cache.json");
             System.out.println("========================================");
             
             // Manual save
             LocatorCacheManager.getInstance().saveCache();
-            System.out.println("\n✓ Cache saved successfully!");
+            System.out.println("\nCache saved successfully!");
             
             Thread.sleep(3000);
             browser.close();

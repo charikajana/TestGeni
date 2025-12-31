@@ -253,7 +253,7 @@ public class IntentAnalyzer {
         String elementType = extractElementType(cleanStep);
         intent.setElementType(elementType);
         
-        logger.info("Intent: {} → Target='{}' Values={} Type='{}'", 
+        logger.info("Intent: {} -> Target='{}' Values={} Type='{}'", 
             actionType, target, values, elementType);
         
         return intent;

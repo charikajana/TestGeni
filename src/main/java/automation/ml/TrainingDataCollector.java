@@ -165,6 +165,12 @@ public class TrainingDataCollector {
      * Export training data to CSV file
      */
     public void exportToCSV(List<TrainingExample> examples, String outputPath) {
+        // Ensure directory exists
+        File outputFile = new File(outputPath);
+        if (outputFile.getParentFile() != null) {
+            outputFile.getParentFile().mkdirs();
+        }
+        
         try (FileWriter writer = new FileWriter(outputPath);
              CSVPrinter printer = new CSVPrinter(writer, CSVFormat.DEFAULT
                  .withHeader("page_domain", "element_name", "element_type", 
@@ -216,8 +222,8 @@ public class TrainingDataCollector {
             .sorted((e1, e2) -> e2.getValue().compareTo(e1.getValue()))
             .forEach(entry -> {
                 double percentage = (entry.getValue() * 100.0) / examples.size();
-                logger.info("  {}: {} ({:.1f}%)", 
-                    entry.getKey(), entry.getValue(), percentage);
+                logger.info(String.format("  %s: %d (%.1f%%)", 
+                    entry.getKey(), entry.getValue(), percentage));
             });
         
         logger.info("=".repeat(50) + "\n");
@@ -227,12 +233,12 @@ public class TrainingDataCollector {
      * Main method to run data collection
      */
     public static void main(String[] args) {
-        logger.info("🤖 Starting ML Training Data Collection...\n");
+        logger.info("Starting ML Training Data Collection...\n");
         
         TrainingDataCollector collector = new TrainingDataCollector();
         
         // Load from cache
-        String cacheFile = "config/locator_cache.json";
+        String cacheFile = "CacheLocatorRepository/locator_cache.json";
         List<TrainingExample> examples = collector.loadFromCache(cacheFile);
         
         if (examples.isEmpty()) {
@@ -248,8 +254,8 @@ public class TrainingDataCollector {
         new File("ml_data").mkdirs(); // Create directory if needed
         collector.exportToCSV(examples, outputFile);
         
-        logger.info("✅ Training data collected successfully!");
-        logger.info("📁 Output: {}", outputFile);
-        logger.info("\n💡 Next step: Run TrainStrategyModel to train the ML model");
+        logger.info("Training data collected successfully!");
+        logger.info("Output: {}", outputFile);
+        logger.info("\nNext step: Run TrainStrategyModel to train the ML model");
     }
 }

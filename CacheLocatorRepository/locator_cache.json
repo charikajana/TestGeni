@@ -1,0 +1,2131 @@
+{
+  "version" : "2.0",
+  "lastSaved" : "2025-12-31T09:19:59.803426600Z",
+  "totalEntries" : 93,
+  "locators" : {
+    "https://vinothqaacademy.com/multiple-windows/::Add Row button::button" : {
+      "orderedLocators" : {
+        "id" : "#addBtn"
+      },
+      "elementKey" : "https://vinothqaacademy.com/multiple-windows/::Add Row button::button",
+      "selector" : "#addBtn",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#addBtn"
+      },
+      "pageUrl" : "https://vinothqaacademy.com/multiple-windows/",
+      "createdAt" : "2025-12-31T09:11:21.227920700Z",
+      "lastAccessedAt" : "2025-12-31T09:11:21.227920700Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "id" : "addBtn",
+        "tag" : "button",
+        "text" : "Add Row",
+        "type" : "submit"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/buttons::Right Click Me::button" : {
+      "orderedLocators" : {
+        "id" : "#rightClickBtn"
+      },
+      "elementKey" : "https://demoqa.com/buttons::Right Click Me::button",
+      "selector" : "#rightClickBtn",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#rightClickBtn"
+      },
+      "pageUrl" : "https://demoqa.com/buttons",
+      "createdAt" : "2025-12-31T08:58:54.267206200Z",
+      "lastAccessedAt" : "2025-12-31T09:16:16.251673100Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 4,
+      "elementAttributes" : {
+        "id" : "rightClickBtn",
+        "tag" : "button",
+        "text" : "Right Click Me",
+        "type" : "button",
+        "class" : "btn btn-primary"
+      },
+      "verified" : true
+    },
+    "https://the-internet.herokuapp.com/jqueryui/menu::PDF" : {
+      "orderedLocators" : {
+        "text" : "a:has-text(\"PDF\")"
+      },
+      "elementKey" : "https://the-internet.herokuapp.com/jqueryui/menu::PDF",
+      "selector" : "a:has-text(\"PDF\")",
+      "locatorStrategy" : "text",
+      "allLocators" : {
+        "text" : "a:has-text(\"PDF\")"
+      },
+      "pageUrl" : "https://the-internet.herokuapp.com/jqueryui/menu",
+      "createdAt" : "2025-12-31T09:08:04.355472Z",
+      "lastAccessedAt" : "2025-12-31T09:08:12.873043700Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 1,
+      "elementAttributes" : {
+        "tag" : "a",
+        "href" : "https://the-internet.herokuapp.com/download/jqueryui/menu/menu.pdf",
+        "text" : "PDF"
+      },
+      "verified" : true
+    },
+    "https://vinothqaacademy.com/multiple-windows/::Name::input" : {
+      "orderedLocators" : {
+        "id" : "#nameInput"
+      },
+      "elementKey" : "https://vinothqaacademy.com/multiple-windows/::Name::input",
+      "selector" : "#nameInput",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#nameInput"
+      },
+      "pageUrl" : "https://vinothqaacademy.com/multiple-windows/",
+      "createdAt" : "2025-12-31T09:11:19.835171400Z",
+      "lastAccessedAt" : "2025-12-31T09:11:19.835171400Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "id" : "nameInput",
+        "tag" : "input",
+        "placeholder" : "Name",
+        "type" : "text"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/selectable::Seven::checkbox" : {
+      "orderedLocators" : { },
+      "elementKey" : "https://demoqa.com/selectable::Seven::checkbox",
+      "selector" : ".list-group-item.list-group-item-action",
+      "locatorStrategy" : "css-class",
+      "allLocators" : {
+        "css-class" : ".list-group-item.list-group-item-action"
+      },
+      "pageUrl" : "https://demoqa.com/selectable",
+      "createdAt" : "2025-12-31T09:14:16.913500500Z",
+      "lastAccessedAt" : "2025-12-31T09:14:16.913500500Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "class" : "list-group-item active list-group-item-action",
+        "tag" : "li",
+        "text" : "Seven"
+      },
+      "verified" : true
+    },
+    "https://vinothqaacademy.com/multiple-windows/::Appium 2.0 Mobile Automation" : {
+      "orderedLocators" : {
+        "text" : "a:has-text(\"Appium 2.0 Mobile Automation\")"
+      },
+      "elementKey" : "https://vinothqaacademy.com/multiple-windows/::Appium 2.0 Mobile Automation",
+      "selector" : "a:has-text(\"Appium 2.0 Mobile Automation\")",
+      "locatorStrategy" : "text",
+      "allLocators" : {
+        "text" : "a:has-text(\"Appium 2.0 Mobile Automation\")"
+      },
+      "pageUrl" : "https://vinothqaacademy.com/multiple-windows/",
+      "createdAt" : "2025-12-31T09:08:22.999310100Z",
+      "lastAccessedAt" : "2025-12-31T09:08:22.999310100Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "tag" : "a",
+        "href" : "https://vinothqaacademy.com/appium-2-course-beginners-real-device-emulator-browserstack/",
+        "text" : "Appium 2.0 Mobile Automation"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/tool-tips::Hover me to see" : {
+      "orderedLocators" : {
+        "id" : "#toolTipButton"
+      },
+      "elementKey" : "https://demoqa.com/tool-tips::Hover me to see",
+      "selector" : "#toolTipButton",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#toolTipButton"
+      },
+      "pageUrl" : "https://demoqa.com/tool-tips",
+      "createdAt" : "2025-12-31T09:18:41.760169300Z",
+      "lastAccessedAt" : "2025-12-31T09:18:42.285549200Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 1,
+      "elementAttributes" : {
+        "id" : "toolTipButton",
+        "tag" : "button",
+        "text" : "Hover me to see",
+        "type" : "button",
+        "class" : "btn btn-success"
+      },
+      "verified" : true
+    },
+    "https://vinothqaacademy.com/multiple-windows/::Email Address::input" : {
+      "orderedLocators" : {
+        "id" : "#emailInput"
+      },
+      "elementKey" : "https://vinothqaacademy.com/multiple-windows/::Email Address::input",
+      "selector" : "#emailInput",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#emailInput"
+      },
+      "pageUrl" : "https://vinothqaacademy.com/multiple-windows/",
+      "createdAt" : "2025-12-31T09:11:20.444040800Z",
+      "lastAccessedAt" : "2025-12-31T09:11:20.444040800Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "id" : "emailInput",
+        "tag" : "input",
+        "placeholder" : "Email Address",
+        "type" : "email"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/automation-practice-form::Male radio button::button" : {
+      "orderedLocators" : {
+        "text" : "label:has-text(\"Male\")"
+      },
+      "elementKey" : "https://demoqa.com/automation-practice-form::Male radio button::button",
+      "selector" : "label:has-text(\"Male\")",
+      "locatorStrategy" : "text",
+      "allLocators" : {
+        "text" : "label:has-text(\"Male\")"
+      },
+      "pageUrl" : "https://demoqa.com/automation-practice-form",
+      "createdAt" : "2025-12-31T09:03:25.085389700Z",
+      "lastAccessedAt" : "2025-12-31T09:03:25.085389700Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "class" : "custom-control-label",
+        "tag" : "label",
+        "text" : "Male"
+      },
+      "verified" : true
+    },
+    "https://www.flipkart.com/::MobileFlash::button" : {
+      "orderedLocators" : {
+        "text" : "a:has-text(\"MobileFlash\")"
+      },
+      "elementKey" : "https://www.flipkart.com/::MobileFlash::button",
+      "selector" : "a:has-text(\"MobileFlash\")",
+      "locatorStrategy" : "text",
+      "allLocators" : {
+        "text" : "a:has-text(\"MobileFlash\")"
+      },
+      "pageUrl" : "https://www.flipkart.com/",
+      "createdAt" : "2025-12-31T09:07:03.970668300Z",
+      "lastAccessedAt" : "2025-12-31T09:07:03.970668300Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "tag" : "a",
+        "href" : "https://www.flipkart.com/mobile-accessories/mobile-flashes/pr?sid=tyy,4mr,kcr&otracker=categorytree&fm=neo%2Fmerchandising&iid=M_eccafabe-241e-47b2-94ab-67096a3e1e42_1_X1NCR146KC29_MC.ZH0E2RSCOBG0&cid=ZH0E2RSCOBG0",
+        "text" : "MobileFlash",
+        "class" : "mdj9yP"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/selectable::Two::checkbox" : {
+      "orderedLocators" : {
+        "xpath" : "//li[contains(@class, \"list-group-item\")]"
+      },
+      "elementKey" : "https://demoqa.com/selectable::Two::checkbox",
+      "selector" : ".list-group-item.list-group-item-action",
+      "locatorStrategy" : "css-class",
+      "allLocators" : {
+        "css-custom" : "li.list-group-item",
+        "xpath" : "//li[contains(@class, \"list-group-item\")]",
+        "css-class" : ".list-group-item.list-group-item-action"
+      },
+      "pageUrl" : "https://demoqa.com/selectable",
+      "createdAt" : "2025-12-31T09:14:17.794795700Z",
+      "lastAccessedAt" : "2025-12-31T09:14:17.798316500Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 1,
+      "elementAttributes" : {
+        "class" : "list-group-item list-group-item-action",
+        "tag" : "li",
+        "text" : "Two"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/progress-bar::progress::progressbar" : {
+      "orderedLocators" : {
+        "xpath" : "//div[contains(@class, \"progress-bar\")]",
+        "role" : "[role=\"progressbar\"][aria-label*=\"0%\"]"
+      },
+      "elementKey" : "https://demoqa.com/progress-bar::progress::progressbar",
+      "selector" : "[role=\"progressbar\"][aria-label*=\"0%\"]",
+      "locatorStrategy" : "role",
+      "allLocators" : {
+        "css-custom" : "div.progress-bar",
+        "xpath" : "//div[contains(@class, \"progress-bar\")]",
+        "role" : "[role=\"progressbar\"][aria-label*=\"0%\"]",
+        "css-class" : ".progress-bar.bg-info"
+      },
+      "pageUrl" : "https://demoqa.com/progress-bar",
+      "createdAt" : "2025-12-31T09:12:12.058786800Z",
+      "lastAccessedAt" : "2025-12-31T09:12:12.061320300Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 1,
+      "elementAttributes" : {
+        "tag" : "div",
+        "role" : "progressbar",
+        "text" : "1%",
+        "class" : "progress-bar bg-info"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/webtables::Submit button::button" : {
+      "orderedLocators" : {
+        "id" : "#submit"
+      },
+      "elementKey" : "https://demoqa.com/webtables::Submit button::button",
+      "selector" : "#submit",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#submit"
+      },
+      "pageUrl" : "https://demoqa.com/webtables",
+      "createdAt" : "2025-12-31T09:19:07.937972300Z",
+      "lastAccessedAt" : "2025-12-31T09:19:36.829513400Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 1,
+      "elementAttributes" : {
+        "id" : "submit",
+        "tag" : "button",
+        "text" : "Submit",
+        "type" : "submit",
+        "class" : "btn btn-primary"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/::Elements::button" : {
+      "orderedLocators" : {
+        "text" : "h5:has-text(\"Elements\")"
+      },
+      "elementKey" : "https://demoqa.com/::Elements::button",
+      "selector" : "h5:has-text(\"Elements\")",
+      "locatorStrategy" : "text",
+      "allLocators" : {
+        "text" : "h5:has-text(\"Elements\")"
+      },
+      "pageUrl" : "https://demoqa.com/",
+      "createdAt" : "2025-12-31T08:58:32.405471600Z",
+      "lastAccessedAt" : "2025-12-31T09:18:52.813569500Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 4,
+      "elementAttributes" : {
+        "tag" : "h5",
+        "text" : "Elements"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/select-menu::Old Select Menu::select" : {
+      "orderedLocators" : {
+        "id" : "#oldSelectMenu"
+      },
+      "elementKey" : "https://demoqa.com/select-menu::Old Select Menu::select",
+      "selector" : "#oldSelectMenu",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#oldSelectMenu"
+      },
+      "pageUrl" : "https://demoqa.com/select-menu",
+      "createdAt" : "2025-12-31T09:16:54.203155200Z",
+      "lastAccessedAt" : "2025-12-31T09:16:54.524567Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 2,
+      "elementAttributes" : {
+        "id" : "oldSelectMenu",
+        "tag" : "select",
+        "text" : "RedBlueGreenYellowPurpleBlackWhiteVoiletIndigoMage",
+        "type" : "select-one"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/auto-complete::Type multiple color names::select" : {
+      "orderedLocators" : {
+        "xpath" : "//div[@id=\"autoCompleteMultipleContainer\"]",
+        "id" : "#autoCompleteMultipleContainer"
+      },
+      "elementKey" : "https://demoqa.com/auto-complete::Type multiple color names::select",
+      "selector" : "#autoCompleteMultipleContainer",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "css-custom" : "div.css-2b097c-container",
+        "xpath" : "//div[@id=\"autoCompleteMultipleContainer\"]",
+        "css-class" : ".css-2b097c-container",
+        "id" : "#autoCompleteMultipleContainer"
+      },
+      "pageUrl" : "https://demoqa.com/auto-complete",
+      "createdAt" : "2025-12-31T08:57:18.390097600Z",
+      "lastAccessedAt" : "2025-12-31T08:57:18.392310100Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 1,
+      "elementAttributes" : {
+        "id" : "autoCompleteMultipleContainer",
+        "tag" : "div",
+        "text" : "option Green, deselected.   0 results available. S",
+        "class" : " css-2b097c-container"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/links::Bad Request::button" : {
+      "orderedLocators" : {
+        "id" : "#bad-request"
+      },
+      "elementKey" : "https://demoqa.com/links::Bad Request::button",
+      "selector" : "#bad-request",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#bad-request"
+      },
+      "pageUrl" : "https://demoqa.com/links",
+      "createdAt" : "2025-12-31T09:07:35.660512500Z",
+      "lastAccessedAt" : "2025-12-31T09:07:35.660512500Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "id" : "bad-request",
+        "tag" : "a",
+        "href" : "javascript:void(0)",
+        "text" : "Bad Request"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/links::Text Box::button" : {
+      "orderedLocators" : {
+        "text" : "span:has-text(\"Text Box\")"
+      },
+      "elementKey" : "https://demoqa.com/links::Text Box::button",
+      "selector" : "span:has-text(\"Text Box\")",
+      "locatorStrategy" : "text",
+      "allLocators" : {
+        "text" : "span:has-text(\"Text Box\")"
+      },
+      "pageUrl" : "https://demoqa.com/links",
+      "createdAt" : "2025-12-31T09:09:50.467834400Z",
+      "lastAccessedAt" : "2025-12-31T09:10:15.754097200Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 1,
+      "elementAttributes" : {
+        "class" : "text",
+        "tag" : "span",
+        "text" : "Text Box"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/elements::TEXT BOX::button" : {
+      "orderedLocators" : {
+        "text" : "span:has-text(\"Text Box\")"
+      },
+      "elementKey" : "https://demoqa.com/elements::TEXT BOX::button",
+      "selector" : "span:has-text(\"Text Box\")",
+      "locatorStrategy" : "text",
+      "allLocators" : {
+        "text" : "span:has-text(\"Text Box\")"
+      },
+      "pageUrl" : "https://demoqa.com/elements",
+      "createdAt" : "2025-12-31T09:16:36.732669700Z",
+      "lastAccessedAt" : "2025-12-31T09:16:36.732669700Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "class" : "text",
+        "tag" : "span",
+        "text" : "Text Box"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/automation-practice-form::Submit" : {
+      "orderedLocators" : {
+        "id" : "#submit"
+      },
+      "elementKey" : "https://demoqa.com/automation-practice-form::Submit",
+      "selector" : "#submit",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#submit"
+      },
+      "pageUrl" : "https://demoqa.com/automation-practice-form",
+      "createdAt" : "2025-12-31T09:12:44.899821500Z",
+      "lastAccessedAt" : "2025-12-31T09:12:44.899821500Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "id" : "submit",
+        "tag" : "button",
+        "text" : "Submit",
+        "type" : "submit",
+        "class" : "btn btn-primary"
+      },
+      "verified" : true
+    },
+    "https://vinothqaacademy.com/multiple-windows/::Department::input" : {
+      "orderedLocators" : {
+        "id" : "#departmentInput"
+      },
+      "elementKey" : "https://vinothqaacademy.com/multiple-windows/::Department::input",
+      "selector" : "#departmentInput",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#departmentInput"
+      },
+      "pageUrl" : "https://vinothqaacademy.com/multiple-windows/",
+      "createdAt" : "2025-12-31T09:11:21.017280200Z",
+      "lastAccessedAt" : "2025-12-31T09:11:21.017280200Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "id" : "departmentInput",
+        "tag" : "input",
+        "placeholder" : "Department",
+        "type" : "text"
+      },
+      "verified" : true
+    },
+    "https://vinothqaacademy.com/multiple-windows/::Role::input" : {
+      "orderedLocators" : {
+        "id" : "#roleInput"
+      },
+      "elementKey" : "https://vinothqaacademy.com/multiple-windows/::Role::input",
+      "selector" : "#roleInput",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#roleInput"
+      },
+      "pageUrl" : "https://vinothqaacademy.com/multiple-windows/",
+      "createdAt" : "2025-12-31T09:11:20.129362Z",
+      "lastAccessedAt" : "2025-12-31T09:11:20.129362Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "id" : "roleInput",
+        "tag" : "input",
+        "placeholder" : "Role",
+        "type" : "text"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/slider::slider::slider" : {
+      "orderedLocators" : { },
+      "elementKey" : "https://demoqa.com/slider::slider::slider",
+      "selector" : ".range-slider.range-slider--primary",
+      "locatorStrategy" : "css-class",
+      "allLocators" : {
+        "css-class" : ".range-slider.range-slider--primary"
+      },
+      "pageUrl" : "https://demoqa.com/slider",
+      "createdAt" : "2025-12-31T09:14:34.405827Z",
+      "lastAccessedAt" : "2025-12-31T09:14:39.704942100Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 2,
+      "elementAttributes" : {
+        "type" : "range",
+        "class" : "range-slider range-slider--primary",
+        "tag" : "input"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/selectable::Morbi leo risus::checkbox" : {
+      "orderedLocators" : {
+        "xpath" : "//li[contains(@class, \"mt-2\")]"
+      },
+      "elementKey" : "https://demoqa.com/selectable::Morbi leo risus::checkbox",
+      "selector" : ".mt-2.list-group-item.list-group-item-action",
+      "locatorStrategy" : "css-class",
+      "allLocators" : {
+        "css-custom" : "li.mt-2",
+        "xpath" : "//li[contains(@class, \"mt-2\")]",
+        "css-class" : ".mt-2.list-group-item.list-group-item-action"
+      },
+      "pageUrl" : "https://demoqa.com/selectable",
+      "createdAt" : "2025-12-31T09:14:07.317890100Z",
+      "lastAccessedAt" : "2025-12-31T09:14:07.322984900Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 1,
+      "elementAttributes" : {
+        "class" : "mt-2 list-group-item active list-group-item-action",
+        "tag" : "li",
+        "text" : "Morbi leo risus"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/links::No Content link::button" : {
+      "orderedLocators" : {
+        "id" : "#no-content"
+      },
+      "elementKey" : "https://demoqa.com/links::No Content link::button",
+      "selector" : "#no-content",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#no-content"
+      },
+      "pageUrl" : "https://demoqa.com/links",
+      "createdAt" : "2025-12-31T09:07:28.819964200Z",
+      "lastAccessedAt" : "2025-12-31T09:07:28.819964200Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "id" : "no-content",
+        "tag" : "a",
+        "href" : "javascript:void(0)",
+        "text" : "No Content"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/links::Forbidden::button" : {
+      "orderedLocators" : {
+        "id" : "#forbidden"
+      },
+      "elementKey" : "https://demoqa.com/links::Forbidden::button",
+      "selector" : "#forbidden",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#forbidden"
+      },
+      "pageUrl" : "https://demoqa.com/links",
+      "createdAt" : "2025-12-31T09:07:44.294969800Z",
+      "lastAccessedAt" : "2025-12-31T09:07:44.294969800Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "id" : "forbidden",
+        "tag" : "a",
+        "href" : "javascript:void(0)",
+        "text" : "Forbidden"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/elements::Check Box::button" : {
+      "orderedLocators" : {
+        "text" : "span:has-text(\"Check Box\")"
+      },
+      "elementKey" : "https://demoqa.com/elements::Check Box::button",
+      "selector" : "span:has-text(\"Check Box\")",
+      "locatorStrategy" : "text",
+      "allLocators" : {
+        "text" : "span:has-text(\"Check Box\")"
+      },
+      "pageUrl" : "https://demoqa.com/elements",
+      "createdAt" : "2025-12-31T08:59:45.056442300Z",
+      "lastAccessedAt" : "2025-12-31T08:59:45.056442300Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "class" : "text",
+        "tag" : "span",
+        "text" : "Check Box"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/radio-button::Yes::checkbox" : {
+      "orderedLocators" : {
+        "id" : "#yesRadio"
+      },
+      "elementKey" : "https://demoqa.com/radio-button::Yes::checkbox",
+      "selector" : "#yesRadio",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#yesRadio"
+      },
+      "pageUrl" : "https://demoqa.com/radio-button",
+      "createdAt" : "2025-12-31T09:15:23.308410100Z",
+      "lastAccessedAt" : "2025-12-31T09:15:26.767523800Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 8,
+      "elementAttributes" : {
+        "name" : "like",
+        "id" : "yesRadio",
+        "tag" : "input",
+        "type" : "radio",
+        "class" : "custom-control-input"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/tool-tips::Hover me to see input field" : {
+      "orderedLocators" : {
+        "id" : "#toolTipTextField"
+      },
+      "elementKey" : "https://demoqa.com/tool-tips::Hover me to see input field",
+      "selector" : "#toolTipTextField",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#toolTipTextField"
+      },
+      "pageUrl" : "https://demoqa.com/tool-tips",
+      "createdAt" : "2025-12-31T09:18:39.243836500Z",
+      "lastAccessedAt" : "2025-12-31T09:18:39.243836500Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "id" : "toolTipTextField",
+        "tag" : "input",
+        "placeholder" : "Hover me to see",
+        "type" : "text",
+        "class" : " mr-sm-2 form-control"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/buttons::Double Click Me::button" : {
+      "orderedLocators" : {
+        "id" : "#doubleClickBtn"
+      },
+      "elementKey" : "https://demoqa.com/buttons::Double Click Me::button",
+      "selector" : "#doubleClickBtn",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#doubleClickBtn"
+      },
+      "pageUrl" : "https://demoqa.com/buttons",
+      "createdAt" : "2025-12-31T08:58:33.265765600Z",
+      "lastAccessedAt" : "2025-12-31T09:16:10.277154400Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 3,
+      "elementAttributes" : {
+        "id" : "doubleClickBtn",
+        "tag" : "button",
+        "text" : "Double Click Me",
+        "type" : "button",
+        "class" : "btn btn-primary"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/select-menu::Select Value::select" : {
+      "orderedLocators" : {
+        "xpath" : "//div[@id=\"withOptGroup\"]",
+        "id" : "#withOptGroup"
+      },
+      "elementKey" : "https://demoqa.com/select-menu::Select Value::select",
+      "selector" : "#withOptGroup",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "css-custom" : "div.css-2b097c-container",
+        "xpath" : "//div[@id=\"withOptGroup\"]",
+        "css-class" : ".css-2b097c-container",
+        "id" : "#withOptGroup"
+      },
+      "pageUrl" : "https://demoqa.com/select-menu",
+      "createdAt" : "2025-12-31T09:13:29.303344600Z",
+      "lastAccessedAt" : "2025-12-31T09:13:29.306027700Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 1,
+      "elementAttributes" : {
+        "id" : "withOptGroup",
+        "tag" : "div",
+        "text" : "option Group 2, option 1, selected.   0 results av",
+        "class" : " css-2b097c-container"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/select-menu::Standard multi select::select" : {
+      "orderedLocators" : {
+        "id" : "#cars"
+      },
+      "elementKey" : "https://demoqa.com/select-menu::Standard multi select::select",
+      "selector" : "#cars",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#cars"
+      },
+      "pageUrl" : "https://demoqa.com/select-menu",
+      "createdAt" : "2025-12-31T09:13:06.761662Z",
+      "lastAccessedAt" : "2025-12-31T09:13:09.112381100Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 2,
+      "elementAttributes" : {
+        "name" : "cars",
+        "id" : "cars",
+        "tag" : "select",
+        "text" : "VolvoSaabOpelAudi",
+        "type" : "select-multiple"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/::Elements tab::button" : {
+      "orderedLocators" : {
+        "text" : "h5:has-text(\"Elements\")"
+      },
+      "elementKey" : "https://demoqa.com/::Elements tab::button",
+      "selector" : "h5:has-text(\"Elements\")",
+      "locatorStrategy" : "text",
+      "allLocators" : {
+        "text" : "h5:has-text(\"Elements\")"
+      },
+      "pageUrl" : "https://demoqa.com/",
+      "createdAt" : "2025-12-31T09:17:51.307607300Z",
+      "lastAccessedAt" : "2025-12-31T09:17:51.307607300Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "tag" : "h5",
+        "text" : "Elements"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/text-box::submit button::button" : {
+      "orderedLocators" : {
+        "id" : "#submit"
+      },
+      "elementKey" : "https://demoqa.com/text-box::submit button::button",
+      "selector" : "#submit",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#submit"
+      },
+      "pageUrl" : "https://demoqa.com/text-box",
+      "createdAt" : "2025-12-31T09:06:56.154121100Z",
+      "lastAccessedAt" : "2025-12-31T09:06:56.154121100Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "id" : "submit",
+        "tag" : "button",
+        "text" : "Submit",
+        "type" : "button",
+        "class" : "btn btn-primary"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/auto-complete::Green::checkbox" : {
+      "orderedLocators" : {
+        "id" : "#aria-selection-event"
+      },
+      "elementKey" : "https://demoqa.com/auto-complete::Green::checkbox",
+      "selector" : "#aria-selection-event",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#aria-selection-event"
+      },
+      "pageUrl" : "https://demoqa.com/auto-complete",
+      "createdAt" : "2025-12-31T08:57:07.609120700Z",
+      "lastAccessedAt" : "2025-12-31T08:57:07.609120700Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "id" : "aria-selection-event",
+        "tag" : "p",
+        "text" : "option Green, deselected."
+      },
+      "verified" : true
+    },
+    "https://vinothqaacademy.com/multiple-windows/::Free Complete QA Video Courses" : {
+      "orderedLocators" : {
+        "text" : "a:has-text(\"Free Complete QA Video Courses\")"
+      },
+      "elementKey" : "https://vinothqaacademy.com/multiple-windows/::Free Complete QA Video Courses",
+      "selector" : "a:has-text(\"Free Complete QA Video Courses\")",
+      "locatorStrategy" : "text",
+      "allLocators" : {
+        "text" : "a:has-text(\"Free Complete QA Video Courses\")"
+      },
+      "pageUrl" : "https://vinothqaacademy.com/multiple-windows/",
+      "createdAt" : "2025-12-31T09:08:19.075761600Z",
+      "lastAccessedAt" : "2025-12-31T09:08:19.075761600Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "tag" : "a",
+        "text" : "Free Complete QA Video Courses"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/radio-button::Yes radio::checkbox" : {
+      "orderedLocators" : {
+        "id" : "#yesRadio"
+      },
+      "elementKey" : "https://demoqa.com/radio-button::Yes radio::checkbox",
+      "selector" : "#yesRadio",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#yesRadio"
+      },
+      "pageUrl" : "https://demoqa.com/radio-button",
+      "createdAt" : "2025-12-31T09:15:22.917683200Z",
+      "lastAccessedAt" : "2025-12-31T09:15:25.291950800Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 1,
+      "elementAttributes" : {
+        "name" : "like",
+        "id" : "yesRadio",
+        "tag" : "input",
+        "type" : "radio",
+        "class" : "custom-control-input"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/::elements::button" : {
+      "orderedLocators" : {
+        "text" : "h5:has-text(\"Elements\")"
+      },
+      "elementKey" : "https://demoqa.com/::elements::button",
+      "selector" : "h5:has-text(\"Elements\")",
+      "locatorStrategy" : "text",
+      "allLocators" : {
+        "text" : "h5:has-text(\"Elements\")"
+      },
+      "pageUrl" : "https://demoqa.com/",
+      "createdAt" : "2025-12-31T09:16:36.286698700Z",
+      "lastAccessedAt" : "2025-12-31T09:16:36.286698700Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "tag" : "h5",
+        "text" : "Elements"
+      },
+      "verified" : true
+    },
+    "https://vinothqaacademy.com/multiple-windows/::Delete Selected Row button::button" : {
+      "orderedLocators" : {
+        "id" : "#deleteBtn"
+      },
+      "elementKey" : "https://vinothqaacademy.com/multiple-windows/::Delete Selected Row button::button",
+      "selector" : "#deleteBtn",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#deleteBtn"
+      },
+      "pageUrl" : "https://vinothqaacademy.com/multiple-windows/",
+      "createdAt" : "2025-12-31T09:11:31.989620Z",
+      "lastAccessedAt" : "2025-12-31T09:11:31.989620Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "id" : "deleteBtn",
+        "tag" : "button",
+        "text" : "Delete Selected Rows",
+        "type" : "submit"
+      },
+      "verified" : true
+    },
+    "https://the-internet.herokuapp.com/jqueryui/menu::Enabled" : {
+      "orderedLocators" : {
+        "text" : "a:has-text(\"Enabled\")"
+      },
+      "elementKey" : "https://the-internet.herokuapp.com/jqueryui/menu::Enabled",
+      "selector" : "a:has-text(\"Enabled\")",
+      "locatorStrategy" : "text",
+      "allLocators" : {
+        "text" : "a:has-text(\"Enabled\")"
+      },
+      "pageUrl" : "https://the-internet.herokuapp.com/jqueryui/menu",
+      "createdAt" : "2025-12-31T09:08:02.558560800Z",
+      "lastAccessedAt" : "2025-12-31T09:08:11.141992700Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 1,
+      "elementAttributes" : {
+        "tag" : "a",
+        "href" : "https://the-internet.herokuapp.com/jqueryui/menu#",
+        "text" : "Enabled"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/elements::Text box::button" : {
+      "orderedLocators" : {
+        "text" : "span:has-text(\"Text Box\")"
+      },
+      "elementKey" : "https://demoqa.com/elements::Text box::button",
+      "selector" : "span:has-text(\"Text Box\")",
+      "locatorStrategy" : "text",
+      "allLocators" : {
+        "text" : "span:has-text(\"Text Box\")"
+      },
+      "pageUrl" : "https://demoqa.com/elements",
+      "createdAt" : "2025-12-31T09:17:51.766951400Z",
+      "lastAccessedAt" : "2025-12-31T09:17:51.766951400Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "class" : "text",
+        "tag" : "span",
+        "text" : "Text Box"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/alerts::confirmButton::button" : {
+      "orderedLocators" : {
+        "id" : "#confirmButton"
+      },
+      "elementKey" : "https://demoqa.com/alerts::confirmButton::button",
+      "selector" : "#confirmButton",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#confirmButton"
+      },
+      "pageUrl" : "https://demoqa.com/alerts",
+      "createdAt" : "2025-12-31T08:56:28.769039300Z",
+      "lastAccessedAt" : "2025-12-31T08:56:30.543714800Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 2,
+      "elementAttributes" : {
+        "id" : "confirmButton",
+        "tag" : "button",
+        "text" : "Click me",
+        "type" : "button",
+        "class" : "btn btn-primary"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/links::Not Found::button" : {
+      "orderedLocators" : {
+        "id" : "#invalid-url"
+      },
+      "elementKey" : "https://demoqa.com/links::Not Found::button",
+      "selector" : "#invalid-url",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#invalid-url"
+      },
+      "pageUrl" : "https://demoqa.com/links",
+      "createdAt" : "2025-12-31T09:07:49.380534400Z",
+      "lastAccessedAt" : "2025-12-31T09:07:49.380534400Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "id" : "invalid-url",
+        "tag" : "a",
+        "href" : "javascript:void(0)",
+        "text" : "Not Found"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/radio-button::No radio" : {
+      "orderedLocators" : {
+        "id" : "#noRadio"
+      },
+      "elementKey" : "https://demoqa.com/radio-button::No radio",
+      "selector" : "#noRadio",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#noRadio"
+      },
+      "pageUrl" : "https://demoqa.com/radio-button",
+      "createdAt" : "2025-12-31T09:15:22.460558500Z",
+      "lastAccessedAt" : "2025-12-31T09:15:22.460558500Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "name" : "like",
+        "id" : "noRadio",
+        "tag" : "input",
+        "type" : "radio",
+        "class" : "custom-control-input disabled"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/automation-practice-form::last name::field" : {
+      "orderedLocators" : {
+        "id" : "#lastName"
+      },
+      "elementKey" : "https://demoqa.com/automation-practice-form::last name::field",
+      "selector" : "#lastName",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#lastName"
+      },
+      "pageUrl" : "https://demoqa.com/automation-practice-form",
+      "createdAt" : "2025-12-31T09:03:33.126105400Z",
+      "lastAccessedAt" : "2025-12-31T09:03:38.159807900Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 1,
+      "elementAttributes" : {
+        "id" : "lastName",
+        "tag" : "input",
+        "placeholder" : "Last Name",
+        "type" : "text",
+        "class" : " mr-sm-2 form-control"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/links::Home checkbox::button" : {
+      "orderedLocators" : {
+        "text" : "span:has-text(\"Home\")"
+      },
+      "elementKey" : "https://demoqa.com/links::Home checkbox::button",
+      "selector" : "span:has-text(\"Home\")",
+      "locatorStrategy" : "text",
+      "allLocators" : {
+        "text" : "span:has-text(\"Home\")"
+      },
+      "pageUrl" : "https://demoqa.com/links",
+      "createdAt" : "2025-12-31T09:09:37.043172400Z",
+      "lastAccessedAt" : "2025-12-31T09:09:37.043172400Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "class" : "rct-title",
+        "tag" : "span",
+        "text" : "Home"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/links::Moved::button" : {
+      "orderedLocators" : {
+        "id" : "#moved"
+      },
+      "elementKey" : "https://demoqa.com/links::Moved::button",
+      "selector" : "#moved",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#moved"
+      },
+      "pageUrl" : "https://demoqa.com/links",
+      "createdAt" : "2025-12-31T09:07:32.208957200Z",
+      "lastAccessedAt" : "2025-12-31T09:07:32.208957200Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "id" : "moved",
+        "tag" : "a",
+        "href" : "javascript:void(0)",
+        "text" : "Moved"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/text-box::Links::button" : {
+      "orderedLocators" : {
+        "text" : "span:has-text(\"Links\")"
+      },
+      "elementKey" : "https://demoqa.com/text-box::Links::button",
+      "selector" : "span:has-text(\"Links\")",
+      "locatorStrategy" : "text",
+      "allLocators" : {
+        "text" : "span:has-text(\"Links\")"
+      },
+      "pageUrl" : "https://demoqa.com/text-box",
+      "createdAt" : "2025-12-31T09:10:00.730759600Z",
+      "lastAccessedAt" : "2025-12-31T09:10:25.995924600Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 1,
+      "elementAttributes" : {
+        "class" : "text",
+        "tag" : "span",
+        "text" : "Links"
+      },
+      "verified" : true
+    },
+    "https://www.flipkart.com/::Powerbank::button" : {
+      "orderedLocators" : {
+        "text" : "a:has-text(\"Powerbank\")"
+      },
+      "elementKey" : "https://www.flipkart.com/::Powerbank::button",
+      "selector" : "a:has-text(\"Powerbank\")",
+      "locatorStrategy" : "text",
+      "allLocators" : {
+        "text" : "a:has-text(\"Powerbank\")"
+      },
+      "pageUrl" : "https://www.flipkart.com/",
+      "createdAt" : "2025-12-31T09:05:53.159787200Z",
+      "lastAccessedAt" : "2025-12-31T09:05:53.159787200Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "tag" : "a",
+        "href" : "https://www.flipkart.com/mobile-accessories/power-banks/pr?sid=tyy,4mr,fu6&otracker=categorytree&otracker=nmenu_sub_Electronics_0_Power%20Banks&fm=neo%2Fmerchandising&iid=M_450432ff-d933-43cd-9248-cbc9255a48bd_1_X1NCR146KC29_MC.T0HJ9Z5KFWVD&cid=T0HJ9Z5KFWVD",
+        "text" : "Powerbank",
+        "class" : "Y8tmCc sjBVz_"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/alerts::promtButton::button" : {
+      "orderedLocators" : {
+        "id" : "#promtButton"
+      },
+      "elementKey" : "https://demoqa.com/alerts::promtButton::button",
+      "selector" : "#promtButton",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#promtButton"
+      },
+      "pageUrl" : "https://demoqa.com/alerts",
+      "createdAt" : "2025-12-31T08:56:31.702933300Z",
+      "lastAccessedAt" : "2025-12-31T08:56:32.710942500Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 1,
+      "elementAttributes" : {
+        "id" : "promtButton",
+        "tag" : "button",
+        "text" : "Click me",
+        "type" : "button",
+        "class" : "btn btn-primary"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/select-menu::Select One::select" : {
+      "orderedLocators" : {
+        "xpath" : "//div[@id=\"selectOne\"]",
+        "id" : "#selectOne"
+      },
+      "elementKey" : "https://demoqa.com/select-menu::Select One::select",
+      "selector" : "#selectOne",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "css-custom" : "div.css-2b097c-container",
+        "xpath" : "//div[@id=\"selectOne\"]",
+        "css-class" : ".css-2b097c-container",
+        "id" : "#selectOne"
+      },
+      "pageUrl" : "https://demoqa.com/select-menu",
+      "createdAt" : "2025-12-31T09:13:35.745886400Z",
+      "lastAccessedAt" : "2025-12-31T09:13:35.746916300Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 1,
+      "elementAttributes" : {
+        "id" : "selectOne",
+        "tag" : "div",
+        "text" : "option Mrs., selected.   0 results available. Sele",
+        "class" : " css-2b097c-container"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/tool-tips::Hover me to see button" : {
+      "orderedLocators" : {
+        "id" : "#toolTipButton"
+      },
+      "elementKey" : "https://demoqa.com/tool-tips::Hover me to see button",
+      "selector" : "#toolTipButton",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#toolTipButton"
+      },
+      "pageUrl" : "https://demoqa.com/tool-tips",
+      "createdAt" : "2025-12-31T09:18:42.212667600Z",
+      "lastAccessedAt" : "2025-12-31T09:18:42.212667600Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "id" : "toolTipButton",
+        "tag" : "button",
+        "text" : "Hover me to see",
+        "type" : "button",
+        "class" : "btn btn-success"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/select-menu::Old Style Select Menu::select" : {
+      "orderedLocators" : {
+        "id" : "#oldSelectMenu"
+      },
+      "elementKey" : "https://demoqa.com/select-menu::Old Style Select Menu::select",
+      "selector" : "#oldSelectMenu",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#oldSelectMenu"
+      },
+      "pageUrl" : "https://demoqa.com/select-menu",
+      "createdAt" : "2025-12-31T09:13:10.287514400Z",
+      "lastAccessedAt" : "2025-12-31T09:13:25.008237500Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 6,
+      "elementAttributes" : {
+        "id" : "oldSelectMenu",
+        "tag" : "select",
+        "text" : "RedBlueGreenYellowPurpleBlackWhiteVoiletIndigoMage",
+        "type" : "select-one"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/radio-button::Yes radio" : {
+      "orderedLocators" : {
+        "id" : "#yesRadio"
+      },
+      "elementKey" : "https://demoqa.com/radio-button::Yes radio",
+      "selector" : "#yesRadio",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#yesRadio"
+      },
+      "pageUrl" : "https://demoqa.com/radio-button",
+      "createdAt" : "2025-12-31T09:15:22.099634700Z",
+      "lastAccessedAt" : "2025-12-31T09:15:22.099634700Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "name" : "like",
+        "id" : "yesRadio",
+        "tag" : "input",
+        "type" : "radio",
+        "class" : "custom-control-input"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/selectable::Five::checkbox" : {
+      "orderedLocators" : {
+        "xpath" : "//li[contains(@class, \"list-group-item\")]"
+      },
+      "elementKey" : "https://demoqa.com/selectable::Five::checkbox",
+      "selector" : ".list-group-item.list-group-item-action",
+      "locatorStrategy" : "css-class",
+      "allLocators" : {
+        "css-custom" : "li.list-group-item",
+        "xpath" : "//li[contains(@class, \"list-group-item\")]",
+        "css-class" : ".list-group-item.list-group-item-action"
+      },
+      "pageUrl" : "https://demoqa.com/selectable",
+      "createdAt" : "2025-12-31T09:14:16.492455800Z",
+      "lastAccessedAt" : "2025-12-31T09:14:16.494102700Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 1,
+      "elementAttributes" : {
+        "class" : "list-group-item active list-group-item-action",
+        "tag" : "li",
+        "text" : "Five"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/auto-complete::Blue::checkbox" : {
+      "orderedLocators" : {
+        "id" : "#aria-selection-event"
+      },
+      "elementKey" : "https://demoqa.com/auto-complete::Blue::checkbox",
+      "selector" : "#aria-selection-event",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#aria-selection-event"
+      },
+      "pageUrl" : "https://demoqa.com/auto-complete",
+      "createdAt" : "2025-12-31T08:57:19.389899400Z",
+      "lastAccessedAt" : "2025-12-31T08:57:19.389899400Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "id" : "aria-selection-event",
+        "tag" : "p",
+        "text" : "option Blue, deselected."
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/alerts::timerAlertButton::button" : {
+      "orderedLocators" : {
+        "id" : "#timerAlertButton"
+      },
+      "elementKey" : "https://demoqa.com/alerts::timerAlertButton::button",
+      "selector" : "#timerAlertButton",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#timerAlertButton"
+      },
+      "pageUrl" : "https://demoqa.com/alerts",
+      "createdAt" : "2025-12-31T08:56:25.812505100Z",
+      "lastAccessedAt" : "2025-12-31T08:56:25.812505100Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "id" : "timerAlertButton",
+        "tag" : "button",
+        "text" : "Click me",
+        "type" : "button",
+        "class" : "btn btn-primary"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/radio-button::Yes" : {
+      "orderedLocators" : {
+        "text" : "label:has-text(\"Yes\")"
+      },
+      "elementKey" : "https://demoqa.com/radio-button::Yes",
+      "selector" : "label:has-text(\"Yes\")",
+      "locatorStrategy" : "text",
+      "allLocators" : {
+        "text" : "label:has-text(\"Yes\")"
+      },
+      "pageUrl" : "https://demoqa.com/radio-button",
+      "createdAt" : "2025-12-31T09:15:22.168793200Z",
+      "lastAccessedAt" : "2025-12-31T09:15:22.365796400Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 5,
+      "elementAttributes" : {
+        "class" : "custom-control-label",
+        "tag" : "label",
+        "text" : "Yes"
+      },
+      "verified" : true
+    },
+    "https://www.flipkart.com/::Powerbank" : {
+      "orderedLocators" : {
+        "text" : "a:has-text(\"Powerbank\")"
+      },
+      "elementKey" : "https://www.flipkart.com/::Powerbank",
+      "selector" : "a:has-text(\"Powerbank\")",
+      "locatorStrategy" : "text",
+      "allLocators" : {
+        "text" : "a:has-text(\"Powerbank\")"
+      },
+      "pageUrl" : "https://www.flipkart.com/",
+      "createdAt" : "2025-12-31T09:05:52.394508900Z",
+      "lastAccessedAt" : "2025-12-31T09:05:52.394508900Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "tag" : "a",
+        "href" : "https://www.flipkart.com/mobile-accessories/power-banks/pr?sid=tyy,4mr,fu6&otracker=categorytree&otracker=nmenu_sub_Electronics_0_Power%20Banks&fm=neo%2Fmerchandising&iid=M_450432ff-d933-43cd-9248-cbc9255a48bd_1_X1NCR146KC29_MC.T0HJ9Z5KFWVD&cid=T0HJ9Z5KFWVD",
+        "text" : "Powerbank",
+        "class" : "Y8tmCc"
+      },
+      "verified" : true
+    },
+    "https://the-internet.herokuapp.com/jqueryui/menu::Downloads" : {
+      "orderedLocators" : {
+        "text" : "a:has-text(\"Downloads\")"
+      },
+      "elementKey" : "https://the-internet.herokuapp.com/jqueryui/menu::Downloads",
+      "selector" : "a:has-text(\"Downloads\")",
+      "locatorStrategy" : "text",
+      "allLocators" : {
+        "text" : "a:has-text(\"Downloads\")"
+      },
+      "pageUrl" : "https://the-internet.herokuapp.com/jqueryui/menu",
+      "createdAt" : "2025-12-31T09:08:03.463149800Z",
+      "lastAccessedAt" : "2025-12-31T09:08:12.004983Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 1,
+      "elementAttributes" : {
+        "tag" : "a",
+        "href" : "https://the-internet.herokuapp.com/jqueryui/menu#",
+        "text" : "Downloads"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/automation-practice-form::first name::field" : {
+      "orderedLocators" : {
+        "id" : "#firstName"
+      },
+      "elementKey" : "https://demoqa.com/automation-practice-form::first name::field",
+      "selector" : "#firstName",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#firstName"
+      },
+      "pageUrl" : "https://demoqa.com/automation-practice-form",
+      "createdAt" : "2025-12-31T09:03:33.013702900Z",
+      "lastAccessedAt" : "2025-12-31T09:03:38.113926100Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 1,
+      "elementAttributes" : {
+        "id" : "firstName",
+        "tag" : "input",
+        "placeholder" : "First Name",
+        "type" : "text",
+        "class" : " mr-sm-2 form-control"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/radio-button::No" : {
+      "orderedLocators" : {
+        "text" : "label:has-text(\"No\")"
+      },
+      "elementKey" : "https://demoqa.com/radio-button::No",
+      "selector" : "label:has-text(\"No\")",
+      "locatorStrategy" : "text",
+      "allLocators" : {
+        "text" : "label:has-text(\"No\")"
+      },
+      "pageUrl" : "https://demoqa.com/radio-button",
+      "createdAt" : "2025-12-31T09:15:22.526142300Z",
+      "lastAccessedAt" : "2025-12-31T09:15:22.735139700Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 6,
+      "elementAttributes" : {
+        "class" : "custom-control-label disabled",
+        "tag" : "label",
+        "text" : "No"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/auto-complete::Blue::button" : {
+      "orderedLocators" : {
+        "id" : "#react-select-2-option-0"
+      },
+      "elementKey" : "https://demoqa.com/auto-complete::Blue::button",
+      "selector" : "#react-select-2-option-0",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#react-select-2-option-0"
+      },
+      "pageUrl" : "https://demoqa.com/auto-complete",
+      "createdAt" : "2025-12-31T08:56:55.661542100Z",
+      "lastAccessedAt" : "2025-12-31T08:56:55.661542100Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "id" : "react-select-2-option-0",
+        "tag" : "div",
+        "text" : "Blue",
+        "class" : "auto-complete__option css-yt9ioa-option"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/checkbox::Home Check box::checkbox" : {
+      "orderedLocators" : {
+        "id" : "#tree-node-home"
+      },
+      "elementKey" : "https://demoqa.com/checkbox::Home Check box::checkbox",
+      "selector" : "#tree-node-home",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#tree-node-home"
+      },
+      "pageUrl" : "https://demoqa.com/checkbox",
+      "createdAt" : "2025-12-31T08:59:45.537370100Z",
+      "lastAccessedAt" : "2025-12-31T08:59:48.577343600Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 1,
+      "elementAttributes" : {
+        "type" : "checkbox",
+        "id" : "tree-node-home",
+        "tag" : "input"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/radio-button::Impressive Radio Button" : {
+      "orderedLocators" : {
+        "text" : "label:has-text(\"Impressive\")"
+      },
+      "elementKey" : "https://demoqa.com/radio-button::Impressive Radio Button",
+      "selector" : "label:has-text(\"Impressive\")",
+      "locatorStrategy" : "text",
+      "allLocators" : {
+        "text" : "label:has-text(\"Impressive\")"
+      },
+      "pageUrl" : "https://demoqa.com/radio-button",
+      "createdAt" : "2025-12-31T09:12:31.356198400Z",
+      "lastAccessedAt" : "2025-12-31T09:12:31.356198400Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "class" : "custom-control-label",
+        "tag" : "label",
+        "text" : "Impressive"
+      },
+      "verified" : true
+    },
+    "https://www.flipkart.com/::Electronics" : {
+      "orderedLocators" : {
+        "text" : "span:has-text(\"Electronics\")"
+      },
+      "elementKey" : "https://www.flipkart.com/::Electronics",
+      "selector" : "span:has-text(\"Electronics\")",
+      "locatorStrategy" : "text",
+      "allLocators" : {
+        "text" : "span:has-text(\"Electronics\")"
+      },
+      "pageUrl" : "https://www.flipkart.com/",
+      "createdAt" : "2025-12-31T09:05:51.642458200Z",
+      "lastAccessedAt" : "2025-12-31T09:07:02.517587800Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 1,
+      "elementAttributes" : {
+        "tag" : "span",
+        "text" : "Electronics"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/alerts::alertButton::button" : {
+      "orderedLocators" : {
+        "id" : "#alertButton"
+      },
+      "elementKey" : "https://demoqa.com/alerts::alertButton::button",
+      "selector" : "#alertButton",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#alertButton"
+      },
+      "pageUrl" : "https://demoqa.com/alerts",
+      "createdAt" : "2025-12-31T08:56:23.807213200Z",
+      "lastAccessedAt" : "2025-12-31T08:56:24.774370900Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 1,
+      "elementAttributes" : {
+        "id" : "alertButton",
+        "tag" : "button",
+        "text" : "Click me",
+        "type" : "button",
+        "class" : "btn btn-primary"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/checkbox::Home check Box::checkbox" : {
+      "orderedLocators" : {
+        "id" : "#tree-node-home"
+      },
+      "elementKey" : "https://demoqa.com/checkbox::Home check Box::checkbox",
+      "selector" : "#tree-node-home",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#tree-node-home"
+      },
+      "pageUrl" : "https://demoqa.com/checkbox",
+      "createdAt" : "2025-12-31T08:59:47.735254700Z",
+      "lastAccessedAt" : "2025-12-31T09:16:06.890800300Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 7,
+      "elementAttributes" : {
+        "type" : "checkbox",
+        "id" : "tree-node-home",
+        "tag" : "input"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/radio-button::Impressive Radio Button::button" : {
+      "orderedLocators" : {
+        "text" : "label:has-text(\"Impressive\")"
+      },
+      "elementKey" : "https://demoqa.com/radio-button::Impressive Radio Button::button",
+      "selector" : "label:has-text(\"Impressive\")",
+      "locatorStrategy" : "text",
+      "allLocators" : {
+        "text" : "label:has-text(\"Impressive\")"
+      },
+      "pageUrl" : "https://demoqa.com/radio-button",
+      "createdAt" : "2025-12-31T09:12:33.283326900Z",
+      "lastAccessedAt" : "2025-12-31T09:12:33.283326900Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "class" : "custom-control-label",
+        "tag" : "label",
+        "text" : "Impressive"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/tool-tips::Hover me" : {
+      "orderedLocators" : {
+        "id" : "#toolTipButton"
+      },
+      "elementKey" : "https://demoqa.com/tool-tips::Hover me",
+      "selector" : "#toolTipButton",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#toolTipButton"
+      },
+      "pageUrl" : "https://demoqa.com/tool-tips",
+      "createdAt" : "2025-12-31T09:18:41.993722Z",
+      "lastAccessedAt" : "2025-12-31T09:18:41.993722Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "id" : "toolTipButton",
+        "tag" : "button",
+        "text" : "Hover me to see",
+        "type" : "button",
+        "class" : "btn btn-success"
+      },
+      "verified" : true
+    },
+    "https://vinothqaacademy.com/multiple-windows/::Location::input" : {
+      "orderedLocators" : {
+        "id" : "#locationInput"
+      },
+      "elementKey" : "https://vinothqaacademy.com/multiple-windows/::Location::input",
+      "selector" : "#locationInput",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#locationInput"
+      },
+      "pageUrl" : "https://vinothqaacademy.com/multiple-windows/",
+      "createdAt" : "2025-12-31T09:11:20.730357100Z",
+      "lastAccessedAt" : "2025-12-31T09:11:20.730357100Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "id" : "locationInput",
+        "tag" : "input",
+        "placeholder" : "Location",
+        "type" : "text"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/elements::Links tab::button" : {
+      "orderedLocators" : {
+        "text" : "span:has-text(\"Links\")"
+      },
+      "elementKey" : "https://demoqa.com/elements::Links tab::button",
+      "selector" : "span:has-text(\"Links\")",
+      "locatorStrategy" : "text",
+      "allLocators" : {
+        "text" : "span:has-text(\"Links\")"
+      },
+      "pageUrl" : "https://demoqa.com/elements",
+      "createdAt" : "2025-12-31T09:07:22.871275700Z",
+      "lastAccessedAt" : "2025-12-31T09:07:22.871275700Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "class" : "text",
+        "tag" : "span",
+        "text" : "Links"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/links::Unauthorized::button" : {
+      "orderedLocators" : {
+        "id" : "#unauthorized"
+      },
+      "elementKey" : "https://demoqa.com/links::Unauthorized::button",
+      "selector" : "#unauthorized",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#unauthorized"
+      },
+      "pageUrl" : "https://demoqa.com/links",
+      "createdAt" : "2025-12-31T09:07:39.177990500Z",
+      "lastAccessedAt" : "2025-12-31T09:07:39.177990500Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "id" : "unauthorized",
+        "tag" : "a",
+        "href" : "javascript:void(0)",
+        "text" : "Unauthorized"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/links::Home::button" : {
+      "orderedLocators" : {
+        "id" : "#simpleLink"
+      },
+      "elementKey" : "https://demoqa.com/links::Home::button",
+      "selector" : "#simpleLink",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#simpleLink"
+      },
+      "pageUrl" : "https://demoqa.com/links",
+      "createdAt" : "2025-12-31T09:09:21.451483100Z",
+      "lastAccessedAt" : "2025-12-31T09:10:26.143559400Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 2,
+      "elementAttributes" : {
+        "id" : "simpleLink",
+        "tag" : "a",
+        "href" : "https://demoqa.com/",
+        "text" : "Home"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/radio-button::No button" : {
+      "orderedLocators" : {
+        "text" : "label:has-text(\"No\")"
+      },
+      "elementKey" : "https://demoqa.com/radio-button::No button",
+      "selector" : "label:has-text(\"No\")",
+      "locatorStrategy" : "text",
+      "allLocators" : {
+        "text" : "label:has-text(\"No\")"
+      },
+      "pageUrl" : "https://demoqa.com/radio-button",
+      "createdAt" : "2025-12-31T09:15:22.820289100Z",
+      "lastAccessedAt" : "2025-12-31T09:15:22.842249400Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 1,
+      "elementAttributes" : {
+        "class" : "custom-control-label disabled",
+        "tag" : "label",
+        "text" : "No"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/selectable::One::checkbox" : {
+      "orderedLocators" : {
+        "xpath" : "//li[contains(@class, \"list-group-item\")]"
+      },
+      "elementKey" : "https://demoqa.com/selectable::One::checkbox",
+      "selector" : ".list-group-item.list-group-item-action",
+      "locatorStrategy" : "css-class",
+      "allLocators" : {
+        "css-custom" : "li.list-group-item",
+        "xpath" : "//li[contains(@class, \"list-group-item\")]",
+        "css-class" : ".list-group-item.list-group-item-action"
+      },
+      "pageUrl" : "https://demoqa.com/selectable",
+      "createdAt" : "2025-12-31T09:14:15.631500600Z",
+      "lastAccessedAt" : "2025-12-31T09:14:15.633349800Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 1,
+      "elementAttributes" : {
+        "class" : "list-group-item active list-group-item-action",
+        "tag" : "li",
+        "text" : "One"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/auto-complete::Green::button" : {
+      "orderedLocators" : {
+        "id" : "#react-select-2-option-1"
+      },
+      "elementKey" : "https://demoqa.com/auto-complete::Green::button",
+      "selector" : "#react-select-2-option-1",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#react-select-2-option-1"
+      },
+      "pageUrl" : "https://demoqa.com/auto-complete",
+      "createdAt" : "2025-12-31T08:56:44.288525400Z",
+      "lastAccessedAt" : "2025-12-31T08:56:44.288525400Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "id" : "react-select-2-option-1",
+        "tag" : "div",
+        "text" : "Green",
+        "class" : "auto-complete__option css-yt9ioa-option"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/elements::Radio Button::button" : {
+      "orderedLocators" : {
+        "text" : "span:has-text(\"Radio Button\")"
+      },
+      "elementKey" : "https://demoqa.com/elements::Radio Button::button",
+      "selector" : "span:has-text(\"Radio Button\")",
+      "locatorStrategy" : "text",
+      "allLocators" : {
+        "text" : "span:has-text(\"Radio Button\")"
+      },
+      "pageUrl" : "https://demoqa.com/elements",
+      "createdAt" : "2025-12-31T09:12:31.011725900Z",
+      "lastAccessedAt" : "2025-12-31T09:12:31.011725900Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "class" : "text",
+        "tag" : "span",
+        "text" : "Radio Button"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/selectable::Three::checkbox" : {
+      "orderedLocators" : { },
+      "elementKey" : "https://demoqa.com/selectable::Three::checkbox",
+      "selector" : ".list-group-item.list-group-item-action",
+      "locatorStrategy" : "css-class",
+      "allLocators" : {
+        "css-class" : ".list-group-item.list-group-item-action"
+      },
+      "pageUrl" : "https://demoqa.com/selectable",
+      "createdAt" : "2025-12-31T09:14:16.076126300Z",
+      "lastAccessedAt" : "2025-12-31T09:14:16.076126300Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "class" : "list-group-item active list-group-item-action",
+        "tag" : "li",
+        "text" : "Three"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/selectable::Porta ac consectetur ac::checkbox" : {
+      "orderedLocators" : { },
+      "elementKey" : "https://demoqa.com/selectable::Porta ac consectetur ac::checkbox",
+      "selector" : ".mt-2.list-group-item.list-group-item-action",
+      "locatorStrategy" : "css-class",
+      "allLocators" : {
+        "css-class" : ".mt-2.list-group-item.list-group-item-action"
+      },
+      "pageUrl" : "https://demoqa.com/selectable",
+      "createdAt" : "2025-12-31T09:14:11.324539100Z",
+      "lastAccessedAt" : "2025-12-31T09:14:11.324539100Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "class" : "mt-2 list-group-item active list-group-item-action",
+        "tag" : "li",
+        "text" : "Porta ac consectetur ac"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/radio-button::Yes Radio Button" : {
+      "orderedLocators" : {
+        "text" : "label:has-text(\"Yes\")"
+      },
+      "elementKey" : "https://demoqa.com/radio-button::Yes Radio Button",
+      "selector" : "label:has-text(\"Yes\")",
+      "locatorStrategy" : "text",
+      "allLocators" : {
+        "text" : "label:has-text(\"Yes\")"
+      },
+      "pageUrl" : "https://demoqa.com/radio-button",
+      "createdAt" : "2025-12-31T09:12:31.246100400Z",
+      "lastAccessedAt" : "2025-12-31T09:12:31.246100400Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "class" : "custom-control-label",
+        "tag" : "label",
+        "text" : "Yes"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/automation-practice-form::Mobile Number::field" : {
+      "orderedLocators" : {
+        "id" : "#userNumber"
+      },
+      "elementKey" : "https://demoqa.com/automation-practice-form::Mobile Number::field",
+      "selector" : "#userNumber",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#userNumber"
+      },
+      "pageUrl" : "https://demoqa.com/automation-practice-form",
+      "createdAt" : "2025-12-31T09:03:33.319422600Z",
+      "lastAccessedAt" : "2025-12-31T09:03:33.319422600Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "id" : "userNumber",
+        "tag" : "input",
+        "placeholder" : "Mobile Number",
+        "type" : "text",
+        "class" : " mr-sm-2 form-control"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/selectable::Nine::checkbox" : {
+      "orderedLocators" : {
+        "xpath" : "//li[contains(@class, \"list-group-item\")]"
+      },
+      "elementKey" : "https://demoqa.com/selectable::Nine::checkbox",
+      "selector" : ".list-group-item.list-group-item-action",
+      "locatorStrategy" : "css-class",
+      "allLocators" : {
+        "css-custom" : "li.list-group-item",
+        "xpath" : "//li[contains(@class, \"list-group-item\")]",
+        "css-class" : ".list-group-item.list-group-item-action"
+      },
+      "pageUrl" : "https://demoqa.com/selectable",
+      "createdAt" : "2025-12-31T09:14:17.358094500Z",
+      "lastAccessedAt" : "2025-12-31T09:14:17.360286600Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 1,
+      "elementAttributes" : {
+        "class" : "list-group-item active list-group-item-action",
+        "tag" : "li",
+        "text" : "Nine"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/selectable::Four::checkbox" : {
+      "orderedLocators" : { },
+      "elementKey" : "https://demoqa.com/selectable::Four::checkbox",
+      "selector" : ".list-group-item.list-group-item-action",
+      "locatorStrategy" : "css-class",
+      "allLocators" : {
+        "css-class" : ".list-group-item.list-group-item-action"
+      },
+      "pageUrl" : "https://demoqa.com/selectable",
+      "createdAt" : "2025-12-31T09:14:18.230833900Z",
+      "lastAccessedAt" : "2025-12-31T09:14:18.230833900Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "class" : "list-group-item list-group-item-action",
+        "tag" : "li",
+        "text" : "Four"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/selectable::Cras justo odio::checkbox" : {
+      "orderedLocators" : { },
+      "elementKey" : "https://demoqa.com/selectable::Cras justo odio::checkbox",
+      "selector" : ".mt-2.list-group-item.list-group-item-action",
+      "locatorStrategy" : "css-class",
+      "allLocators" : {
+        "css-class" : ".mt-2.list-group-item.list-group-item-action"
+      },
+      "pageUrl" : "https://demoqa.com/selectable",
+      "createdAt" : "2025-12-31T09:13:48.918815100Z",
+      "lastAccessedAt" : "2025-12-31T09:14:10.872597900Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 4,
+      "elementAttributes" : {
+        "class" : "mt-2 list-group-item active list-group-item-action",
+        "tag" : "li",
+        "text" : "Cras justo odio"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/elements::Buttons tab::button" : {
+      "orderedLocators" : {
+        "text" : "span:has-text(\"Buttons\")"
+      },
+      "elementKey" : "https://demoqa.com/elements::Buttons tab::button",
+      "selector" : "span:has-text(\"Buttons\")",
+      "locatorStrategy" : "text",
+      "allLocators" : {
+        "text" : "span:has-text(\"Buttons\")"
+      },
+      "pageUrl" : "https://demoqa.com/elements",
+      "createdAt" : "2025-12-31T08:58:32.968968600Z",
+      "lastAccessedAt" : "2025-12-31T08:58:32.968968600Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "class" : "text",
+        "tag" : "span",
+        "text" : "Buttons"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/progress-bar::Reset::button" : {
+      "orderedLocators" : {
+        "role" : "[role=\"progressbar\"][aria-label*=\"100%\"]"
+      },
+      "elementKey" : "https://demoqa.com/progress-bar::Reset::button",
+      "selector" : "[role=\"progressbar\"][aria-label*=\"100%\"]",
+      "locatorStrategy" : "role",
+      "allLocators" : {
+        "role" : "[role=\"progressbar\"][aria-label*=\"100%\"]"
+      },
+      "pageUrl" : "https://demoqa.com/progress-bar",
+      "createdAt" : "2025-12-31T09:12:10.321483800Z",
+      "lastAccessedAt" : "2025-12-31T09:12:10.321483800Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "tag" : "div",
+        "role" : "progressbar",
+        "text" : "100%",
+        "class" : "progress-bar bg-success"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/automation-practice-form::Female radio button::button" : {
+      "orderedLocators" : {
+        "text" : "label:has-text(\"Female\")"
+      },
+      "elementKey" : "https://demoqa.com/automation-practice-form::Female radio button::button",
+      "selector" : "label:has-text(\"Female\")",
+      "locatorStrategy" : "text",
+      "allLocators" : {
+        "text" : "label:has-text(\"Female\")"
+      },
+      "pageUrl" : "https://demoqa.com/automation-practice-form",
+      "createdAt" : "2025-12-31T09:03:44.553766500Z",
+      "lastAccessedAt" : "2025-12-31T09:03:44.553766500Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "class" : "custom-control-label",
+        "tag" : "label",
+        "text" : "Female"
+      },
+      "verified" : true
+    },
+    "https://www.flipkart.com/::MobileAccessory" : {
+      "orderedLocators" : {
+        "text" : "a:has-text(\"MobileAccessory\")"
+      },
+      "elementKey" : "https://www.flipkart.com/::MobileAccessory",
+      "selector" : "a:has-text(\"MobileAccessory\")",
+      "locatorStrategy" : "text",
+      "allLocators" : {
+        "text" : "a:has-text(\"MobileAccessory\")"
+      },
+      "pageUrl" : "https://www.flipkart.com/",
+      "createdAt" : "2025-12-31T09:07:03.235579300Z",
+      "lastAccessedAt" : "2025-12-31T09:07:03.235579300Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "tag" : "a",
+        "href" : "https://www.flipkart.com/electronics-best-offers-store?fm=neo%2Fmerchandising&iid=M_eccafabe-241e-47b2-94ab-67096a3e1e42_1_X1NCR146KC29_MC.62MZ0C3KIJ0M&cid=62MZ0C3KIJ0M",
+        "text" : "MobileAccessory",
+        "class" : "Y8tmCc"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/elements::Web Tables::button" : {
+      "orderedLocators" : {
+        "text" : "span:has-text(\"Web Tables\")"
+      },
+      "elementKey" : "https://demoqa.com/elements::Web Tables::button",
+      "selector" : "span:has-text(\"Web Tables\")",
+      "locatorStrategy" : "text",
+      "allLocators" : {
+        "text" : "span:has-text(\"Web Tables\")"
+      },
+      "pageUrl" : "https://demoqa.com/elements",
+      "createdAt" : "2025-12-31T09:18:53.356564500Z",
+      "lastAccessedAt" : "2025-12-31T09:18:53.356564500Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "class" : "text",
+        "tag" : "span",
+        "text" : "Web Tables"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/date-picker::Date::input" : {
+      "orderedLocators" : {
+        "id" : "#datePickerMonthYearInput"
+      },
+      "elementKey" : "https://demoqa.com/date-picker::Date::input",
+      "selector" : "#datePickerMonthYearInput",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#datePickerMonthYearInput"
+      },
+      "pageUrl" : "https://demoqa.com/date-picker",
+      "createdAt" : "2025-12-31T09:04:16.776160500Z",
+      "lastAccessedAt" : "2025-12-31T09:04:18.781773500Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 2,
+      "elementAttributes" : {
+        "type" : "text",
+        "id" : "datePickerMonthYearInput",
+        "tag" : "input"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/radio-button::No Radio Button" : {
+      "orderedLocators" : {
+        "text" : "label:has-text(\"No\")"
+      },
+      "elementKey" : "https://demoqa.com/radio-button::No Radio Button",
+      "selector" : "label:has-text(\"No\")",
+      "locatorStrategy" : "text",
+      "allLocators" : {
+        "text" : "label:has-text(\"No\")"
+      },
+      "pageUrl" : "https://demoqa.com/radio-button",
+      "createdAt" : "2025-12-31T09:12:31.531304300Z",
+      "lastAccessedAt" : "2025-12-31T09:12:31.531304300Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "class" : "custom-control-label disabled",
+        "tag" : "label",
+        "text" : "No"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/radio-button::Yes Radio Button::button" : {
+      "orderedLocators" : {
+        "text" : "label:has-text(\"Yes\")"
+      },
+      "elementKey" : "https://demoqa.com/radio-button::Yes Radio Button::button",
+      "selector" : "label:has-text(\"Yes\")",
+      "locatorStrategy" : "text",
+      "allLocators" : {
+        "text" : "label:has-text(\"Yes\")"
+      },
+      "pageUrl" : "https://demoqa.com/radio-button",
+      "createdAt" : "2025-12-31T09:12:32.233922100Z",
+      "lastAccessedAt" : "2025-12-31T09:12:32.233922100Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "class" : "custom-control-label",
+        "tag" : "label",
+        "text" : "Yes"
+      },
+      "verified" : true
+    }
+  }
+}

@@ -75,7 +75,7 @@ public class SmartStepParser {
                 // Intelligence layer can handle almost any natural language
                 // Check if it can extract a valid intent
                 if (intelligentProcessor.canProcess(normalizedStep)) {
-                    logger.debug("✓ Step supported by Intelligence Layer");
+                    logger.debug("Step supported by Intelligence Layer");
                     return true;
                 }
             }
@@ -86,7 +86,7 @@ public class SmartStepParser {
             // Check combined actions
             if (PatternRegistry.getCombinedActions().stream()
                     .anyMatch(pattern -> pattern.matcher(normalizedStep).matches())) {
-                logger.debug("✓ Step supported by Combined Actions");
+                logger.debug("Step supported by Combined Actions");
                 return true;
             }
             
@@ -94,7 +94,7 @@ public class SmartStepParser {
             for (List<TableStepPattern> patterns : tablePatterns.values()) {
                 for (TableStepPattern pattern : patterns) {
                     if (pattern.getPattern().matcher(normalizedStep).matches()) {
-                        logger.debug("✓ Step supported by Table Patterns");
+                        logger.debug("Step supported by Table Patterns");
                         return true;
                     }
                 }
@@ -103,12 +103,12 @@ public class SmartStepParser {
             // Check all registered patterns
             for (Map.Entry<String, Pattern> entry : PatternRegistry.getAllPatterns().entrySet()) {
                 if (entry.getValue().matcher(normalizedStep).matches()) {
-                    logger.debug("✓ Step supported by Pattern: {}", entry.getKey());
+                    logger.debug("Step supported by Pattern: {}", entry.getKey());
                     return true;
                 }
             }
             
-            logger.debug("✗ Step NOT supported by framework patterns");
+            logger.debug("Step NOT supported by framework patterns");
             return false;
             
         } catch (Exception e) {
@@ -151,57 +151,57 @@ public class SmartStepParser {
         // STRATEGY 0: Check if this is a combined action step FIRST (before intelligence layer)
         // This prevents the intelligence layer from incorrectly concatenating values
         if (isCombinedAction(step)) {
-            logger.debug("→ Composite Action Detected - Bypassing Intelligence Layer");
+            logger.debug("Composite Action Detected - Bypassing Intelligence Layer");
             logger.info("Detected Combined Action Step");
             return parseCombinedActions(step, page, smartLocator);
         }
         
         // STRATEGY 2: Check for frame-scoped actions ("In iframe 'x', click 'y'")
-        logger.debug("→ Trying: Frame-Scoped Actions");
+        logger.debug("Trying: Frame-Scoped Actions");
         ActionPlan frameScopedPlan = tryFrameScoping(step, page, smartLocator);
         if (frameScopedPlan != null) {
-            logger.success("✓ Parsed via: FRAME-SCOPED PATTERN");
+            logger.success("Parsed via: FRAME-SCOPED PATTERN");
             return frameScopedPlan;
         }
 
         // STRATEGY 1: INTELLIGENT NLP-BASED PROCESSING (Phase 4)
         if (intelligenceEnabled) {
-            logger.debug("→ Trying: Intelligent NLP Processing");
+            logger.debug("Trying: Intelligent NLP Processing");
             ActionPlan intelligentPlan = intelligentProcessor.processStep(step, page, smartLocator);
             
             if (intelligentPlan != null && intelligentPlan.isValid()) {
-                logger.success("✓ Parsed via: INTELLIGENCE LAYER");
+                logger.success("Parsed via: INTELLIGENCE LAYER");
                 return intelligentPlan;
             }
-            logger.debug("  ✗ Intelligence layer did not match");
+            logger.debug("  Intelligence layer did not match");
         }
         
         // STRATEGY 3: Try table-specific patterns first (new features)
-        logger.debug("→ Trying: Table-Specific Patterns");
+        logger.debug("Trying: Table-Specific Patterns");
         ActionPlan tablePlan = tryTablePatterns(step);
         if (tablePlan != null) {
-            logger.success("✓ Parsed via: TABLE PATTERN ({})", tablePlan.getActionType());
+            logger.success("Parsed via: TABLE PATTERN ({})", tablePlan.getActionType());
             return tablePlan;
         }
         
         // STRATEGY 4: Fall back to legacy patterns (existing features)
-        logger.debug("→ Trying: Legacy Regex Patterns");
+        logger.debug("Trying: Legacy Regex Patterns");
         ActionPlan legacyPlan = legacyPlanner.plan(step);
         if (legacyPlan != null && !"unknown".equals(legacyPlan.getActionType())) {
-            logger.success("✓ Parsed via: LEGACY PATTERN ({})", legacyPlan.getActionType());
+            logger.success("Parsed via: LEGACY PATTERN ({})", legacyPlan.getActionType());
             return legacyPlan;
         }
         
         // STRATEGY 5: Try intent-based fuzzy matching
-        logger.debug("→ Trying: Fuzzy Intent Classification");
+        logger.debug("Trying: Fuzzy Intent Classification");
         ActionPlan fuzzyPlan = tryIntentClassification(step);
         if (fuzzyPlan != null) {
-            logger.warning("✓ Parsed via: FUZZY INTENT ({})", fuzzyPlan.getActionType());
+            logger.warning("Parsed via: FUZZY INTENT ({})", fuzzyPlan.getActionType());
             return fuzzyPlan;
         }
         
         // STRATEGY 6: LLM Fallback (future - would call OpenAI API here)
-        logger.error("✗ Could not parse step: {}", step);
+        logger.error("Could not parse step: {}", step);
         return createUnknownPlan(step);
     }
     
@@ -371,7 +371,7 @@ public class SmartStepParser {
     private List<String> splitByDelimiters(String step) {
         List<String> parts = new ArrayList<>();
         
-        logger.debug("⚙️ COMPOSITE SPLIT INPUT: '{}'", step);
+        logger.debug("COMPOSITE SPLIT INPUT: '{}'", step);
         
         // Split by common delimiters, but be smart about quotes
         // Use a regex that matches delimiters outside of quotes
@@ -379,7 +379,7 @@ public class SmartStepParser {
         
         String[] rawParts = step.split(delimiterRegex);
         
-        logger.debug("⚙️ REGEX SPLIT INTO {} RAW PARTS", rawParts.length);
+        logger.debug("REGEX SPLIT INTO {} RAW PARTS", rawParts.length);
         for (int i = 0; i < rawParts.length; i++) {
             logger.debug("  Raw Part {}: '{}'", i, rawParts[i]);
         }
@@ -388,17 +388,17 @@ public class SmartStepParser {
             String trimmed = part.trim();
             if (!trimmed.isEmpty()) {
                 parts.add(trimmed);
-                logger.debug("✓ Added trimmed part: '{}'", trimmed);
+                logger.debug("Added trimmed part: '{}'", trimmed);
             }
         }
         
         // If no split occurred, return the original step as a single action
         if (parts.isEmpty()) {
             parts.add(step);
-            logger.debug("⚠️ No splits occurred, returning original step");
+            logger.debug("No splits occurred, returning original step");
         }
         
-        logger.debug("⚙️ FINAL SPLIT RESULT: {} parts", parts.size());
+        logger.debug("FINAL SPLIT RESULT: {} parts", parts.size());
         
         return parts;
     }

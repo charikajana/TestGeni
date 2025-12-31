@@ -62,9 +62,12 @@ public class ActionHandlerRegistry {
     private void registerNavigationActions() {
         handlers.put("navigate", new NavigateAction());
         handlers.put("navigate_app", new NavigateToAppAction());
-        handlers.put("refresh_page", new RefreshPageAction());
-        handlers.put("browser_back", new BackAction());
-        handlers.put("browser_forward", new ForwardAction());
+        
+        BrowserNavigationAction navAction = new BrowserNavigationAction();
+        handlers.put("refresh_page", navAction);
+        handlers.put("browser_back", navAction);
+        handlers.put("browser_forward", navAction);
+        
         handlers.put("select_menu", new SelectMenuAction());
     }
     
@@ -87,20 +90,28 @@ public class ActionHandlerRegistry {
         handlers.put("select", new SelectAction());
         handlers.put("select_with_criteria", new SelectWithCriteriaAction());
         handlers.put("deselect", new DeselectAction());
-        handlers.put("check", new CheckAction());
-        handlers.put("uncheck", new UncheckAction());
+        
+        CheckToggleAction toggleAction = new CheckToggleAction();
+        handlers.put("check", toggleAction);
+        handlers.put("uncheck", toggleAction);
     }
     
     private void registerVerifyActions() {
-        handlers.put("verify", new VerifyTextAction());
-        handlers.put("verify_not", new VerifyNotTextAction());
-        handlers.put("verify_enabled", new VerifyEnabledAction());
-        handlers.put("verify_disabled", new VerifyDisabledAction());
+        VerifyTextAction textVerify = new VerifyTextAction();
+        handlers.put("verify", textVerify);
+        handlers.put("verify_not", textVerify);
+        
+        VerifyEnablementAction enableVerify = new VerifyEnablementAction();
+        handlers.put("verify_enabled", enableVerify);
+        handlers.put("verify_disabled", enableVerify);
+        
         handlers.put("verify_validation", new VerifyValidationAction());
         handlers.put("verify_value", new VerifyValueAction());
         handlers.put("verify_placeholder", new VerifyPlaceholderAction());
-        handlers.put("verify_url", new VerifyURLAction());
-        handlers.put("verify_page_title", new VerifyTitleAction());
+        
+        VerifyBrowserStateAction browserVerify = new VerifyBrowserStateAction();
+        handlers.put("verify_url", browserVerify);
+        handlers.put("verify_page_title", browserVerify);
         
         // Verify checked/selected
         VerifyCheckedAction checkVerify = new VerifyCheckedAction();
@@ -133,11 +144,12 @@ public class ActionHandlerRegistry {
     }
     
     private void registerAlertActions() {
-        handlers.put("verify_alert", new AcceptAlertAction());
-        handlers.put("accept_alert", new AcceptAlertAction());
-        handlers.put("dismiss_alert", new DismissAlertAction());
-        handlers.put("prompt_alert", new PromptAlertAction());
-        handlers.put("dismiss_prompt", new DismissAlertAction());
+        JavaScriptDialogAction dialogAction = new JavaScriptDialogAction();
+        handlers.put("verify_alert", dialogAction);
+        handlers.put("accept_alert", dialogAction);
+        handlers.put("dismiss_alert", dialogAction);
+        handlers.put("prompt_alert", dialogAction);
+        handlers.put("dismiss_prompt", dialogAction);
     }
     
     private void registerFrameActions() {

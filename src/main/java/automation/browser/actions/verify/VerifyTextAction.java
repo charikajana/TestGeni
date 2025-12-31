@@ -17,7 +17,7 @@ public class VerifyTextAction implements BrowserAction {
         String value = plan.getValue();
         String targetName = plan.getElementName();
         String textToVerify = (value != null && !value.isEmpty()) ? value : targetName;
-        boolean isNegated = plan.isNegated();
+        boolean isNegated = plan.isNegated() || "verify_not".equals(plan.getActionType());
         
         if (textToVerify == null) {
             logger.failure("Verification failed - No text specified");

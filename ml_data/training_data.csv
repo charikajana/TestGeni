@@ -1,100 +1,84 @@
 page_domain,element_name,element_type,name_length,has_type_hint,has_special_chars,word_count,successful_strategy,confidence_score,hit_count,age_seconds
-the-internet.herokuapp.com,PDF,,3,0,0,1,text,0.29,1,1513
-demoqa.com,Hover me to see,,15,0,0,4,id,0.35,1,950
-vinothqaacademy.com,Email Address,input,13,0,0,2,id,0.25,0,1338
-www.flipkart.com,MobileFlash,button,11,0,0,1,text,0.23,0,1568
-demoqa.com,Two,checkbox,3,0,0,1,css-class,0.33,1,1163
-demoqa.com,progress,progressbar,8,0,0,1,role,0.32,1,1290
-demoqa.com,Elements,button,8,0,0,1,text,0.41,4,2054
-demoqa.com,Old Select Menu,select,15,1,0,3,id,0.41,2,1026
-demoqa.com,Type multiple color names,select,25,0,0,4,id,0.22,1,2115
-demoqa.com,Text Box,button,8,0,0,2,text,0.30,1,1431
-demoqa.com,TEXT BOX,button,8,0,0,2,text,0.28,0,1045
-demoqa.com,Submit,,6,0,0,1,id,0.26,0,1262
-vinothqaacademy.com,Department,input,10,0,0,1,id,0.25,0,1338
-vinothqaacademy.com,Role,input,4,0,0,1,id,0.25,0,1339
-demoqa.com,slider,slider,6,1,0,1,css-class,0.39,2,1142
-demoqa.com,Morbi leo risus,checkbox,15,0,0,3,css-class,0.33,1,1175
-demoqa.com,Check Box,button,9,0,0,2,text,0.18,0,1979
-demoqa.com,Hover me to see input field,,27,1,0,6,id,0.29,0,953
-demoqa.com,Double Click Me,button,15,0,0,3,id,0.35,3,2053
-demoqa.com,Multiselect drop down,select,21,0,0,3,css-class,0.32,1,1240
-demoqa.com,Select Value,select,12,0,0,2,id,0.33,1,1214
-demoqa.com,Standard multi select,select,21,1,0,3,id,0.38,2,1237
-demo.automationtesting.in,datepicker2,input,11,0,0,1,id,0.21,0,1666
-vinothqaacademy.com,Free Complete QA Video Courses,,30,0,0,5,text,0.23,0,1497
-demoqa.com,Yes radio,checkbox,9,0,0,2,id,0.34,1,1108
-the-internet.herokuapp.com,Enabled,,7,0,0,1,text,0.29,1,1515
-demoqa.com,confirmButton,button,13,1,0,1,id,0.28,2,2164
-demoqa.com,Not Found,button,9,0,0,2,id,0.23,0,1529
-demoqa.com,No radio,,8,0,0,2,id,0.28,0,1108
-demoqa.com,last name,field,9,0,0,2,id,0.27,1,1722
-demoqa.com,Home checkbox,button,13,1,0,2,text,0.24,0,1444
-demoqa.com,Moved,button,5,0,0,1,id,0.23,0,1546
-demoqa.com,promtButton,button,11,1,0,1,id,0.22,1,2161
-demoqa.com,Select One,select,10,0,0,2,id,0.33,1,1208
-demoqa.com,Five,checkbox,4,0,0,1,css-class,0.33,1,1164
-demoqa.com,No,,2,0,0,1,text,0.64,6,1108
-demoqa.com,Blue,button,4,0,0,1,id,0.16,0,2138
-demoqa.com,Impressive Radio Button,,23,1,0,3,text,0.26,0,1277
-demoqa.com,alertButton,button,11,1,0,1,id,0.22,1,2169
-demoqa.com,Impressive Radio Button,button,23,1,0,3,text,0.26,0,1276
-demoqa.com,Hover me,,8,0,0,2,id,0.29,0,949
-vinothqaacademy.com,Location,input,8,0,0,1,id,0.25,0,1338
-demoqa.com,Links tab,button,9,1,0,2,text,0.23,0,1556
-demoqa.com,Green,button,5,0,0,1,id,0.16,0,2150
-demoqa.com,Radio Button,button,12,1,0,2,text,0.26,0,1278
-demoqa.com,Three,checkbox,5,0,0,1,css-class,0.27,0,1165
-demoqa.com,Porta ac consectetur ac,checkbox,23,0,0,4,css-class,0.27,0,1170
-demoqa.com,Mobile Number,field,13,0,0,2,id,0.21,0,1722
-demoqa.com,Cras justo odio,checkbox,15,0,0,3,css-class,0.51,4,1192
-demoqa.com,Buttons tab,button,11,1,0,2,text,0.17,0,2053
-demoqa.com,Reset,button,5,0,0,1,role,0.26,0,1291
-demoqa.com,Yes Radio Button,button,16,1,0,3,text,0.26,0,1277
-vinothqaacademy.com,Add Row button,button,14,1,0,3,id,0.25,0,1337
-demoqa.com,Right Click Me,button,14,0,0,3,id,0.41,4,2031
-vinothqaacademy.com,Name,input,4,0,0,1,id,0.25,0,1339
-demoqa.com,Seven,checkbox,5,0,0,1,css-class,0.27,0,1164
-vinothqaacademy.com,Appium 2.0 Mobile Automation,,28,0,1,4,text,0.23,0,1493
-demoqa.com,Male radio button,button,17,1,0,3,text,0.21,0,1732
-demoqa.com,Select Option,select,13,0,0,2,css-class,0.29,0,1032
-demoqa.com,Submit button,button,13,1,0,2,id,0.36,1,929
-demoqa.com,Bad Request,button,11,0,0,2,id,0.23,0,1543
-demoqa.com,No Content link,button,15,1,0,3,id,0.23,0,1550
-demoqa.com,Forbidden,button,9,0,0,1,id,0.23,0,1534
-demoqa.com,Yes,checkbox,3,0,0,1,id,0.76,8,1107
-demoqa.com,Elements tab,button,12,1,0,2,text,0.29,0,971
-demoqa.com,submit button,button,13,1,0,2,id,0.22,0,1578
-demoqa.com,Green,checkbox,5,0,0,1,id,0.22,1,2126
-vinothqaacademy.com,New Browser Tab,button,15,1,0,3,id,0.25,0,1351
-demoqa.com,Click Me,button,8,0,0,2,id,0.18,0,2010
-demoqa.com,elements,button,8,0,0,1,text,0.28,0,1045
-vinothqaacademy.com,Delete Selected Row button,button,26,1,0,4,id,0.25,0,1327
-demoqa.com,Text box,button,8,0,0,2,text,0.29,0,970
-demoqa.com,Links,button,5,0,0,1,text,0.30,1,1421
-www.flipkart.com,Powerbank,button,9,0,0,1,text,0.22,0,1618
-demoqa.com,Hover me to see button,,22,1,0,5,id,0.29,0,949
-demoqa.com,Old Style Select Menu,select,21,1,0,4,id,0.62,6,1234
-demoqa.com,Yes radio,,9,0,0,2,id,0.28,0,1109
-demoqa.com,Blue,checkbox,4,0,0,1,id,0.23,1,2114
-demoqa.com,timerAlertButton,button,16,1,0,1,id,0.16,0,2167
-demoqa.com,Yes,,3,0,0,1,text,0.58,5,1109
-www.flipkart.com,Powerbank,,9,0,0,1,text,0.22,0,1619
-the-internet.herokuapp.com,Downloads,,9,0,0,1,text,0.29,1,1514
-demoqa.com,first name,field,10,0,0,2,id,0.27,1,1722
-demoqa.com,Home Check box,checkbox,14,0,0,3,id,0.24,1,1978
-www.flipkart.com,Electronics,,11,0,0,1,text,0.28,1,1620
-demoqa.com,Home check Box,checkbox,14,0,0,3,id,0.60,7,1976
-demoqa.com,Unauthorized,button,12,0,0,1,id,0.23,0,1539
-demoqa.com,Home,button,4,0,0,1,id,0.36,2,1458
-demoqa.com,No button,,9,1,0,2,text,0.34,1,1108
-demo.automationtesting.in,datepicker1,input,11,0,0,1,id,0.27,1,1667
-demoqa.com,One,checkbox,3,0,0,1,css-class,0.33,1,1165
-demoqa.com,Yes Radio Button,,16,1,0,3,text,0.26,0,1278
-demoqa.com,Nine,checkbox,4,0,0,1,css-class,0.33,1,1163
-demoqa.com,Four,checkbox,4,0,0,1,css-class,0.27,0,1162
-demoqa.com,Female radio button,button,19,1,0,3,text,0.21,0,1705
-www.flipkart.com,MobileAccessory,,15,0,0,1,text,0.23,0,1568
-demoqa.com,Web Tables,button,10,0,0,2,text,0.30,0,939
-demoqa.com,No Radio Button,,15,1,0,3,text,0.26,0,1277
-demoqa.com,Date,input,4,0,0,1,id,0.33,2,1675
+the-internet.herokuapp.com,PDF,,3,0,0,1,text,0.06,1,6611
+vinothqaacademy.com,Email Address,input,13,0,0,2,id,0.00,0,6377
+www.flipkart.com,MobileFlash,button,11,0,0,1,text,0.00,0,6664
+demoqa.com,Two,checkbox,3,0,0,1,css-class,0.06,1,6117
+demoqa.com,Old Select Menu,select,15,1,0,3,id,0.12,2,5975
+demoqa.com,Type multiple color names,select,25,0,0,4,text,0.12,2,5632
+demoqa.com,TEXT BOX,button,8,0,0,2,text,0.00,0,5992
+vinothqaacademy.com,Role,input,4,0,0,1,id,0.00,0,6378
+demoqa.com,Morbi leo risus,checkbox,15,0,0,3,css-class,0.06,1,6128
+demoqa.com,Hover me to see input field,,27,1,0,6,id,0.00,0,5899
+vinothqaacademy.com,Free Complete QA Video Courses,,30,0,0,5,text,0.00,0,6597
+demoqa.com,Not Found,button,9,0,0,2,id,0.00,0,6625
+demoqa.com,No radio,,8,0,0,2,id,0.00,0,6067
+demoqa.com,last name,field,9,0,0,2,id,0.06,1,6815
+demoqa.com,Moved,button,5,0,0,1,id,0.00,0,6642
+demoqa.com,Select One,select,10,0,0,2,id,0.06,1,6172
+demoqa.com,Impressive Radio Button,,23,1,0,3,text,0.00,0,6277
+vinothqaacademy.com,Location,input,8,0,0,1,id,0.00,0,6377
+demoqa.com,Radio Button,button,12,1,0,2,text,0.00,0,6277
+demoqa.com,Porta ac consectetur ac,checkbox,23,0,0,4,css-class,0.00,0,6123
+demoqa.com,Cras justo odio,checkbox,15,0,0,3,css-class,0.24,4,6139
+demoqa.com,Submit button,button,13,1,0,2,id,0.06,1,5872
+demoqa.com,No Content link,button,15,1,0,3,id,0.00,0,6645
+demoqa.com,Forbidden,button,9,0,0,1,id,0.00,0,6630
+demoqa.com,submit button,button,13,1,0,2,id,0.00,0,6672
+demoqa.com,Green,checkbox,5,0,0,1,id,0.36,6,5632
+vinothqaacademy.com,New Browser Tab,button,15,1,0,3,id,0.00,0,6389
+demoqa.com,elements,button,8,0,0,1,text,0.00,0,5992
+vinothqaacademy.com,Delete Selected Row button,button,26,1,0,4,id,0.00,0,6366
+demoqa.com,Links,button,5,0,0,1,text,0.06,1,6456
+www.flipkart.com,Powerbank,button,9,0,0,1,text,0.06,1,3777
+demoqa.com,Blue,checkbox,4,0,0,1,css-custom,0.06,1,5643
+demoqa.com,Yes,,3,0,0,1,text,0.30,5,6067
+the-internet.herokuapp.com,Downloads,,9,0,0,1,text,0.06,1,6612
+demoqa.com,No button,,9,1,0,2,text,0.06,1,6066
+demoqa.com,Yes Radio Button,,16,1,0,3,text,0.00,0,6277
+demoqa.com,Four,checkbox,4,0,0,1,css-class,0.00,0,6117
+demoqa.com,No Radio Button,,15,1,0,3,text,0.00,0,6277
+demoqa.com,Hover me to see,,15,0,0,4,id,0.06,1,5897
+demoqa.com,progress,progressbar,8,0,0,1,role,0.06,1,6313
+demoqa.com,Text Box,button,8,0,0,2,text,0.06,1,6466
+demoqa.com,Submit,,6,0,0,1,id,0.00,0,6231
+vinothqaacademy.com,Department,input,10,0,0,1,id,0.00,0,6377
+demoqa.com,slider,slider,6,1,0,1,css-class,0.12,2,6102
+demoqa.com,Select Value,select,12,0,0,2,id,0.06,1,6178
+demoqa.com,Multiselect drop down,select,21,0,0,3,css-custom,0.24,4,5483
+demo.automationtesting.in,datepicker2,input,11,0,0,1,id,0.00,0,6773
+demoqa.com,Yes radio,checkbox,9,0,0,2,id,0.06,1,6066
+the-internet.herokuapp.com,Enabled,,7,0,0,1,text,0.06,1,6613
+demoqa.com,Home checkbox,button,13,1,0,2,text,0.00,0,6480
+demoqa.com,Five,checkbox,4,0,0,1,css-class,0.06,1,6118
+demoqa.com,No,,2,0,0,1,text,0.36,6,6067
+demoqa.com,Impressive Radio Button,button,23,1,0,3,text,0.00,0,6276
+demoqa.com,Hover me,,8,0,0,2,id,0.00,0,5897
+demoqa.com,Links tab,button,9,1,0,2,text,0.00,0,6650
+demoqa.com,Green,button,5,0,0,1,id,0.18,3,4122
+demoqa.com,Three,checkbox,5,0,0,1,css-class,0.00,0,6119
+demoqa.com,Mobile Number,field,13,0,0,2,id,0.00,0,6815
+demoqa.com,Reset,button,5,0,0,1,role,0.00,0,6314
+demoqa.com,Yes Radio Button,button,16,1,0,3,text,0.00,0,6276
+vinothqaacademy.com,Add Row button,button,14,1,0,3,id,0.00,0,6377
+vinothqaacademy.com,Name,input,4,0,0,1,id,0.00,0,6378
+demoqa.com,Seven,checkbox,5,0,0,1,css-class,0.00,0,6118
+vinothqaacademy.com,Appium 2.0 Mobile Automation,,28,0,1,4,text,0.00,0,6593
+demoqa.com,Male radio button,button,17,1,0,3,text,0.00,0,6822
+demoqa.com,Select Option,select,13,0,0,2,css-class,0.00,0,5981
+demoqa.com,Bad Request,button,11,0,0,2,id,0.00,0,6639
+demoqa.com,Yes,checkbox,3,0,0,1,id,0.48,8,6066
+demoqa.com,Elements tab,button,12,1,0,2,text,0.00,0,5914
+demoqa.com,Text box,button,8,0,0,2,text,0.00,0,5913
+demoqa.com,Hover me to see button,,22,1,0,5,id,0.00,0,5896
+demoqa.com,Yes radio,,9,0,0,2,id,0.00,0,6067
+demoqa.com,first name,field,10,0,0,2,id,0.06,1,6816
+www.flipkart.com,Electronics,,11,0,0,1,text,0.18,3,4103
+demoqa.com,Unauthorized,button,12,0,0,1,id,0.00,0,6636
+demoqa.com,Home,button,4,0,0,1,id,0.12,2,6493
+demo.automationtesting.in,datepicker1,input,11,0,0,1,id,0.06,1,6774
+demoqa.com,One,checkbox,3,0,0,1,css-class,0.06,1,6119
+demoqa.com,Nine,checkbox,4,0,0,1,css-class,0.06,1,6118
+demoqa.com,Female radio button,button,19,1,0,3,text,0.00,0,6806
+www.flipkart.com,MobileAccessory,,15,0,0,1,text,0.00,0,6665
+demoqa.com,Web Tables,button,10,0,0,2,text,0.00,0,5881
+demoqa.com,Date,input,4,0,0,1,id,0.12,2,6780

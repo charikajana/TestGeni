@@ -110,7 +110,7 @@ public class FillFormSectionAction implements BrowserAction {
                 if (field != null && field.count() > 0) {
                     field.clear();
                     field.fill(value);
-                    logger.debug("✓ Filled {} = '{}'", readableFieldName, value);
+                    logger.debug("Filled {} = '{}'", readableFieldName, value);
                     return true;
                 }
             }
@@ -120,11 +120,11 @@ public class FillFormSectionAction implements BrowserAction {
             if (fieldByPlaceholder != null && fieldByPlaceholder.count() > 0) {
                 fieldByPlaceholder.clear();
                 fieldByPlaceholder.fill(value);
-                logger.debug("✓ Filled {} = '{}' (by placeholder)", readableFieldName, value);
+                logger.debug("Filled {} = '{}' (by placeholder)", readableFieldName, value);
                 return true;
             }
             
-            logger.debug("✗ Field not found: {}", readableFieldName);
+            logger.debug("Field not found: {}", readableFieldName);
             return false;
             
         } catch (Exception e) {

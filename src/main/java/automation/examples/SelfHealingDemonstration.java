@@ -51,7 +51,7 @@ public class SelfHealingDemonstration {
             var usernameField = locator.findSmartElement("Username", "input", null, null, false);
             if (usernameField != null) {
                 usernameField.fill("john_doe");
-                System.out.println("✓ Found and filled Username field");
+                System.out.println("Found and filled Username field");
                 System.out.println("  Cached strategies: id, name, placeholder, xpath, etc.\n");
             }
             
@@ -64,10 +64,10 @@ public class SelfHealingDemonstration {
             
             page.evaluate("""
                 document.getElementById('username').id = 'user-input-new-123';
-                console.log('ID changed: username → user-input-new-123');
+                console.log('ID changed: username -> user-input-new-123');
             """);
             
-            System.out.println("❌ Old ID (#username) is now INVALID\n");
+            System.out.println("Old ID (#username) is now INVALID\n");
             Thread.sleep(2000);
             
             // Try to find element again - SELF-HEALING LEVEL 1 will trigger
@@ -75,13 +75,13 @@ public class SelfHealingDemonstration {
             System.out.println("PHASE 2: SELF-HEALING LEVEL 1 - Fast Fallback");
             System.out.println("=".repeat(60) + "\n");
             
-            System.out.println("🔧 Primary locator (#username) will fail...");
-            System.out.println("🔧 Trying alternative strategies from cache...\n");
+            System.out.println("Primary locator (#username) will fail...");
+            System.out.println("Trying alternative strategies from cache...\n");
             
             var healedField1 = locator.findSmartElement("Username", "input", null, null, false);
             if (healedField1 != null) {
                 healedField1.fill("healed_user_1");
-                System.out.println("✓ SELF-HEALING SUCCESS!");
+                System.out.println("SELF-HEALING SUCCESS!");
                 System.out.println("  Used alternative: name=[name=\"username\"] or xpath");
                 System.out.println("  Cache automatically updated\n");
             }
@@ -101,10 +101,10 @@ public class SelfHealingDemonstration {
                 console.log('Major change: ID, name, placeholder all changed!');
             """);
             
-            System.out.println("❌ ID changed again");
-            System.out.println("❌ name attribute changed");
-            System.out.println("❌ placeholder changed");
-            System.out.println("❌ Many cached strategies now INVALID\n");
+            System.out.println("ID changed again");
+            System.out.println("name attribute changed");
+            System.out.println("placeholder changed");
+            System.out.println("Many cached strategies now INVALID\n");
             
             Thread.sleep(2000);
             
@@ -113,14 +113,14 @@ public class SelfHealingDemonstration {
             System.out.println("PHASE 3: SELF-HEALING LEVEL 2 - Full Re-scan");
             System.out.println("=".repeat(60) + "\n");
             
-            System.out.println("🔧 Most cached strategies failed...");
-            System.out.println("🔧 Initiating SmartLocator full scan...");
-            System.out.println("🔧 Re-discovering element with semantic matching...\n");
+            System.out.println("Most cached strategies failed...");
+            System.out.println("Initiating SmartLocator full scan...");
+            System.out.println("Re-discovering element with semantic matching...\n");
             
             var healedField2 = locator.findSmartElement("Username", "input", null, null, false);
             if (healedField2 != null) {
                 healedField2.fill("fully_healed_user");
-                System.out.println("✓ FULL HEALING SUCCESS!");
+                System.out.println("FULL HEALING SUCCESS!");
                 System.out.println("  SmartLocator found element using semantic matching");
                 System.out.println("  Captured fresh set of 17+ locator strategies");
                 System.out.println("  Cache completely updated with new locators\n");
@@ -135,10 +135,10 @@ public class SelfHealingDemonstration {
             System.out.println("\n" + "=".repeat(60));
             System.out.println("SELF-HEALING SUMMARY");
             System.out.println("=".repeat(60));
-            System.out.println("✓ Test ran successfully despite 2 UI changes");
-            System.out.println("✓ No manual intervention required");
-            System.out.println("✓ Cache automatically healed both times");
-            System.out.println("✓ Zero test code changes needed\n");
+            System.out.println("Test ran successfully despite 2 UI changes");
+            System.out.println("No manual intervention required");
+            System.out.println("Cache automatically healed both times");
+            System.out.println("Zero test code changes needed\n");
             
             Thread.sleep(3000);
             browser.close();

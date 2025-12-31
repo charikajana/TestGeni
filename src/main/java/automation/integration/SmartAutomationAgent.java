@@ -51,9 +51,9 @@ public class SmartAutomationAgent {
             boolean success = "PASSED".equals(report.getStatus());
             
             if (success) {
-                logger.success("✓ Smart automation succeeded: {}", naturalLanguageStep);
+                logger.success("Smart automation succeeded: {}", naturalLanguageStep);
             } else {
-                logger.warn("✗ Smart automation failed: {}", naturalLanguageStep);
+                logger.warn("Smart automation failed: {}", naturalLanguageStep);
             }
             
             return success;

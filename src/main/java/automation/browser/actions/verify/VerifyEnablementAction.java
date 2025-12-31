@@ -3,23 +3,33 @@ package automation.browser.actions.verify;
 import automation.browser.actions.BrowserAction;
 import automation.browser.SmartLocator;
 import automation.planner.ActionPlan;
+import automation.planner.EnhancedActionPlan;
+import automation.browser.locator.table.TableNavigator;
 import automation.utils.LoggerUtil;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 
-public class VerifyEnabledAction implements BrowserAction {
+/**
+ * Consolidated handler for verifying if elements are enabled or disabled.
+ */
+public class VerifyEnablementAction implements BrowserAction {
     
-    private static final LoggerUtil logger = LoggerUtil.getLogger(VerifyEnabledAction.class);
+    private static final LoggerUtil logger = LoggerUtil.getLogger(VerifyEnablementAction.class);
     
     @Override
     public boolean execute(Page page, SmartLocator locator, ActionPlan plan) {
         String targetName = plan.getElementName();
+        String actionType = plan.getActionType();
+        boolean expectEnabled = "verify_enabled".equals(actionType);
+        
+        logger.info("Verifying element '{}' is {}", targetName, expectEnabled ? "ENABLED" : "DISABLED");
+        
+        // Handle Row Scoping
         Locator scope = null;
-
         if (plan.getRowAnchor() != null) {
-            automation.browser.locator.table.TableNavigator navigator = new automation.browser.locator.table.TableNavigator();
-            if (plan instanceof automation.planner.EnhancedActionPlan) {
-                automation.planner.EnhancedActionPlan enhanced = (automation.planner.EnhancedActionPlan) plan;
+            TableNavigator navigator = new TableNavigator();
+            if (plan instanceof EnhancedActionPlan) {
+                EnhancedActionPlan enhanced = (EnhancedActionPlan) plan;
                 String columnName = enhanced.getRowConditionColumn();
                 String columnValue = enhanced.getRowConditionValue();
                 if (columnName != null && columnValue != null) {
@@ -36,20 +46,23 @@ public class VerifyEnabledAction implements BrowserAction {
             }
         }
 
-        String actionType = plan.getActionType();
-        boolean expectEnabled = !"verify_disabled".equals(actionType);
-
+        // Find the element
         Locator element = locator.waitForSmartElement(targetName, null, scope, plan.getFrameAnchor(), true);
         
-        if (element != null) {
+        if (element == null) {
+            logger.failure("Element not found for state check: {}", targetName);
+            return false;
+        }
+
+        try {
             boolean isEnabled = element.isEnabled();
             String tagName = (String) element.evaluate("el => el.tagName.toLowerCase()");
             
-            // If it's a label, check the linked input
+            // Special handling for labels (check the associated input)
             if ("label".equals(tagName)) {
                 String forAttr = (String) element.getAttribute("for");
                 if (forAttr != null && !forAttr.isEmpty()) {
-                     isEnabled = page.locator("#" + forAttr).isEnabled();
+                    isEnabled = page.locator("#" + forAttr).isEnabled();
                 } else {
                     // Try to find a nested input
                     Locator nestedInput = element.locator("input");
@@ -73,9 +86,9 @@ public class VerifyEnabledAction implements BrowserAction {
                 logger.info("--------------------------------------------------");
                 return false;
             }
-        } else {
-             logger.failure("Element not found for enablement check: {}", targetName);
-             return false;
+        } catch (Exception e) {
+            logger.failure("Error verifying state for element '{}': {}", targetName, e.getMessage());
+            return false;
         }
     }
 }

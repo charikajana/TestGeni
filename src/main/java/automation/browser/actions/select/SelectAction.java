@@ -191,7 +191,7 @@ public class SelectAction implements BrowserAction {
                     try {
                         visibleSuggestions.first().waitFor(new Locator.WaitForOptions().setTimeout(500).setState(com.microsoft.playwright.options.WaitForSelectorState.VISIBLE));
                         if (visibleSuggestions.count() > 0) {
-                            logger.info("✓ Dropdown suggestions already visible (count={}), skipping click/type", visibleSuggestions.count());
+                            logger.info("Dropdown suggestions already visible (count={}), skipping click/type", visibleSuggestions.count());
                             suggestionsAlreadyVisible = true;
                         }
                     } catch (Exception ignored) {}

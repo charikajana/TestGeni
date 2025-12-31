@@ -32,7 +32,7 @@ public class AutoMLPipeline {
     private static final String LAST_TRAIN_INFO = "models/last_training.txt";
     
     public static void main(String[] args) {
-        logger.info("🤖 Automated ML Pipeline Started\n");
+        logger.info("Automated ML Pipeline Started\n");
         
         try {
             // Step 1: Check current cache size
@@ -48,40 +48,40 @@ public class AutoMLPipeline {
             
             // Step 3: Decide if retraining is needed
             if (newExamples >= MIN_NEW_EXAMPLES_FOR_RETRAIN) {
-                logger.info("\n✅ Retraining recommended ({} new examples)", newExamples);
+                logger.info("\nRetraining recommended ({} new examples)", newExamples);
                 logger.info("Starting automatic retraining...\n");
                 
                 // Step 4: Collect training data
-                logger.info("📊 Step 1/2: Collecting training data...");
+                logger.info("Step 1/2: Collecting training data...");
                 TrainingDataCollector collector = new TrainingDataCollector();
-                var examples = collector.loadFromCache("config/locator_cache.json");
+                var examples = collector.loadFromCache("CacheLocatorRepository/locator_cache.json");
                 collector.printStatistics(examples);
                 collector.exportToCSV(examples, "ml_data/training_data.csv");
                 
                 // Step 5: Train ML model
-                logger.info("\n🎓 Step 2/2: Training ML model...");
+                logger.info("\nStep 2/2: Training ML model...");
                 MLStrategyPredictor model = new MLStrategyPredictor();
                 model.train("ml_data/training_data.csv");
                 model.printStats();
-                model.saveModel("models/ml_strategy_predictor.model");
+                model.saveModel("models/ml_strategy_predictor.json");
                 
                 // Step 6: Save training info
                 saveTrainingInfo(currentCacheSize);
                 
-                logger.info("\n✅ Automated ML Training Complete!");
+                logger.info("\nAutomated ML Training Complete!");
                 logger.info("   Trained on: {} examples", currentCacheSize);
-                logger.info("   Model saved: models/ml_strategy_predictor.model");
+                logger.info("   Model saved: models/ml_strategy_predictor.json");
                 
             } else {
-                logger.info("\n⏭️  Retraining skipped (only {} new examples)", newExamples);
+                logger.info("\nRetraining skipped (only {} new examples)", newExamples);
                 logger.info("   Minimum required: {} new examples", MIN_NEW_EXAMPLES_FOR_RETRAIN);
                 logger.info("   Current model is still good!");
-                logger.info("\n💡 Run {} more tests to trigger retraining", 
+                logger.info("\nRun {} more tests to trigger retraining", 
                     MIN_NEW_EXAMPLES_FOR_RETRAIN - newExamples);
             }
             
         } catch (Exception e) {
-            logger.error("❌ Auto ML Pipeline failed: {}", e.getMessage());
+            logger.error("Auto ML Pipeline failed: {}", e.getMessage());
             e.printStackTrace();
         }
     }
@@ -91,7 +91,7 @@ public class AutoMLPipeline {
      */
     private static int getCurrentCacheSize() {
         try {
-            String cacheContent = Files.readString(Paths.get("config/locator_cache.json"));
+            String cacheContent = Files.readString(Paths.get("CacheLocatorRepository/locator_cache.json"));
             // Simple parsing - look for "totalEntries"
             int startIndex = cacheContent.indexOf("\"totalEntries\"");
             if (startIndex > 0) {

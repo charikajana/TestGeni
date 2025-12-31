@@ -1,6 +1,7 @@
 package automation.browser.locator.core;
 
 import automation.utils.FuzzyMatch;
+import automation.utils.SelectorUtil;
 
 public class CandidateScorer {
 
@@ -71,8 +72,15 @@ public class CandidateScorer {
                 score += 110;
             } else if (name.equalsIgnoreCase(el.id) || cleanName.equalsIgnoreCase(el.id)) {
                 score += 100;
+                // STABILITY CHECK: Penalize dynamic IDs to prefer text/label matches
+                if (SelectorUtil.isDynamic(el.id)) {
+                    score -= 80; // Net boost only +20 for dynamic IDs
+                }
             } else if (name.equalsIgnoreCase(el.name) || cleanName.equalsIgnoreCase(el.name)) {
                 score += 100;
+                if (SelectorUtil.isDynamic(el.name)) {
+                    score -= 80;
+                }
             }
         }
 

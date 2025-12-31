@@ -1,6 +1,12 @@
 package automation.ml;
 
 import automation.utils.LoggerUtil;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -29,25 +35,42 @@ import java.util.stream.Collectors;
  * @author Chari
  * @version 1.0
  */
-public class MLStrategyPredictor implements Serializable {
+public class MLStrategyPredictor {
     
-    private static final long serialVersionUID = 1L;
+    @JsonIgnore
+    private static final ObjectMapper mapper = new ObjectMapper()
+        .enable(SerializationFeature.INDENT_OUTPUT)
+        .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
+        .setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+    
+    @JsonIgnore
     private static final LoggerUtil logger = LoggerUtil.getLogger(MLStrategyPredictor.class);
     
     // Strategy mappings
+    @JsonProperty("strategyToIndex")
     private Map<String, Integer> strategyToIndex = new HashMap<>();
+    
+    @JsonProperty("indexToStrategy")
     private Map<Integer, String> indexToStrategy = new HashMap<>();
     
     // Simple decision tree (rule-based, upgradeable to full RF later)
+    @JsonProperty("domainStrategyScores")
     private Map<String, Map<String, Integer>> domainStrategyScores = new HashMap<>();
+    
+    @JsonProperty("strategyFrequency")
     private Map<String, Integer> strategyFrequency = new HashMap<>();
+    
+    @JsonProperty("totalExamples")
     private int totalExamples = 0;
+    
+    // Default constructor for Jackson
+    public MLStrategyPredictor() {}
     
     /**
      * Train from CSV data
      */
     public void train(String csvPath) throws IOException {
-        logger.info("🎓 Training ML Model from: {}", csvPath);
+        logger.info("Training ML Model from: {}", csvPath);
         
         List<TrainingExample> examples = loadCSV(csvPath);
         this.totalExamples = examples.size();
@@ -55,8 +78,8 @@ public class MLStrategyPredictor implements Serializable {
         logger.info("Loaded {} training examples", totalExamples);
         
         if (totalExamples < 10) {
-            logger.warn("⚠️  Very limited training data! Predictions may be inaccurate.");
-            logger.warn("   Recommendation: Collect at least 100 examples for good accuracy");
+            logger.warn("Very limited training data! Predictions may be inaccurate.");
+            logger.warn("Recommendation: Collect at least 100 examples for good accuracy");
         }
         
         // Build simple frequency-based model
@@ -73,7 +96,7 @@ public class MLStrategyPredictor implements Serializable {
             getOrCreateStrategyIndex(ex.strategy);
         }
         
-        logger.info("✅ Training complete!");
+        logger.info("Training complete!");
         logger.info("   Unique strategies: {}", strategyToIndex.size());
         logger.info("   Strategy distribution: {}", strategyFrequency);
     }
@@ -131,27 +154,22 @@ public class MLStrategyPredictor implements Serializable {
     }
     
     /**
-     * Save model to file
+     * Save model to JSON file
      */
     public void saveModel(String path) throws IOException {
         new File(path).getParentFile().mkdirs();
-        
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(path))) {
-            oos.writeObject(this);
-            logger.info("✅ Model saved to: {}", path);
-        }
+        mapper.writeValue(new File(path), this);
+        logger.info("Model saved to: {} (JSON format)", path);
     }
     
     /**
-     * Load model from file
+     * Load model from JSON file
      */
-    public static MLStrategyPredictor loadModel(String path) throws IOException, ClassNotFoundException {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(path))) {
-            MLStrategyPredictor model = (MLStrategyPredictor) ois.readObject();
-            logger.info("✅ Model loaded from: {}", path);
-            logger.info("   Total examples trained on: {}", model.totalExamples);
-            return model;
-        }
+    public static MLStrategyPredictor loadModel(String path) throws IOException {
+        MLStrategyPredictor model = mapper.readValue(new File(path), MLStrategyPredictor.class);
+        logger.info("Model loaded from: {} (JSON format)", path);
+        logger.info("   Total examples trained on: {}", model.totalExamples);
+        return model;
     }
     
     /**
@@ -212,7 +230,7 @@ public class MLStrategyPredictor implements Serializable {
             .sorted((e1, e2) -> e2.getValue().compareTo(e1.getValue()))
             .forEach(e -> {
                 double pct = (e.getValue() * 100.0) / totalExamples;
-                logger.info("  {}: {} ({:.1f}%)", e.getKey(), e.getValue(), pct);
+                logger.info(String.format("  %s: %d (%.1f%%)", e.getKey(), e.getValue(), pct));
             });
         logger.info("=".repeat(50));
     }
@@ -221,15 +239,15 @@ public class MLStrategyPredictor implements Serializable {
      * Main method for training
      */
     public static void main(String[] args) {
-        logger.info("🤖 ML Model Trainer\n");
+        logger.info("ML Model Trainer\n");
         
         try {
             String csvPath = "ml_data/training_data.csv";
             File csvFile = new File(csvPath);
             
             if (!csvFile.exists()) {
-                logger.error("❌ Training data not found: {}", csvPath);
-                logger.info("💡 Run TrainingDataCollector first");
+                logger.error("Training data not found: {}", csvPath);
+                logger.info("Run TrainingDataCollector first");
                 return;
             }
             
@@ -241,22 +259,22 @@ public class MLStrategyPredictor implements Serializable {
             model.printStats();
             
             // Test predictions
-            logger.info("\n📊 Testing Predictions:");
+            logger.info("\nTesting Predictions:");
             logger.info("=".repeat(50));
             testPrediction(model, "demoqa.com", "Username", "input");
             testPrediction(model, "demoqa.com", "Submit", "button");
             testPrediction(model, "example.com", "Email", "input");
             
             // Save model
-            String modelPath = "models/ml_strategy_predictor.model";
+            String modelPath = "models/ml_strategy_predictor.json";
             model.saveModel(modelPath);
             
-            logger.info("\n✅ ML Model Ready!");
-            logger.info("📁 Model: {}", modelPath);
-            logger.info("\n💡 To use: MLStrategyPredictor.loadModel(\"{}\")", modelPath);
+            logger.info("\nML Model Ready!");
+            logger.info("Model: {}", modelPath);
+            logger.info("\nTo use: MLStrategyPredictor.loadModel(\"{}\")", modelPath);
             
         } catch (Exception e) {
-            logger.error("❌ Training failed: {}", e.getMessage());
+            logger.error("Training failed: {}", e.getMessage());
             e.printStackTrace();
         }
     }
@@ -264,7 +282,7 @@ public class MLStrategyPredictor implements Serializable {
     private static void testPrediction(MLStrategyPredictor model, String domain, String name, String type) {
         String predicted = model.predictBestStrategy(domain, name, type);
         double confidence = model.getConfidence(domain, predicted);
-        logger.info("  {} / {} ({}) → {} ({:.0f}% confidence)", 
-            domain, name, type, predicted, confidence * 100);
+        logger.info(String.format("  %s / %s (%s) -> %s (%.0f%% confidence)", 
+            domain, name, type, predicted, confidence * 100));
     }
 }
