@@ -193,10 +193,10 @@ public class LocatorCacheManager {
         CachedLocator old = cache.get(elementKey);
         
         if (old != null) {
-            logger.warn("🔧 SELF-HEALING: {} | Old: {} | New: {}", 
+            logger.warn("SELF-HEALING: {} | Old: {} | New: {}", 
                 elementKey, old.getSelector(), newSelector);
         } else {
-            logger.info("🔧 SELF-HEALING: {} | New locator discovered: {}", 
+            logger.info("SELF-HEALING: {} | New locator discovered: {}", 
                 elementKey, newSelector);
         }
         

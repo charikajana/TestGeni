@@ -51,11 +51,11 @@ public class VerifySelectionAction implements BrowserAction {
             boolean matches = (expectSelected == isCurrentlySelected);
             
             if (matches) {
-                logger.success("✓ Item '{}' is {} selected (as expected)", 
+                logger.success("Item '{}' is {} selected (as expected)", 
                     expectedItem, 
                     isCurrentlySelected ? "" : "NOT");
             } else {
-                logger.failure("✗ Item '{}' is {} selected (expected: {})", 
+                logger.failure("Item '{}' is {} selected (expected: {})", 
                     expectedItem,
                     isCurrentlySelected ? "" : "NOT",
                     expectSelected ? "selected" : "not selected");

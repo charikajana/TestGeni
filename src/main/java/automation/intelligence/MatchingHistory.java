@@ -74,7 +74,7 @@ public class MatchingHistory {
             // Update weights based on this success
             updateWeights(elementType, actionType, matchScore);
             
-            logger.debug("Recorded successful match: {} → {} (score: {})", 
+            logger.debug("Recorded successful match: {} -> {} (score: {})", 
                 stepDescription, elementText, matchScore);
             
             // Periodically save history
@@ -101,7 +101,7 @@ public class MatchingHistory {
         if (record != null && record.getSuccessCount() > 0) {
             // Give strong boost for exact match history
             boost += record.getAverageScore() * 0.2 * Math.min(record.getSuccessCount(), 5);
-            logger.debug("Exact history boost for '{}' → {}: +{}", stepDescription, elementText, boost);
+            logger.debug("Exact history boost for '{}' -> {}: +{}", stepDescription, elementText, boost);
         }
         
         // GENERALIZED LEARNING: Boost based on element type success patterns
@@ -337,7 +337,7 @@ public class MatchingHistory {
         
         @Override
         public String toString() {
-            return String.format("%s → %s (%s, score: %.1f, count: %d)",
+            return String.format("%s -> %s (%s, score: %.1f, count: %d)",
                 stepDescription, elementText, elementType, averageScore, successCount);
         }
     }

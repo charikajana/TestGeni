@@ -26,7 +26,7 @@ public class MLDataPipeline {
     private static final int MIN_EXAMPLES_FOR_ML = 100;
     
     public static void main(String[] args) {
-        logger.info("🤖 ML Training Data Pipeline Started\n");
+        logger.info("ML Training Data Pipeline Started\n");
         
         // Check current data status
         TrainingDataCollector collector = new TrainingDataCollector();
@@ -35,38 +35,38 @@ public class MLDataPipeline {
         logger.info("Current training examples: {}", examples.size());
         
         if (examples.size() < MIN_EXAMPLES_FOR_ML) {
-            logger.warn("⚠️  Need {} more examples for ML training", 
+            logger.warn("Need {} more examples for ML training", 
                 MIN_EXAMPLES_FOR_ML - examples.size());
-            logger.info("\n📝 To collect more data:");
+            logger.info("\nTo collect more data:");
             logger.info("  1. Run: mvn test (runs all feature files)");
             logger.info("  2. Or run: AllFeaturesTestRunner");
             logger.info("  3. Each test adds 5-15 examples to cache");
             logger.info("  4. After ~10 tests, you'll have 100+ examples");
-            logger.info("\n💡 Then re-run this pipeline to train the ML model");
+            logger.info("\nThen re-run this pipeline to train the ML model");
             
         } else {
-            logger.info("✅ Sufficient data collected! ({} examples)", examples.size());
-            logger.info("📊 Proceeding with ML model training...\n");
+            logger.info("Sufficient data collected! ({} examples)", examples.size());
+            logger.info("Proceeding with ML model training...\n");
             
             // Export latest data
             collector.printStatistics(examples);
             collector.exportToCSV(examples, "ml_data/training_data.csv");
             
             // Train ML model (placeholder for now - will implement full RandomForest)
-            logger.info("\n🎓 Training RandomForest model...");
+            logger.info("\nTraining RandomForest model...");
             logger.info("  (Full implementation coming next)");
             
-            logger.info("\n✅ ML Pipeline Complete!");
+            logger.info("\nML Pipeline Complete!");
         }
         
         // Always export current data
         if (!examples.isEmpty()) {
             collector.exportToCSV(examples, "ml_data/training_data.csv");
-            logger.info("\n📁 Data exported to: ml_data/training_data.csv");
+            logger.info("\nData exported to: ml_data/training_data.csv");
         }
         
         // Clean up old cache entries
-        logger.info("\n🧹 Cleaning expired cache entries...");
+        logger.info("\nCleaning expired cache entries...");
         int removed = LocatorCacheManager.getInstance().cleanExpiredEntries();
         logger.info("  Removed {} expired entries", removed);
     }

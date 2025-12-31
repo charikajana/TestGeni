@@ -70,7 +70,7 @@ public class MLStrategyPredictor {
      * Train from CSV data
      */
     public void train(String csvPath) throws IOException {
-        logger.info("🎓 Training ML Model from: {}", csvPath);
+        logger.info("Training ML Model from: {}", csvPath);
         
         List<TrainingExample> examples = loadCSV(csvPath);
         this.totalExamples = examples.size();
@@ -78,8 +78,8 @@ public class MLStrategyPredictor {
         logger.info("Loaded {} training examples", totalExamples);
         
         if (totalExamples < 10) {
-            logger.warn("⚠️  Very limited training data! Predictions may be inaccurate.");
-            logger.warn("   Recommendation: Collect at least 100 examples for good accuracy");
+            logger.warn("Very limited training data! Predictions may be inaccurate.");
+            logger.warn("Recommendation: Collect at least 100 examples for good accuracy");
         }
         
         // Build simple frequency-based model
@@ -96,7 +96,7 @@ public class MLStrategyPredictor {
             getOrCreateStrategyIndex(ex.strategy);
         }
         
-        logger.info("✅ Training complete!");
+        logger.info("Training complete!");
         logger.info("   Unique strategies: {}", strategyToIndex.size());
         logger.info("   Strategy distribution: {}", strategyFrequency);
     }
@@ -159,7 +159,7 @@ public class MLStrategyPredictor {
     public void saveModel(String path) throws IOException {
         new File(path).getParentFile().mkdirs();
         mapper.writeValue(new File(path), this);
-        logger.info("✅ Model saved to: {} (JSON format)", path);
+        logger.info("Model saved to: {} (JSON format)", path);
     }
     
     /**
@@ -167,7 +167,7 @@ public class MLStrategyPredictor {
      */
     public static MLStrategyPredictor loadModel(String path) throws IOException {
         MLStrategyPredictor model = mapper.readValue(new File(path), MLStrategyPredictor.class);
-        logger.info("✅ Model loaded from: {} (JSON format)", path);
+        logger.info("Model loaded from: {} (JSON format)", path);
         logger.info("   Total examples trained on: {}", model.totalExamples);
         return model;
     }
@@ -239,15 +239,15 @@ public class MLStrategyPredictor {
      * Main method for training
      */
     public static void main(String[] args) {
-        logger.info("🤖 ML Model Trainer\n");
+        logger.info("ML Model Trainer\n");
         
         try {
             String csvPath = "ml_data/training_data.csv";
             File csvFile = new File(csvPath);
             
             if (!csvFile.exists()) {
-                logger.error("❌ Training data not found: {}", csvPath);
-                logger.info("💡 Run TrainingDataCollector first");
+                logger.error("Training data not found: {}", csvPath);
+                logger.info("Run TrainingDataCollector first");
                 return;
             }
             
@@ -259,7 +259,7 @@ public class MLStrategyPredictor {
             model.printStats();
             
             // Test predictions
-            logger.info("\n📊 Testing Predictions:");
+            logger.info("\nTesting Predictions:");
             logger.info("=".repeat(50));
             testPrediction(model, "demoqa.com", "Username", "input");
             testPrediction(model, "demoqa.com", "Submit", "button");
@@ -269,12 +269,12 @@ public class MLStrategyPredictor {
             String modelPath = "models/ml_strategy_predictor.json";
             model.saveModel(modelPath);
             
-            logger.info("\n✅ ML Model Ready!");
-            logger.info("📁 Model: {}", modelPath);
-            logger.info("\n💡 To use: MLStrategyPredictor.loadModel(\"{}\")", modelPath);
+            logger.info("\nML Model Ready!");
+            logger.info("Model: {}", modelPath);
+            logger.info("\nTo use: MLStrategyPredictor.loadModel(\"{}\")", modelPath);
             
         } catch (Exception e) {
-            logger.error("❌ Training failed: {}", e.getMessage());
+            logger.error("Training failed: {}", e.getMessage());
             e.printStackTrace();
         }
     }
@@ -282,7 +282,7 @@ public class MLStrategyPredictor {
     private static void testPrediction(MLStrategyPredictor model, String domain, String name, String type) {
         String predicted = model.predictBestStrategy(domain, name, type);
         double confidence = model.getConfidence(domain, predicted);
-        logger.info(String.format("  %s / %s (%s) → %s (%.0f%% confidence)", 
+        logger.info(String.format("  %s / %s (%s) -> %s (%.0f%% confidence)", 
             domain, name, type, predicted, confidence * 100));
     }
 }

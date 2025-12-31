@@ -107,7 +107,7 @@ public class CachedSmartLocator extends SmartLocator {
         Locator locator = page.locator(cached.getSelector()).first();
         
         if (verifyCachedLocator(locator, cached, name)) {
-            logger.success("✓ Using CACHED locator: {} (strategy: {}, hits: {})", 
+            logger.success("Using CACHED locator: {} (strategy: {}, hits: {})", 
                 cached.getSelector(), cached.getLocatorStrategy(), cached.getHitCount());
             
             // Track ML effectiveness
@@ -118,7 +118,7 @@ public class CachedSmartLocator extends SmartLocator {
         
         // Primary failed - try alternative strategies (self-healing level 1)
         if (selfHealingEnabled && cached.getAllLocators() != null && cached.getAllLocators().size() > 1) {
-            logger.info("🔧 Primary locator failed, trying {} alternative strategies...", 
+            logger.info("Primary locator failed, trying {} alternative strategies...", 
                 cached.getAllLocators().size() - 1);
             
             for (Map.Entry<String, String> entry : cached.getOrderedLocators().entrySet()) {
@@ -133,7 +133,7 @@ public class CachedSmartLocator extends SmartLocator {
                 try {
                     Locator altLocator = page.locator(selector).first();
                     if (verifyCachedLocator(altLocator, cached, name)) {
-                        logger.success("✓ FALLBACK SUCCESS: Using alternative strategy '{}': {}", 
+                        logger.success("FALLBACK SUCCESS: Using alternative strategy '{}': {}", 
                             strategy, selector);
                         
                         // Update cache with the working strategy
@@ -154,7 +154,7 @@ public class CachedSmartLocator extends SmartLocator {
         
         // All cached strategies failed - trigger full self-healing (level 2)
         if (selfHealingEnabled) {
-            logger.warn("🔧 Initiating full self-healing scan for: {}", name);
+            logger.warn("Initiating full self-healing scan for: {}", name);
             return attemptSelfHealing(cacheKey, name, parsedType, cached);
         }
         
@@ -226,7 +226,7 @@ public class CachedSmartLocator extends SmartLocator {
      */
     private Locator attemptSelfHealing(String cacheKey, String name, String parsedType, 
                                       CachedLocator oldCached) {
-        logger.info("🔧 SELF-HEALING FULL SCAN: Rediscovering element '{}'", name);
+        logger.info("SELF-HEALING FULL SCAN: Rediscovering element '{}'", name);
         
         // Use SmartLocator to find element again
         Locator newLocator = super.findSmartElement(name, parsedType, null, null, false);
@@ -249,7 +249,7 @@ public class CachedSmartLocator extends SmartLocator {
                     allNewLocators.forEach(healed::addLocatorStrategy);
                 }
                 
-                logger.success("✓ SELF-HEALING SUCCESSFUL: '{}' | Old: {} ({}) | New: {} ({}) | Strategies: {}", 
+                logger.success("SELF-HEALING SUCCESSFUL: '{}' | Old: {} ({}) | New: {} ({}) | Strategies: {}", 
                     name, oldCached.getSelector(), oldCached.getLocatorStrategy(),
                     newSelector, newStrategy, allNewLocators.size());
                 
@@ -259,7 +259,7 @@ public class CachedSmartLocator extends SmartLocator {
             }
         }
         
-        logger.error("❌ SELF-HEALING FAILED: Could not rediscover element '{}'", name);
+        logger.error("SELF-HEALING FAILED: Could not rediscover element '{}'", name);
         cacheManager.invalidateLocator(cacheKey);
         return null;
     }
@@ -306,7 +306,7 @@ public class CachedSmartLocator extends SmartLocator {
                 attributes
             );
             
-            logger.info("✓ Cached {} with {} strategies: primary={} ({})", 
+            logger.info("Cached {} with {} strategies: primary={} ({})", 
                 cacheKey, allLocators.size(), primarySelector, primaryStrategy);
             logger.debug("  Available strategies: {}", String.join(", ", allLocators.keySet()));
             

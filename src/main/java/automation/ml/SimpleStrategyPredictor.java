@@ -116,7 +116,7 @@ public class SimpleStrategyPredictor {
     public void recordSuccess(String pageDomain, String elementName, 
                              String elementType, String successfulStrategy) {
         // For now, just log - later this can update ML model
-        logger.debug("Success: {} / {} ({}) → {}", 
+        logger.debug("Success: {} / {} ({}) -> {}", 
             pageDomain, elementName, elementType, successfulStrategy);
     }
 }

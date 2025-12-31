@@ -233,7 +233,7 @@ public class TrainingDataCollector {
      * Main method to run data collection
      */
     public static void main(String[] args) {
-        logger.info("🤖 Starting ML Training Data Collection...\n");
+        logger.info("Starting ML Training Data Collection...\n");
         
         TrainingDataCollector collector = new TrainingDataCollector();
         
@@ -254,8 +254,8 @@ public class TrainingDataCollector {
         new File("ml_data").mkdirs(); // Create directory if needed
         collector.exportToCSV(examples, outputFile);
         
-        logger.info("✅ Training data collected successfully!");
-        logger.info("📁 Output: {}", outputFile);
-        logger.info("\n💡 Next step: Run TrainStrategyModel to train the ML model");
+        logger.info("Training data collected successfully!");
+        logger.info("Output: {}", outputFile);
+        logger.info("\nNext step: Run TrainStrategyModel to train the ML model");
     }
 }
