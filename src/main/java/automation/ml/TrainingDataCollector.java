@@ -222,8 +222,8 @@ public class TrainingDataCollector {
             .sorted((e1, e2) -> e2.getValue().compareTo(e1.getValue()))
             .forEach(entry -> {
                 double percentage = (entry.getValue() * 100.0) / examples.size();
-                logger.info("  {}: {} ({:.1f}%)", 
-                    entry.getKey(), entry.getValue(), percentage);
+                logger.info(String.format("  %s: %d (%.1f%%)", 
+                    entry.getKey(), entry.getValue(), percentage));
             });
         
         logger.info("=".repeat(50) + "\n");

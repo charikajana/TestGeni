@@ -63,14 +63,14 @@ public class AutoMLPipeline {
                 MLStrategyPredictor model = new MLStrategyPredictor();
                 model.train("ml_data/training_data.csv");
                 model.printStats();
-                model.saveModel("models/ml_strategy_predictor.model");
+                model.saveModel("models/ml_strategy_predictor.json");
                 
                 // Step 6: Save training info
                 saveTrainingInfo(currentCacheSize);
                 
                 logger.info("\n✅ Automated ML Training Complete!");
                 logger.info("   Trained on: {} examples", currentCacheSize);
-                logger.info("   Model saved: models/ml_strategy_predictor.model");
+                logger.info("   Model saved: models/ml_strategy_predictor.json");
                 
             } else {
                 logger.info("\n⏭️  Retraining skipped (only {} new examples)", newExamples);

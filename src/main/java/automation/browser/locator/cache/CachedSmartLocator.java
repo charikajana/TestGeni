@@ -109,6 +109,10 @@ public class CachedSmartLocator extends SmartLocator {
         if (verifyCachedLocator(locator, cached, name)) {
             logger.success("✓ Using CACHED locator: {} (strategy: {}, hits: {})", 
                 cached.getSelector(), cached.getLocatorStrategy(), cached.getHitCount());
+            
+            // Track ML effectiveness
+            recordMLSuccess(cached.getLocatorStrategy(), page.url(), name, parsedType);
+            
             return locator;
         }
         
@@ -145,7 +149,7 @@ public class CachedSmartLocator extends SmartLocator {
                 }
             }
             
-            logger.warn("⚠️  All cached strategies failed for: {}", cached.getElementKey());
+            logger.warn("All cached strategies failed for: {}", cached.getElementKey());
         }
         
         // All cached strategies failed - trigger full self-healing (level 2)
@@ -178,11 +182,31 @@ public class CachedSmartLocator extends SmartLocator {
                 return false;
             }
             
-            // Optional: Verify attributes match (stronger validation)
+            // Strong Validation: Verify core attributes (Tag and Text)
             if (!cached.getElementAttributes().isEmpty()) {
                 Map<String, String> actualAttributes = LocatorExtractor.extractElementAttributes(locator);
+                
+                // 1. Tag must match exactly (e.g., don't match a <p> if we cached a <button>)
+                String expectedTag = cached.getElementAttributes().get("tag");
+                String actualTag = actualAttributes.get("tag");
+                if (expectedTag != null && actualTag != null && !expectedTag.equalsIgnoreCase(actualTag)) {
+                    logger.debug("Verification FAILED: Tag mismatch (expected={}, actual={})", expectedTag, actualTag);
+                    return false;
+                }
+                
+                // 2. Text must be similar if expected (don't match a random element with empty text)
+                String expectedText = cached.getElementAttributes().get("text");
+                String actualText = actualAttributes.get("text");
+                if (expectedText != null && !expectedText.isEmpty()) {
+                    if (actualText == null || (!actualText.contains(expectedText) && !expectedText.contains(actualText))) {
+                        logger.debug("Verification FAILED: Text mismatch (expected={}, actual={})", expectedText, actualText);
+                        return false;
+                    }
+                }
+                
+                // 3. Optional: Map-based attribute verification (existing logic)
                 if (!cached.matchesAttributes(actualAttributes)) {
-                    logger.debug("Cached locator validation: attributes changed");
+                    logger.debug("Verification FAILED: Attribute mismatch");
                     return false;
                 }
             }
@@ -377,5 +401,32 @@ public class CachedSmartLocator extends SmartLocator {
     
     public boolean isSelfHealingEnabled() {
         return selfHealingEnabled;
+    }
+    
+    /**
+     * Record ML success for effectiveness tracking
+     */
+    private void recordMLSuccess(String strategy, String pageUrl, String elementName, String parsedType) {
+        try {
+            logger.debug("ML SUCCESS: Strategy '{}' used for '{}' on {}", 
+                strategy, elementName, extractDomain(pageUrl));
+            // This data helps evaluate ML effectiveness
+            // Can be extended to send metrics to analytics
+        } catch (Exception e) {
+            // Silently ignore - metrics tracking is optional
+        }
+    }
+    
+    /**
+     * Extract domain from URL
+     */
+    private String extractDomain(String url) {
+        try {
+            if (url == null || url.isEmpty()) return "unknown";
+            String domain = url.replaceAll("^https?://", "");
+            return domain.split("/")[0];
+        } catch (Exception e) {
+            return "unknown";
+        }
     }
 }

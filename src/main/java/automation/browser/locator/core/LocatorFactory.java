@@ -1,6 +1,7 @@
 package automation.browser.locator.core;
 
 import automation.utils.LoggerUtil;
+import automation.utils.SelectorUtil;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 
@@ -32,7 +33,7 @@ public class LocatorFactory {
          // Note: We cannot use ID if scoped, unless we assume ID is unique globally (which is true by spec but not always in reality).
          // Safer to use scope.locator("#id") if strict.
          
-         if (foundId != null && !foundId.isEmpty() && !isDynamicId(foundId)) {
+         if (foundId != null && !foundId.isEmpty() && !SelectorUtil.isDynamic(foundId)) {
              // Use tag + id and filter by text to disambiguate if IDs are reused (common in DemoQA)
              Locator base = (scope != null) ? scope.locator(foundTag + "#" + foundId) : page.locator(foundTag + "#" + foundId);
              if (foundText != null && !foundText.isEmpty() && foundText.length() < 100 && !"progressbar".equals(parsedType)) {
@@ -282,16 +283,5 @@ public class LocatorFactory {
          }
 
          return finalLocator;
-    }
-    private boolean isDynamicId(String id) {
-        if (id == null || id.isEmpty()) return false;
-        // Detect DemoQA pattern: Short (5-8 chars) and contains mixed letters and numbers
-        // e.g. "50r6O", "Z2p7q"
-        if (id.length() >= 5 && id.length() <= 10) {
-            boolean hasDigit = id.matches(".*\\d+.*");
-            boolean hasLetter = id.matches(".*[a-zA-Z]+.*");
-            if (hasDigit && hasLetter) return true;
-        }
-        return false;
     }
 }

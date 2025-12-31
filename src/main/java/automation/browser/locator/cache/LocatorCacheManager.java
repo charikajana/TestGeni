@@ -1,6 +1,7 @@
 package automation.browser.locator.cache;
 
 import automation.utils.LoggerUtil;
+import automation.utils.SelectorUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
@@ -132,6 +133,12 @@ public class LocatorCacheManager {
             return;
         }
         
+        // FILTER: Do not cache locators that look dynamic or unstable
+        if (SelectorUtil.isUnstableSelector(selector, locatorStrategy)) {
+            logger.debug("Skipping cache for unstable/dynamic locator: {} ({})", selector, locatorStrategy);
+            return;
+        }
+
         // Check cache size limit
         if (cache.size() >= maxCacheSize) {
             logger.warn("Cache size limit reached ({}), cleaning old entries", maxCacheSize);

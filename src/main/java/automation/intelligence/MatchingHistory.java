@@ -2,6 +2,8 @@ package automation.intelligence;
 
 import automation.utils.LoggerUtil;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,7 +29,9 @@ public class MatchingHistory {
     private Map<String, Double> elementTypeWeights;
     
     // Configuration
-    private static final String HISTORY_FILE = "CacheLocatorRepository/matching_history.dat";
+    private static final String HISTORY_FILE = "CacheLocatorRepository/matching_history.json";
+    private static final ObjectMapper mapper = new ObjectMapper()
+        .enable(SerializationFeature.INDENT_OUTPUT);
     private static final int MAX_HISTORY_SIZE = 1000;
     private static final double LEARNING_RATE = 0.1;  // How quickly to adapt
     
@@ -215,13 +219,13 @@ public class MatchingHistory {
             File file = new File(HISTORY_FILE);
             file.getParentFile().mkdirs();
             
-            try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
-                oos.writeObject(successfulMatches);
-                oos.writeObject(actionTypeWeights);
-                oos.writeObject(elementTypeWeights);
-            }
+            Map<String, Object> data = new HashMap<>();
+            data.put("successfulMatches", successfulMatches);
+            data.put("actionTypeWeights", actionTypeWeights);
+            data.put("elementTypeWeights", elementTypeWeights);
             
-            logger.debug("Saved matching history ({} records)", successfulMatches.size());
+            mapper.writeValue(file, data);
+            logger.debug("Saved matching history ({} records) to JSON", successfulMatches.size());
             
         } catch (Exception e) {
             logger.debug("Could not save history: {}", e.getMessage());
@@ -240,13 +244,24 @@ public class MatchingHistory {
                 return;
             }
             
-            try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
-                successfulMatches = (Map<String, MatchRecord>) ois.readObject();
-                actionTypeWeights = (Map<String, Double>) ois.readObject();
-                elementTypeWeights = (Map<String, Double>) ois.readObject();
+            Map<String, Object> data = mapper.readValue(file, Map.class);
+            
+            if (data.containsKey("successfulMatches")) {
+                Map<String, Object> matchesMap = (Map<String, Object>) data.get("successfulMatches");
+                for (Map.Entry<String, Object> entry : matchesMap.entrySet()) {
+                    successfulMatches.put(entry.getKey(), mapper.convertValue(entry.getValue(), MatchRecord.class));
+                }
             }
             
-            logger.info("Loaded matching history ({} records)", successfulMatches.size());
+            if (data.containsKey("actionTypeWeights")) {
+                actionTypeWeights.putAll((Map<String, Double>) data.get("actionTypeWeights"));
+            }
+            
+            if (data.containsKey("elementTypeWeights")) {
+                elementTypeWeights.putAll((Map<String, Double>) data.get("elementTypeWeights"));
+            }
+            
+            logger.info("Loaded matching history ({} records) from JSON", successfulMatches.size());
             
         } catch (Exception e) {
             logger.debug("Could not load history: {}", e.getMessage());
@@ -296,6 +311,9 @@ public class MatchingHistory {
         private int successCount;
         private double averageScore;
         
+        // Default constructor for Jackson
+        public MatchRecord() {}
+
         public MatchRecord(String stepDescription, String elementText, 
                           String elementType, String actionType) {
             this.stepDescription = stepDescription;
