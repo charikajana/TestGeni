@@ -234,7 +234,7 @@ public class SmartLocator {
                 .limit(10)
                 .forEach(el -> {
                     double s = scorer.score(el, name, parsedType);
-                    logger.debug("   - {} {} {} {} -> score={}",
+                    logger.debug("- {} {} {} {} -> score={}",
                         el.tag,
                         (el.text.isEmpty() ? "" : " text='" + el.text.substring(0, Math.min(20, el.text.length())) + "'"),
                         (el.title.isEmpty() ? "" : " title='" + el.title + "'"),
