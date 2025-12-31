@@ -89,7 +89,7 @@ public class CacheAndSelfHealingExample {
             
             // View the JSON cache file
             System.out.println("\n========================================");
-            System.out.println("Cache File Location: config/locator_cache.json");
+            System.out.println("Cache File Location: CacheLocatorRepository/locator_cache.json");
             System.out.println("========================================");
             
             // Manual save

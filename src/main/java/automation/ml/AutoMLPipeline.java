@@ -54,7 +54,7 @@ public class AutoMLPipeline {
                 // Step 4: Collect training data
                 logger.info("📊 Step 1/2: Collecting training data...");
                 TrainingDataCollector collector = new TrainingDataCollector();
-                var examples = collector.loadFromCache("config/locator_cache.json");
+                var examples = collector.loadFromCache("CacheLocatorRepository/locator_cache.json");
                 collector.printStatistics(examples);
                 collector.exportToCSV(examples, "ml_data/training_data.csv");
                 
@@ -91,7 +91,7 @@ public class AutoMLPipeline {
      */
     private static int getCurrentCacheSize() {
         try {
-            String cacheContent = Files.readString(Paths.get("config/locator_cache.json"));
+            String cacheContent = Files.readString(Paths.get("CacheLocatorRepository/locator_cache.json"));
             // Simple parsing - look for "totalEntries"
             int startIndex = cacheContent.indexOf("\"totalEntries\"");
             if (startIndex > 0) {

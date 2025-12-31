@@ -1,0 +1,322 @@
+{
+  "version" : "2.0",
+  "lastSaved" : "2025-12-31T07:30:43.101698700Z",
+  "totalEntries" : 13,
+  "locators" : {
+    "https://www.flipkart.com/::Powerbank::button" : {
+      "orderedLocators" : {
+        "text" : "a:has-text(\"Powerbank\")"
+      },
+      "elementKey" : "https://www.flipkart.com/::Powerbank::button",
+      "selector" : "a:has-text(\"Powerbank\")",
+      "locatorStrategy" : "text",
+      "allLocators" : {
+        "text" : "a:has-text(\"Powerbank\")"
+      },
+      "pageUrl" : "https://www.flipkart.com/",
+      "createdAt" : "2025-12-31T07:29:46.995738600Z",
+      "lastAccessedAt" : "2025-12-31T07:29:46.995738600Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "tag" : "a",
+        "href" : "https://www.flipkart.com/mobile-accessories/power-banks/pr?sid=tyy,4mr,fu6&otracker=categorytree&otracker=nmenu_sub_Electronics_0_Power%20Banks&fm=neo%2Fmerchandising&iid=M_38db3f47-bc6b-4985-ac9b-c9628b1d4646_1_X1NCR146KC29_MC.T0HJ9Z5KFWVD&cid=T0HJ9Z5KFWVD",
+        "text" : "Powerbank",
+        "class" : "Y8tmCc sjBVz_"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/select-menu::Select One::select" : {
+      "orderedLocators" : {
+        "xpath" : "//div[@id=\"selectOne\"]",
+        "id" : "#selectOne"
+      },
+      "elementKey" : "https://demoqa.com/select-menu::Select One::select",
+      "selector" : "#selectOne",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "css-custom" : "div.css-2b097c-container",
+        "xpath" : "//div[@id=\"selectOne\"]",
+        "css-class" : ".css-2b097c-container",
+        "id" : "#selectOne"
+      },
+      "pageUrl" : "https://demoqa.com/select-menu",
+      "createdAt" : "2025-12-31T07:30:40.407215100Z",
+      "lastAccessedAt" : "2025-12-31T07:30:40.408224200Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 1,
+      "elementAttributes" : {
+        "id" : "selectOne",
+        "tag" : "div",
+        "text" : "option Mrs., selected.   0 results available. Sele",
+        "class" : " css-2b097c-container"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/select-menu::Old Style Select Menu::select" : {
+      "orderedLocators" : {
+        "id" : "#oldSelectMenu"
+      },
+      "elementKey" : "https://demoqa.com/select-menu::Old Style Select Menu::select",
+      "selector" : "#oldSelectMenu",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#oldSelectMenu"
+      },
+      "pageUrl" : "https://demoqa.com/select-menu",
+      "createdAt" : "2025-12-31T07:30:18.275898300Z",
+      "lastAccessedAt" : "2025-12-31T07:30:30.918811200Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 6,
+      "elementAttributes" : {
+        "id" : "oldSelectMenu",
+        "tag" : "select",
+        "text" : "RedBlueGreenYellowPurpleBlackWhiteVoiletIndigoMage",
+        "type" : "select-one"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/select-menu::Multiselect drop down::select" : {
+      "orderedLocators" : {
+        "xpath" : "//div[contains(@class, \"css-2b097c-container\")]"
+      },
+      "elementKey" : "https://demoqa.com/select-menu::Multiselect drop down::select",
+      "selector" : ".css-2b097c-container",
+      "locatorStrategy" : "css-class",
+      "allLocators" : {
+        "css-custom" : "div.css-2b097c-container",
+        "xpath" : "//div[contains(@class, \"css-2b097c-container\")]",
+        "css-class" : ".css-2b097c-container"
+      },
+      "pageUrl" : "https://demoqa.com/select-menu",
+      "createdAt" : "2025-12-31T07:30:12.530953Z",
+      "lastAccessedAt" : "2025-12-31T07:30:12.533597900Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 1,
+      "elementAttributes" : {
+        "class" : " css-2b097c-container",
+        "tag" : "div",
+        "text" : "option Green, deselected.  option Blue focused, 2 "
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/select-menu::Select Value::select" : {
+      "orderedLocators" : {
+        "xpath" : "//div[@id=\"withOptGroup\"]",
+        "id" : "#withOptGroup"
+      },
+      "elementKey" : "https://demoqa.com/select-menu::Select Value::select",
+      "selector" : "#withOptGroup",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "css-custom" : "div.css-2b097c-container",
+        "xpath" : "//div[@id=\"withOptGroup\"]",
+        "css-class" : ".css-2b097c-container",
+        "id" : "#withOptGroup"
+      },
+      "pageUrl" : "https://demoqa.com/select-menu",
+      "createdAt" : "2025-12-31T07:30:34.603414700Z",
+      "lastAccessedAt" : "2025-12-31T07:30:34.605000300Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 1,
+      "elementAttributes" : {
+        "id" : "withOptGroup",
+        "tag" : "div",
+        "text" : "option Group 2, option 1, selected.   0 results av",
+        "class" : " css-2b097c-container"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/select-menu::Standard multi select::select" : {
+      "orderedLocators" : {
+        "id" : "#cars"
+      },
+      "elementKey" : "https://demoqa.com/select-menu::Standard multi select::select",
+      "selector" : "#cars",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#cars"
+      },
+      "pageUrl" : "https://demoqa.com/select-menu",
+      "createdAt" : "2025-12-31T07:30:15.389614100Z",
+      "lastAccessedAt" : "2025-12-31T07:30:17.167683300Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 2,
+      "elementAttributes" : {
+        "name" : "cars",
+        "id" : "cars",
+        "tag" : "select",
+        "text" : "VolvoSaabOpelAudi",
+        "type" : "select-multiple"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/auto-complete::Blue::checkbox" : {
+      "orderedLocators" : {
+        "xpath" : "//p[@id=\"aria-selection-event\"]",
+        "id" : "#aria-selection-event"
+      },
+      "elementKey" : "https://demoqa.com/auto-complete::Blue::checkbox",
+      "selector" : "#aria-selection-event",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "css-custom" : "p",
+        "xpath" : "//p[@id=\"aria-selection-event\"]",
+        "id" : "#aria-selection-event"
+      },
+      "pageUrl" : "https://demoqa.com/auto-complete",
+      "createdAt" : "2025-12-31T07:29:29.775018100Z",
+      "lastAccessedAt" : "2025-12-31T07:29:29.776547800Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 1,
+      "elementAttributes" : {
+        "id" : "aria-selection-event",
+        "tag" : "p",
+        "text" : "option Blue, deselected."
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/auto-complete::Green::checkbox" : {
+      "orderedLocators" : {
+        "xpath" : "//p[@id=\"aria-selection-event\"]",
+        "id" : "#aria-selection-event"
+      },
+      "elementKey" : "https://demoqa.com/auto-complete::Green::checkbox",
+      "selector" : "#aria-selection-event",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "css-custom" : "p",
+        "xpath" : "//p[@id=\"aria-selection-event\"]",
+        "id" : "#aria-selection-event"
+      },
+      "pageUrl" : "https://demoqa.com/auto-complete",
+      "createdAt" : "2025-12-31T07:29:18.103399900Z",
+      "lastAccessedAt" : "2025-12-31T07:29:18.103399900Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 1,
+      "elementAttributes" : {
+        "id" : "aria-selection-event",
+        "tag" : "p",
+        "text" : "option Green, deselected."
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/auto-complete::Green::button" : {
+      "orderedLocators" : {
+        "id" : "#react-select-2-option-1"
+      },
+      "elementKey" : "https://demoqa.com/auto-complete::Green::button",
+      "selector" : "#react-select-2-option-1",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#react-select-2-option-1"
+      },
+      "pageUrl" : "https://demoqa.com/auto-complete",
+      "createdAt" : "2025-12-31T07:28:54.986464200Z",
+      "lastAccessedAt" : "2025-12-31T07:28:54.986464200Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "id" : "react-select-2-option-1",
+        "tag" : "div",
+        "text" : "Green",
+        "class" : "auto-complete__option css-yt9ioa-option"
+      },
+      "verified" : true
+    },
+    "https://www.flipkart.com/::Powerbank" : {
+      "orderedLocators" : {
+        "text" : "a:has-text(\"Powerbank\")"
+      },
+      "elementKey" : "https://www.flipkart.com/::Powerbank",
+      "selector" : "a:has-text(\"Powerbank\")",
+      "locatorStrategy" : "text",
+      "allLocators" : {
+        "text" : "a:has-text(\"Powerbank\")"
+      },
+      "pageUrl" : "https://www.flipkart.com/",
+      "createdAt" : "2025-12-31T07:29:46.381833100Z",
+      "lastAccessedAt" : "2025-12-31T07:29:46.381833100Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "tag" : "a",
+        "href" : "https://www.flipkart.com/mobile-accessories/power-banks/pr?sid=tyy,4mr,fu6&otracker=categorytree&otracker=nmenu_sub_Electronics_0_Power%20Banks&fm=neo%2Fmerchandising&iid=M_38db3f47-bc6b-4985-ac9b-c9628b1d4646_1_X1NCR146KC29_MC.T0HJ9Z5KFWVD&cid=T0HJ9Z5KFWVD",
+        "text" : "Powerbank",
+        "class" : "Y8tmCc"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/auto-complete::Type multiple color names::select" : {
+      "orderedLocators" : {
+        "xpath" : "//div[@id=\"autoCompleteMultipleContainer\"]",
+        "id" : "#autoCompleteMultipleContainer"
+      },
+      "elementKey" : "https://demoqa.com/auto-complete::Type multiple color names::select",
+      "selector" : "#autoCompleteMultipleContainer",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "css-custom" : "div.css-2b097c-container",
+        "xpath" : "//div[@id=\"autoCompleteMultipleContainer\"]",
+        "css-class" : ".css-2b097c-container",
+        "id" : "#autoCompleteMultipleContainer"
+      },
+      "pageUrl" : "https://demoqa.com/auto-complete",
+      "createdAt" : "2025-12-31T07:29:28.820536600Z",
+      "lastAccessedAt" : "2025-12-31T07:29:28.821545Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 1,
+      "elementAttributes" : {
+        "id" : "autoCompleteMultipleContainer",
+        "tag" : "div",
+        "text" : "option Green, deselected.   0 results available. S",
+        "class" : " css-2b097c-container"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/auto-complete::Blue::button" : {
+      "orderedLocators" : {
+        "id" : "#react-select-2-option-0"
+      },
+      "elementKey" : "https://demoqa.com/auto-complete::Blue::button",
+      "selector" : "#react-select-2-option-0",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#react-select-2-option-0"
+      },
+      "pageUrl" : "https://demoqa.com/auto-complete",
+      "createdAt" : "2025-12-31T07:29:06.139680Z",
+      "lastAccessedAt" : "2025-12-31T07:29:06.139680Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "id" : "react-select-2-option-0",
+        "tag" : "div",
+        "text" : "Blue",
+        "class" : "auto-complete__option css-yt9ioa-option"
+      },
+      "verified" : true
+    },
+    "https://www.flipkart.com/::Electronics" : {
+      "orderedLocators" : {
+        "text" : "span:has-text(\"Electronics\")"
+      },
+      "elementKey" : "https://www.flipkart.com/::Electronics",
+      "selector" : "span:has-text(\"Electronics\")",
+      "locatorStrategy" : "text",
+      "allLocators" : {
+        "text" : "span:has-text(\"Electronics\")"
+      },
+      "pageUrl" : "https://www.flipkart.com/",
+      "createdAt" : "2025-12-31T07:29:45.751994100Z",
+      "lastAccessedAt" : "2025-12-31T07:29:45.751994100Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "tag" : "span",
+        "text" : "Electronics"
+      },
+      "verified" : true
+    }
+  }
+}

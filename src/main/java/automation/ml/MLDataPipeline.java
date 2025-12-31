@@ -30,7 +30,7 @@ public class MLDataPipeline {
         
         // Check current data status
         TrainingDataCollector collector = new TrainingDataCollector();
-        var examples = collector.loadFromCache("config/locator_cache.json");
+        var examples = collector.loadFromCache("CacheLocatorRepository/locator_cache.json");
         
         logger.info("Current training examples: {}", examples.size());
         

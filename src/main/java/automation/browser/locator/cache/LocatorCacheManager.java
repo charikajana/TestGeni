@@ -50,7 +50,17 @@ public class LocatorCacheManager {
             .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
         
         // Default cache file location
-        this.cacheFilePath = "config/locator_cache.json";
+        this.cacheFilePath = "CacheLocatorRepository/locator_cache.json";
+        
+        // Ensure directory exists
+        try {
+            File cacheDir = new File("CacheLocatorRepository");
+            if (!cacheDir.exists()) {
+                cacheDir.mkdirs();
+            }
+        } catch (Exception e) {
+            logger.debug("Could not create CacheLocatorRepository: {}", e.getMessage());
+        }
         
         // Load existing cache
         loadCache();

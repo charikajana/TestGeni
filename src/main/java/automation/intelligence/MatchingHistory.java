@@ -27,7 +27,7 @@ public class MatchingHistory {
     private Map<String, Double> elementTypeWeights;
     
     // Configuration
-    private static final String HISTORY_FILE = "config/matching_history.dat";
+    private static final String HISTORY_FILE = "CacheLocatorRepository/matching_history.dat";
     private static final int MAX_HISTORY_SIZE = 1000;
     private static final double LEARNING_RATE = 0.1;  // How quickly to adapt
     

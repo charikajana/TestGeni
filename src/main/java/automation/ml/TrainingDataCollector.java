@@ -165,6 +165,12 @@ public class TrainingDataCollector {
      * Export training data to CSV file
      */
     public void exportToCSV(List<TrainingExample> examples, String outputPath) {
+        // Ensure directory exists
+        File outputFile = new File(outputPath);
+        if (outputFile.getParentFile() != null) {
+            outputFile.getParentFile().mkdirs();
+        }
+        
         try (FileWriter writer = new FileWriter(outputPath);
              CSVPrinter printer = new CSVPrinter(writer, CSVFormat.DEFAULT
                  .withHeader("page_domain", "element_name", "element_type", 
@@ -232,7 +238,7 @@ public class TrainingDataCollector {
         TrainingDataCollector collector = new TrainingDataCollector();
         
         // Load from cache
-        String cacheFile = "config/locator_cache.json";
+        String cacheFile = "CacheLocatorRepository/locator_cache.json";
         List<TrainingExample> examples = collector.loadFromCache(cacheFile);
         
         if (examples.isEmpty()) {
