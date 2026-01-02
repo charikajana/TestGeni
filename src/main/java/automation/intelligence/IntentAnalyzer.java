@@ -534,12 +534,12 @@ public class IntentAnalyzer {
         }
         
         // Remove common noise words (at start, middle, or end)
-        target = target.replaceAll("(?i)^(the|a|an|on|at|to|from|is|are|be|has|have|my|your|our|their)\\s+", "");  // At start
-        target = target.replaceAll("(?i)\\s+(the|a|an|on|at|to|from|is|are|be|has|have)\\s+", " ");  // In middle
-        target = target.replaceAll("(?i)\\s+(the|a|an|on|at|to|from|is|are|be|has|have)$", "");  // At end
+        target = target.replaceAll("(?i)^(the|a|an|on|at|to|from|is|are|be|has|have|my|your|our|their|with)\\s+", "");  // At start
+        target = target.replaceAll("(?i)\\s+(the|a|an|on|at|to|from|is|are|be|has|have|with)\\s+", " ");  // In middle
+        target = target.replaceAll("(?i)\\s+(the|a|an|on|at|to|from|is|are|be|has|have|with)$", "");  // At end
         
-        // Remove trailing prepositions
-        target = target.replaceAll("(?i)\\s+(with|for|by)\\s*$", "");
+        // Remove trailing prepositions and noise
+        target = target.replaceAll("(?i)\\s+(with|for|by|text)$", "");
         
         return target.trim();
     }

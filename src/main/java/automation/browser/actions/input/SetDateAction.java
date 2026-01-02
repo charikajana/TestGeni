@@ -39,19 +39,35 @@ public class SetDateAction implements BrowserAction {
         logger.info("Setting date for '{}' to: {}", elementName, targetDate);
         
         try {
-            // Find the date input field
-            // We search for input, but also support broad search if it's a custom component
-            Locator dateField = smartLocator.waitForSmartElement(elementName, "input", null, null);
-            
+            Locator dateField = null;
+
+            // 1. Try to use intelligent locator if already found during planning
+            if (plan.hasMetadata("intelligent_locator")) {
+                Locator intelligentLocator = (Locator) plan.getMetadataValue("intelligent_locator");
+                String resolvedPageUrl = (String) plan.getMetadataValue("resolved_page_url");
+                String currentPageUrl = page.url();
+                
+                if (intelligentLocator != null) {
+                    if (resolvedPageUrl != null && !resolvedPageUrl.equals(currentPageUrl)) {
+                        logger.warn("Page URL changed - discarding stale pre-resolved locator");
+                    } else {
+                        logger.debug("Using pre-resolved intelligent locator for: {}", elementName);
+                        dateField = intelligentLocator;
+                    }
+                }
+            }
+
+            // 2. Find the date input field if not already found
             if (dateField == null) {
-                // Try searching without the 'input' restriction in case it's a div acting as a button
-                dateField = smartLocator.waitForSmartElement(elementName, null, null, null);
+                dateField = smartLocator.waitForSmartElement(elementName, "input", null, plan.getFrameAnchor());
             }
             
             if (dateField == null) {
                 logger.error("Could not find date field: {}", elementName);
                 return false;
             }
+            
+            smartLocator.recordMatch(plan);
             
             // Interaction Strategy:
             // 1. Check if field is read-only first
@@ -77,23 +93,39 @@ public class SetDateAction implements BrowserAction {
                 logger.debug("Could not determine readonly status: {}", e.getMessage());
             }
             
-            boolean success;
-            if (isReadOnly) {
-                // Skip direct input for read-only fields
-                success = tryJSSet(dateField, targetDate) ||
-                         tryCalendarPicker(page, dateField, targetDate);
-            } else {
-                // Try all strategies including direct input
-                success = tryDirectInput(dateField, targetDate, page) ||
-                         tryJSSet(dateField, targetDate) ||
-                         tryCalendarPicker(page, dateField, targetDate);
+            boolean success = false;
+            String expectedValue = targetDate.format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+            
+            // Try different strategies until one succeeds and is validated
+            for (int attempt = 0; attempt < 1; attempt++) { // One pass through strategies
+                if (isReadOnly) {
+                    success = tryJSSet(dateField, targetDate) ||
+                             tryCalendarPicker(page, dateField, targetDate);
+                } else {
+                    success = tryDirectInput(dateField, targetDate, page) ||
+                             tryJSSet(dateField, targetDate) ||
+                             tryCalendarPicker(page, dateField, targetDate);
+                }
+                
+                // VALIDATION: Ensure current field value contains at least the day or some part of the date
+                // Many date pickers format the date specifically, so we check for substring or year
+                String actualValue = (String) dateField.evaluate("el => el.value || el.innerText || ''");
+                String dayStr = String.valueOf(targetDate.getDayOfMonth());
+                String yearStr = String.valueOf(targetDate.getYear());
+                
+                if (success && (actualValue.contains(dayStr) || actualValue.contains(yearStr))) {
+                    logger.success("Successfully set and verified date {} for {}", targetDate, elementName);
+                    return true;
+                }
             }
             
             if (success) {
-                logger.success("Successfully set date to {} for {}", targetDate, elementName);
-                return true;
+                // If success was true but validation failed, it's likely a false positive (like a div)
+                logger.error("Date set reported success but validation failed! Actual value: '{}'", 
+                    (String) dateField.evaluate("el => el.value || el.innerText || ''"));
+                return false;
             } else {
-                logger.error("Failed to set date using all available strategies");
+                logger.error("Failed to set date for '{}' using all available strategies", elementName);
                 return false;
             }
             
@@ -137,36 +169,52 @@ public class SetDateAction implements BrowserAction {
     
     private boolean tryDirectInput(Locator dateField, LocalDate targetDate, Page page) {
         try {
-            // Try formatting based on what common inputs expect
-            String dateString = targetDate.format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-            logger.debug("Trying direct input: {}", dateString);
+            // Try common date formats
+            String[] formats = {"MM/dd/yyyy", "dd/MM/yyyy", "yyyy-MM-dd", "dd-MM-yyyy", "MM-dd-yyyy"};
             
-            dateField.focus();
-            dateField.press("Control+A");
-            dateField.press("Backspace");
-            dateField.fill(dateString);
-            dateField.press("Enter");
-            
-            page.waitForTimeout(500);
-            
-            // Check if input has value
-            String val = dateField.inputValue();
-            return val != null && !val.isEmpty();
+            for (String format : formats) {
+                try {
+                    String dateString = targetDate.format(DateTimeFormatter.ofPattern(format));
+                    logger.debug("Trying direct input with format {}: {}", format, dateString);
+                    
+                    dateField.focus();
+                    dateField.press("Control+A");
+                    dateField.press("Backspace");
+                    dateField.fill(dateString);
+                    dateField.press("Enter");
+                    
+                    page.waitForTimeout(200);
+                    
+                    // Check if input has value and it's not empty
+                    String val = dateField.inputValue();
+                    if (val != null && !val.isEmpty()) {
+                        logger.debug("Direct input success with format {}", format);
+                        return true;
+                    }
+                } catch (Exception e) {
+                    continue;
+                }
+            }
         } catch (Exception e) {
-            return false;
+            logger.debug("Direct input failed: {}", e.getMessage());
         }
+        return false;
     }
     
     private boolean tryJSSet(Locator dateField, LocalDate targetDate) {
         try {
-            String dateString = targetDate.format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-            logger.debug("Trying JavaScript value set: {}", dateString);
-            dateField.evaluate("el => { " +
-                "el.value = '" + dateString + "'; " +
-                "el.dispatchEvent(new Event('change', {bubbles: true})); " +
-                "el.dispatchEvent(new Event('input', {bubbles: true})); " +
-                "}");
-            return true;
+            String[] formats = {"MM/dd/yyyy", "yyyy-MM-dd", "dd/MM/yyyy"};
+            for (String format : formats) {
+                String dateString = targetDate.format(DateTimeFormatter.ofPattern(format));
+                logger.debug("Trying JavaScript force set ({}): {}", format, dateString);
+                dateField.evaluate("(el, val) => { " +
+                    "el.value = val; " +
+                    "el.dispatchEvent(new Event('input', {bubbles: true})); " +
+                    "el.dispatchEvent(new Event('change', {bubbles: true})); " +
+                    "el.dispatchEvent(new Event('blur', {bubbles: true})); " +
+                    "}", dateString);
+            }
+            return true; 
         } catch (Exception e) {
             return false;
         }
@@ -176,28 +224,23 @@ public class SetDateAction implements BrowserAction {
         try {
             logger.debug("Trying Calendar Picker UI strategy...");
             
-            // Safety check: ensure page is still open
-            if (page.isClosed()) {
-                logger.debug("Page is closed, cannot interact with calendar");
-                return false;
-            }
+            if (page.isClosed()) return false;
             
             // Focus and click to trigger popup
             dateField.scrollIntoViewIfNeeded();
             dateField.click();
-            page.waitForTimeout(1000); // Give calendar time to animate/render
+            page.waitForTimeout(500); 
             
             // 1. Identify the Calendar Container
-            // We use a broad set of common selectors, including ARIA roles
             Locator calendar = page.locator(
                 ".react-datepicker, .ui-datepicker, .flatpickr-calendar, .datepicker, " +
                 ".ds-datepicker, .calendar, [role='dialog'], [role='grid'], .popover, " +
-                ".dropdown-menu, .datepick-popup"
+                ".dropdown-menu, .datepick-popup, .dp-popup, .vdp-datepicker"
             ).filter(new Locator.FilterOptions().setHas(page.locator("text=" + targetDate.getDayOfMonth()))).first();
 
             if (!calendar.isVisible()) {
-                // Try finding any visible element with a high z-index or absolute position that appears after click
-                calendar = page.locator("div:visible").filter(new Locator.FilterOptions().setHas(page.locator("text=" + targetDate.getDayOfMonth()))).last();
+                // Fallback: find any visible container with the day text
+                calendar = page.locator("div:visible, section:visible").filter(new Locator.FilterOptions().setHas(page.locator("text=" + targetDate.getDayOfMonth()))).last();
             }
 
             if (!calendar.isVisible()) {
@@ -209,29 +252,34 @@ public class SetDateAction implements BrowserAction {
             handleMonthYearSelection(calendar, targetDate);
             
             // 3. Selection Strategy for the Day
-            // A. Try exact aria-label (Best for Accessibility-compliant sites like DemoQA)
-            String fullMonthName = targetDate.format(DateTimeFormatter.ofPattern("MMMM"));
-            String ariaDay = targetDate.format(DateTimeFormatter.ofPattern("MMMM d"));
+            int day = targetDate.getDayOfMonth();
             
-            Locator dayByAria = calendar.locator(String.format("[aria-label*='%s'], [title*='%s']", ariaDay, ariaDay)).first();
+            // A. Try exact aria-label/title match (Highest precision)
+            String ariaDay = targetDate.format(DateTimeFormatter.ofPattern("MMMM d")); 
+            Locator dayByAria = calendar.locator(String.format("[aria-label*='%s'], [title*='%s'], [aria-label*=' %d ']", ariaDay, ariaDay, day)).first();
             if (dayByAria.isVisible()) {
                 dayByAria.click();
                 return true;
             }
             
-            // B. Try matching role="gridcell" or "option" with the day text
-            Locator cell = calendar.locator(String.format("[role='gridcell']:text-is('%1$d'), [role='option']:text-is('%1$d'), .day:text-is('%1$d')", targetDate.getDayOfMonth())).first();
-            if (cell.isVisible()) {
-                cell.click();
-                return true;
+            // B. Try matching roles or classes that explicitly look like days
+            // We focus on elements that contain ONLY the day number to avoid matching headers
+            String[] cellSelectors = {
+                "[role='gridcell']", "[role='option']", ".react-datepicker__day", 
+                ".day", ".ui-state-default", ".flatpickr-day", ".day-item"
+            };
+            
+            for (String sel : cellSelectors) {
+                Locator cell = calendar.locator(sel).filter(new Locator.FilterOptions().setHasText(String.valueOf(day))).first();
+                // Check if it's the current month (avoid disabled/outside days if possible)
+                if (cell.isVisible() && !cell.getAttribute("class").contains("outside") && !cell.getAttribute("class").contains("disabled")) {
+                    cell.click();
+                    return true;
+                }
             }
             
-            // C. Generic numeric text click within container (excluding header/sidebar)
-            // We look for elements that look like days (small width/height)
-            Locator genericDay = calendar.locator(String.format("text-is('%d')", targetDate.getDayOfMonth()))
-                .filter(new Locator.FilterOptions().setHasNot(calendar.locator("select, .header, .month-nav")))
-                .first();
-                
+            // C. Generic text match (last resort)
+            Locator genericDay = calendar.locator(String.format("text=%d", day)).last();
             if (genericDay.isVisible()) {
                 genericDay.click();
                 return true;
@@ -245,23 +293,23 @@ public class SetDateAction implements BrowserAction {
 
     private void handleMonthYearSelection(Locator calendar, LocalDate targetDate) {
         try {
-            // Try standard SELECT elements
-            Locator monthSelect = calendar.locator("select[class*='month'], select[class*='Month']").first();
+            // Month Selectors
+            Locator monthSelect = calendar.locator("select[class*='month'], select[class*='Month'], .month-select").first();
             if (monthSelect.isVisible()) {
-                // Try both index (0 or 1 based) and text
-                try { monthSelect.selectOption(String.valueOf(targetDate.getMonthValue() - 1)); } catch (Exception e) {}
+                try { 
+                    monthSelect.selectOption(new com.microsoft.playwright.options.SelectOption().setIndex(targetDate.getMonthValue() - 1)); 
+                } catch (Exception e) {
+                    try { monthSelect.selectOption(targetDate.format(DateTimeFormatter.ofPattern("MMMM"))); } catch (Exception e2) {}
+                }
             }
             
-            Locator yearSelect = calendar.locator("select[class*='year'], select[class*='Year']").first();
+            // Year Selectors
+            Locator yearSelect = calendar.locator("select[class*='year'], select[class*='Year'], .year-select").first();
             if (yearSelect.isVisible()) {
                 yearSelect.selectOption(String.valueOf(targetDate.getYear()));
             }
-
-            // If no selects, maybe it's a "Click to switch" type header (like Flatpickr)
-            // This part is complex and usually requires specific library knowledge
-            // For now, we rely on the month/year being correct by default or handled by previous direct input/JS set
         } catch (Exception e) {
-            logger.debug("Month/Year adjustment failed, attempting to continue with day selection");
+            logger.debug("Month/Year adjustment failed: {}", e.getMessage());
         }
     }
 }

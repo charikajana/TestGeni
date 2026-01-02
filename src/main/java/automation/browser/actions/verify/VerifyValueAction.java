@@ -47,11 +47,20 @@ public class VerifyValueAction implements BrowserAction {
         }
 
         try {
-            // Get the value using JS to be safe (handles properties correctly)
-            String actualValue = (String) element.evaluate("el => el.value || el.innerText || ''");
-            actualValue = actualValue.trim();
+            long deadline = System.currentTimeMillis() + 500;
+            String actualValue = "";
+            boolean isMatch = false;
             
-            boolean isMatch = actualValue.equals(expectedValue.trim());
+            while (System.currentTimeMillis() < deadline) {
+                // Get the value using JS to be safe (handles properties correctly)
+                actualValue = (String) element.evaluate("el => el.value || el.innerText || ''");
+                actualValue = actualValue.trim();
+                
+                isMatch = actualValue.equals(expectedValue.trim());
+                if (isMatch) break;
+                
+                Thread.sleep(100);
+            }
             
             // Store validation result for BDD integration
             plan.setMetadataValue("validation", new automation.reporting.StepExecutionReport.ValidationResult()
@@ -61,7 +70,7 @@ public class VerifyValueAction implements BrowserAction {
                 .elementVisible(element.isVisible())
                 .match(isMatch)
                 .comparisonType("EXACT")
-                .details(isMatch ? "Exact match" : "Values differ"));
+                .details(isMatch ? "Exact match" : "Values differ after 500ms polling"));
             
             if (isMatch) {
                 logger.success("Verification successful: Field '{}' contains expected value '{}'", targetName, expectedValue);

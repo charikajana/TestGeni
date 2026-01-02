@@ -45,17 +45,30 @@ public class WaitAction implements BrowserAction {
      */
     private boolean handleTimeWait(ActionPlan plan) {
         try {
-            // Element name contains the number of seconds to wait
-            String elementName = plan.getElementName();
-            if (elementName == null || elementName.trim().isEmpty()) {
+            // Element name contains the number, Value contains the unit
+            String durationStr = plan.getElementName();
+            String unitStr = plan.getValue();
+            
+            if (durationStr == null || durationStr.trim().isEmpty()) {
                 logger.failure("No duration specified for time wait");
                 return false;
             }
             
-            int seconds = Integer.parseInt(elementName.trim());
-            logger.waiting(seconds);
-            Thread.sleep(seconds * 1000L);
-            logger.success("Wait complete");
+            long duration = Long.parseLong(durationStr.trim());
+            long millis;
+            
+            // Normalize unit
+            String unit = (unitStr != null) ? unitStr.toLowerCase() : "s";
+            if (unit.startsWith("m")) { // minute, min, m
+                millis = duration * 60 * 1000L;
+                logger.waiting((int) (duration * 60)); // Log as seconds for consistency if logger expects int
+            } else { // second, sec, s
+                millis = duration * 1000L;
+                logger.waiting((int) duration);
+            }
+            
+            Thread.sleep(millis);
+            logger.success("Wait complete ({} {})", duration, unit);
             return true;
         } catch (NumberFormatException e) {
             logger.failure("Invalid wait duration: {}", plan.getElementName());
