@@ -16,7 +16,7 @@ Feature: Multiselect List Interactions
 
   Scenario: Grid multiselect with verification
     Given Navigate to "https://demoqa.com/selectable"
-    When Click 'Grid'
+    When Click Grid
     And Select multiple items 'One;Five;Nine'
     Then Verify items 'One;Five;Nine' are selected
     And Verify 'Two' is not selected
@@ -39,7 +39,7 @@ Feature: Multiselect List Interactions
     Then Verify items 'Cras justo odio;Porta ac consectetur ac' are selected
     
     # Switch to Grid tab
-    When Click 'Grid'
+    When Click Grid
     And Select multiple items 'One;Three;Five;Seven;Nine'
     Then Verify items 'One;Three;Five;Seven;Nine' are selected
     And Verify 'Two' is not selected

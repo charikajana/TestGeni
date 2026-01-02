@@ -25,9 +25,9 @@ Feature: Complete Form Submission Flow
   Scenario: Negative - Submit without filling required fields
     When I refresh the page
     And I click submit button
-    Then Verify "first name" field has red border
-    And Verify "last name" field has red border
-    And Verify "Mobile Number" has red border
+    Then Verify first name field has red border
+    And Verify last name field has red border
+    And Verify Mobile Number has red border
     # These steps now use the new VerifyValidationAction to check CSS/HTML validation
 
   Scenario: Fill form fields and verify
