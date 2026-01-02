@@ -51,6 +51,7 @@ public class FillAction implements BrowserAction {
         // 3. Find element using SmartLocator
         Locator input = locator.waitForSmartElement(targetName, "input", scope, plan.getFrameAnchor());
         if (input != null) {
+            locator.recordMatch(plan);
             return performFill(input, targetName, value);
         } else {
             logger.failure("Element not found for filling: {}", targetName);

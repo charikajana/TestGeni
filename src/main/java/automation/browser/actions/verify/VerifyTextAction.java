@@ -61,7 +61,7 @@ public class VerifyTextAction implements BrowserAction {
             if (frameAnchor != null) {
                 com.microsoft.playwright.Frame frame = locator.findFrame(frameAnchor);
                 if (frame != null) {
-                    Object[] verificationResult = performVerificationInternal(frame, null, textToVerify);
+                    Object[] verificationResult = performVerificationInternal(frame, null, textToVerify, plan);
                     boolean found = (boolean) verificationResult[0];
                     lastFoundText = (String) verificationResult[1];
                     
@@ -83,7 +83,7 @@ public class VerifyTextAction implements BrowserAction {
             }
 
             // 2. Standard verification (Main Page or Scope)
-            Object[] verificationResult = performVerificationInternal(page, searchScope, textToVerify);
+            Object[] verificationResult = performVerificationInternal(page, searchScope, textToVerify, plan);
             boolean found = (boolean) verificationResult[0];
             lastFoundText = (String) verificationResult[1];
             
@@ -110,7 +110,7 @@ public class VerifyTextAction implements BrowserAction {
                         if (frame.isDetached()) continue;
                         
                         try {
-                            verificationResult = performVerificationInternal(frame, null, textToVerify);
+                            verificationResult = performVerificationInternal(frame, null, textToVerify, plan);
                             found = (boolean) verificationResult[0];
                             lastFoundText = (String) verificationResult[1];
                             
@@ -155,7 +155,7 @@ public class VerifyTextAction implements BrowserAction {
         return false;
     }
 
-    private Object[] performVerificationInternal(Object context, Locator searchScope, String textToVerify) {
+    private Object[] performVerificationInternal(Object context, Locator searchScope, String textToVerify, ActionPlan plan) {
         // Try multiple strategies for maximum compatibility
         String foundText = null;
         String matchType = null;
@@ -207,6 +207,9 @@ public class VerifyTextAction implements BrowserAction {
                 logger.info(" Found in Element: {}", foundText);
                 logger.info(" Match Strategy: {}", matchType + (visible ? "" : " (Hidden/Value)"));
                 logger.info("--------------------------------------------------");
+                
+                plan.setMetadataValue("found_element_type", foundElement.evaluate("el => el.tagName.toLowerCase()"));
+                plan.setMetadataValue("found_selector", "text=\"" + foundText + "\"");
                 
                 // Phase 3: Auto-store booking references to context
                 if (isBookingReference(foundText)) {
