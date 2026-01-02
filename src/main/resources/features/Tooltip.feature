@@ -8,11 +8,9 @@ Feature: Tooltip Verification
     When Mouse over Hover me to see input field
     And wait for 2 seconds
     Then Take the Screenshot
-    And Verify tooltip of Hover me to see contains "You hovered over the text field"
+    And Verify tooltip of Hover me to see input field contains "You hovered over the text field"
 
   Scenario: Interactive Tooltip verification
     When Click on Hover me to see button
     Then Hover over Hover me to see button
-    And Verify tooltip of Hover me to see contains "You hovered over the Button"  
-
-
+    And Verify tooltip of Hover me to see button contains "You hovered over the Button"
