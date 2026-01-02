@@ -16,7 +16,7 @@ public class CandidateScorer {
         do {
             changed = false;
             String before = cleanName;
-            cleanName = cleanName.replaceAll("\\s+(button|btn|link|input|field|tab|icon|radio|checkbox|dropdown|select|box|menu|card|item|element|option|header|title|label|slider|range)$", "").trim();
+            cleanName = cleanName.replaceAll("\\s+(button|btn|link|input|field|tab|icon|radio|checkbox|dropdown|select|box|menu|card|item|element|option|header|title|label|slider|range|text)$", "").trim();
             if (!before.equals(cleanName)) changed = true;
         } while (changed);
 
@@ -70,6 +70,8 @@ public class CandidateScorer {
                 score += 120;
             } else if (!text.isEmpty() && (lowerText.contains(lowerName) || lowerText.contains(cleanName))) {
                 score += 110;
+            } else if (!el.placeholder.isEmpty() && (lowerName.contains(el.placeholder.toLowerCase()) || el.placeholder.toLowerCase().contains(lowerName))) {
+                score += 100;
             } else if (name.equalsIgnoreCase(el.id) || cleanName.equalsIgnoreCase(el.id)) {
                 score += 100;
                 // STABILITY CHECK: Penalize dynamic IDs to prefer text/label matches

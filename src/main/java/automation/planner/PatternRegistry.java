@@ -158,10 +158,10 @@ public class PatternRegistry {
         // ========================================
         // WAIT PATTERNS
         // ========================================
-        // Time-based waits: "wait for 20 seconds", "wait 20 sec", "wait 5s"
+        // Time-based waits: "wait for 20 seconds", "wait 20 sec", "wait 5s", "wait 5 min"
         register.add("wait_time", 
-            "(?i)^(?:given|when|then|and|but)?\\s*(?:I|user|we|he|she|they)?\\s*(?:wait|pause)(?:\\s+for)?\\s+(\\d+)\\s*(?:second|sec|s)(?:s)?", 
-            1, -1, -1);
+            "(?i)^(?:given|when|then|and|but)?\\s*(?:I|user|we|he|she|they)?\\s*(?:wait|pause)(?:\\s+for)?\\s+(\\d+)\\s*(second|sec|s|minute|min|m)(?:s)?", 
+            1, 2, -1);
         
         // Wait for element to disappear: "wait for 'Loading' to disappear"
         register.add("wait_disappear", 

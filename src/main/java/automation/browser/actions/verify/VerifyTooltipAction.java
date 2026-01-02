@@ -75,7 +75,7 @@ public class VerifyTooltipAction implements BrowserAction {
      */
     private boolean findTooltipWithTextAndReturn(Page page, String expectedText, String[] actualText) {
         long startTime = System.currentTimeMillis();
-        while (System.currentTimeMillis() - startTime < 5000) {
+        while (System.currentTimeMillis() - startTime < 500) {
             // Strategy 1: Look for role="tooltip"
             Locator tooltipByRole = page.locator("[role='tooltip']").all().stream()
                 .filter(Locator::isVisible)
@@ -112,7 +112,7 @@ public class VerifyTooltipAction implements BrowserAction {
                 }
             } catch (Exception ignored) {}
 
-            try { Thread.sleep(500); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+            try { Thread.sleep(100); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
         }
         return false;
     }
@@ -145,7 +145,7 @@ public class VerifyTooltipAction implements BrowserAction {
      */
     private boolean findTooltipWithText(Page page, String expectedText) {
         long startTime = System.currentTimeMillis();
-        while (System.currentTimeMillis() - startTime < 5000) {
+        while (System.currentTimeMillis() - startTime < 500) {
             // Strategy 1: Look for role="tooltip"
             Locator tooltipByRole = page.locator("[role='tooltip']").all().stream()
                 .filter(Locator::isVisible)
@@ -184,7 +184,7 @@ public class VerifyTooltipAction implements BrowserAction {
                 }
             } catch (Exception ignored) {}
 
-            try { Thread.sleep(500); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+            try { Thread.sleep(100); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
         }
         
         return false;

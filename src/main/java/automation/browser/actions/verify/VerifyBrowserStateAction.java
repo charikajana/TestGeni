@@ -32,7 +32,7 @@ public class VerifyBrowserStateAction implements BrowserAction {
     
     private boolean verifyUrl(Page page, String expectedValue, String stepText, ActionPlan plan) {
         long startTime = System.currentTimeMillis();
-        long timeout = 5000;
+        long timeout = 500;
         boolean success = false;
         String currentUrl = "";
         
@@ -41,7 +41,7 @@ public class VerifyBrowserStateAction implements BrowserAction {
                 .expected(expectedValue != null ? expectedValue : "homepage")
                 .comparisonType("URL_MATCH");
 
-        logger.info("Verifying URL: Expected='{}' (with 5s polling)", expectedValue != null ? expectedValue : "homepage");
+        logger.info("Verifying URL: Expected='{}' (with 500ms polling)", expectedValue != null ? expectedValue : "homepage");
 
         while (System.currentTimeMillis() - startTime < timeout) {
             currentUrl = page.url();
@@ -49,7 +49,7 @@ public class VerifyBrowserStateAction implements BrowserAction {
                 success = true;
                 break;
             }
-            try { Thread.sleep(500); } catch (InterruptedException e) { break; }
+            try { Thread.sleep(100); } catch (InterruptedException e) { break; }
         }
 
         result.actual(currentUrl).match(success);
