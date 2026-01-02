@@ -63,10 +63,35 @@ public class FillAction implements BrowserAction {
      * Internal helper to perform the fill
      */
     private boolean performFill(Locator input, String targetName, String value) {
+        String expectedValue = value != null ? value : "";
         try {
-            input.fill(value != null ? value : "");
-            logger.browserAction("Fill", targetName + " = '" + value + "'");
-            return true;
+            // Perform the fill
+            input.fill(expectedValue);
+            
+            // Post-interaction validation to avoid false positives
+            String actualValue = (String) input.evaluate("el => el.value || ''");
+            
+            if (actualValue.equals(expectedValue)) {
+                logger.browserAction("Fill", targetName + " = '" + expectedValue + "'");
+                return true;
+            } else {
+                // Discrepancy detected - some UI frameworks (like React/Angular) might need a moment or events
+                logger.warning("Fill value mismatch for '{}'. Expected: '{}', Actual: '{}'. Retrying with focus...", 
+                    targetName, expectedValue, actualValue);
+                
+                input.focus();
+                input.fill(expectedValue);
+                actualValue = (String) input.evaluate("el => el.value || ''");
+                
+                if (actualValue.equals(expectedValue)) {
+                    logger.browserAction("Fill", targetName + " = '" + expectedValue + "' (Resolved after retry)");
+                    return true;
+                } else {
+                    logger.failure("CRITICAL: Value did not stick for '{}'. Expected: '{}', Actual: '{}'", 
+                        targetName, expectedValue, actualValue);
+                    return false;
+                }
+            }
         } catch (com.microsoft.playwright.PlaywrightException e) {
             logger.failure("Element found for '{}' but could not be filled: {}", targetName, e.getMessage().split("\n")[0]);
             return false;

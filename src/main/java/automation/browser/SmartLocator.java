@@ -42,7 +42,7 @@ public class SmartLocator {
      * Wait for an element to appear, with optional scope and frame anchor
      */
     public Locator waitForSmartElement(String name, String type, Locator scope, String frameAnchor, boolean includeHidden) {
-        long deadline = System.currentTimeMillis() + 30000; 
+        long deadline = System.currentTimeMillis() + 500; 
         int maxRetries = 5; 
         int retryCount = 0;
         long lastLogTime = 0;
@@ -55,22 +55,16 @@ public class SmartLocator {
             
             retryCount++;
             
-            long currentTime = System.currentTimeMillis();
-            if (currentTime - lastLogTime > 5000) {
-                logger.waiting(5);
-                logger.debug("Still waiting for element: '{}' (attempt {}/{})", name, retryCount, maxRetries);
-                lastLogTime = currentTime;
-            }
-            
             try {
-                Thread.sleep(500); 
+                Thread.sleep(100); 
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 return null;
             }
         }
         
-        logger.failure("TIMEOUT: Element '{}' not found after {} attempts ({}s)", name, retryCount, 30);
+        long elapsedMs = System.currentTimeMillis() - (deadline - 500);
+        logger.failure("TIMEOUT: Element '{}' not found after {} attempts ({}ms)", name, retryCount, elapsedMs);
         if (scope != null) {
             logger.warning("Searched within row scope - element may not exist in this row");
         }

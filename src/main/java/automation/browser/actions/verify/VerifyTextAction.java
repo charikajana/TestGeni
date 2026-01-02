@@ -50,109 +50,87 @@ public class VerifyTextAction implements BrowserAction {
              }
         }
         
-        // Retry logic for robustness
-        long deadline = System.currentTimeMillis() + 5000; // 10s timeout for verification
+        // Retry logic for robustness - Extreme speed mode
+        long deadline = System.currentTimeMillis() + 500; 
         int attempt = 1;
         String lastFoundText = null;
         
         while (System.currentTimeMillis() < deadline) {
+            boolean iterationFound = false;
+            
             // 1. Handle Frame Scoping
             String frameAnchor = plan.getFrameAnchor();
             if (frameAnchor != null) {
                 com.microsoft.playwright.Frame frame = locator.findFrame(frameAnchor);
                 if (frame != null) {
                     Object[] verificationResult = performVerificationInternal(frame, null, textToVerify, plan);
-                    boolean found = (boolean) verificationResult[0];
-                    lastFoundText = (String) verificationResult[1];
-                    
-                    if (isNegated) {
-                        if (!found) {
-                            logger.section("VALIDATION SUCCESS (Negative)");
-                            result.match(true).actual("Text not found").details("Text not found as expected");
-                            plan.setMetadataValue("validation", result);
-                            return true;
-                        }
-                    } else {
-                        if (found) {
-                            result.match(true).actual(lastFoundText).elementFound(true).elementVisible(true);
-                            plan.setMetadataValue("validation", result);
-                            return true;
-                        }
-                    }
+                    iterationFound = (boolean) verificationResult[0];
+                    if (iterationFound) lastFoundText = (String) verificationResult[1];
                 }
             }
 
             // 2. Standard verification (Main Page or Scope)
-            Object[] verificationResult = performVerificationInternal(page, searchScope, textToVerify, plan);
-            boolean found = (boolean) verificationResult[0];
-            lastFoundText = (String) verificationResult[1];
-            
-            if (isNegated) {
-                if (!found) {
-                    logger.section("VALIDATION SUCCESS (Negative)");
-                    result.match(true).actual("Text not found").details("Text not found as expected");
-                    plan.setMetadataValue("validation", result);
-                    return true;
-                }
-            } else {
-                if (found) {
-                    result.match(true).actual(lastFoundText).elementFound(true).elementVisible(true);
-                    plan.setMetadataValue("validation", result);
-                    return true;
-                }
+            if (!iterationFound) {
+                Object[] verificationResult = performVerificationInternal(page, searchScope, textToVerify, plan);
+                iterationFound = (boolean) verificationResult[0];
+                if (iterationFound) lastFoundText = (String) verificationResult[1];
             }
 
             // 3. Automatic Cross-Frame verification fallback
-            if (searchScope == null) {
+            if (!iterationFound && searchScope == null) {
                 try {
                     for (com.microsoft.playwright.Frame frame : page.frames()) {
                         if (frame == page.mainFrame()) continue;
                         if (frame.isDetached()) continue;
                         
-                        try {
-                            verificationResult = performVerificationInternal(frame, null, textToVerify, plan);
-                            found = (boolean) verificationResult[0];
+                        Object[] verificationResult = performVerificationInternal(frame, null, textToVerify, plan);
+                        if ((boolean) verificationResult[0]) {
+                            iterationFound = true;
                             lastFoundText = (String) verificationResult[1];
-                            
-                            if (isNegated) {
-                                if (!found) {
-                                    logger.section("VALIDATION SUCCESS (Negative)");
-                                    result.match(true).actual("Text not found").details("Text not found as expected");
-                                    plan.setMetadataValue("validation", result);
-                                    return true;
-                                }
-                            } else {
-                                if (found) {
-                                    result.match(true).actual(lastFoundText).elementFound(true).elementVisible(true);
-                                    plan.setMetadataValue("validation", result);
-                                    return true;
-                                }
-                            }
-                        } catch (Exception e) {}
+                            break;
+                        }
                     }
                 } catch (Exception e) {}
             }
             
+            // Handle logical outcomes based on negation
+            if (!isNegated && iterationFound) {
+                // POSITIVE match found - Success
+                result.match(true).actual(lastFoundText).elementFound(true).elementVisible(true);
+                plan.setMetadataValue("validation", result);
+                return true;
+            } else if (isNegated && iterationFound) {
+                // NEGATIVE match found - Failure (should not be present)
+                logger.failure("Negative verification failed: Text '{}' WAS found (should NOT be present)", textToVerify);
+                result.match(false).actual(lastFoundText).details("Text was found when it should not be");
+                plan.setMetadataValue("validation", result);
+                return false;
+            }
+            
             try {
-                Thread.sleep(1000);
+                Thread.sleep(100);
                 attempt++;
-                logger.debug("Verification retry {}/10 for: '{}'", attempt, textToVerify);
+                logger.debug("Verification fast-check {} for: '{}'", attempt, textToVerify);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 break;
             }
         }
 
-        result.match(false).actual(lastFoundText != null ? lastFoundText : "Text not found");
+        // Loop ended without returning
         if (isNegated) {
-            logger.failure("Negative verification failed: Text '{}' WAS found (should NOT be present)", textToVerify);
-            result.details("Text was found when it should not be");
+            // Reached timeout without finding it - SUCCESS
+            logger.section("VALIDATION SUCCESS (Negative)");
+            result.match(true).actual("Text not found").details("Text remained absent during fast-check");
+            plan.setMetadataValue("validation", result);
+            return true;
         } else {
-            logger.failure("Verification timed out: Text '{}' not found after 10 seconds", textToVerify);
-            result.details("Text not found after 10s timeout");
+            // Reached timeout without finding it - FAILURE
+            logger.failure("Verification failed: Text '{}' not found within 500ms", textToVerify);
+            result.match(false).actual(lastFoundText != null ? lastFoundText : "Text not found").details("Text not found after 500ms");
+            plan.setMetadataValue("validation", result);
+            return false;
         }
-        plan.setMetadataValue("validation", result);
-        return false;
     }
 
     private Object[] performVerificationInternal(Object context, Locator searchScope, String textToVerify, ActionPlan plan) {
