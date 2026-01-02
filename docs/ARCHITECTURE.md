@@ -75,7 +75,6 @@ Output:  {
 - Variable substitution
 - Unquoted string support
 - Subject pronoun flexibility (I/user/we/they)
-- Multi-language pattern support
 
 ---
 
