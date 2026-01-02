@@ -282,4 +282,13 @@ public class SmartLocator {
             this.locatorFactory = new LocatorFactory(newPage);
         }
     }
+    
+    /**
+     * Record the details of the last discovered element to the action plan
+     */
+    public void recordMatch(automation.planner.ActionPlan plan) {
+        if (locatorFactory != null) {
+            locatorFactory.recordMatch(plan);
+        }
+    }
 }

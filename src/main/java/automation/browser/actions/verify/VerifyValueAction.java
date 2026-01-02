@@ -29,7 +29,9 @@ public class VerifyValueAction implements BrowserAction {
         // Find the element
         Locator element = locator.waitForSmartElement(targetName, "field", null, plan.getFrameAnchor());
         
-        if (element == null) {
+        if (element != null) {
+            locator.recordMatch(plan);
+        } else {
             logger.failure("Field not found for value verification: {}", targetName);
             
             // Store validation result for BDD integration
