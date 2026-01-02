@@ -19,4 +19,5 @@ Feature: Intelligence Layer Demo
     And I point to "MobileAccessory"
     And I click on "MobileFlash"
     Then Verify URL contains "mobile-flashes"
+    And wait for 5 seconds
     And Verify "Mobile Flashes" is visible
