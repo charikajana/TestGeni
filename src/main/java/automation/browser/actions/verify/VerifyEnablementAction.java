@@ -49,8 +49,15 @@ public class VerifyEnablementAction implements BrowserAction {
         // Find the element
         Locator element = locator.waitForSmartElement(targetName, null, scope, plan.getFrameAnchor(), true);
         
+        automation.reporting.StepExecutionReport.ValidationResult result = 
+            new automation.reporting.StepExecutionReport.ValidationResult()
+                .expected(expectEnabled ? "ENABLED" : "DISABLED")
+                .comparisonType("BOOLEAN");
+
         if (element == null) {
             logger.failure("Element not found for state check: {}", targetName);
+            result.match(false).elementFound(false).details("Element not found: " + targetName);
+            plan.setMetadataValue("validation", result);
             return false;
         }
 
@@ -72,6 +79,9 @@ public class VerifyEnablementAction implements BrowserAction {
                 }
             }
 
+            result.actual(isEnabled ? "ENABLED" : "DISABLED").match(isEnabled == expectEnabled).elementFound(true);
+            plan.setMetadataValue("validation", result);
+
             if (isEnabled == expectEnabled) {
                 logger.section("VALIDATION SUCCESS");
                 logger.info(" Element '{}' matches expected state: {}", targetName, expectEnabled ? "ENABLED" : "DISABLED");
@@ -88,6 +98,8 @@ public class VerifyEnablementAction implements BrowserAction {
             }
         } catch (Exception e) {
             logger.failure("Error verifying state for element '{}': {}", targetName, e.getMessage());
+            result.match(false).details("Error: " + e.getMessage());
+            plan.setMetadataValue("validation", result);
             return false;
         }
     }

@@ -139,6 +139,24 @@ public class BrowserService {
             locator.elementText(plan.getElementName());
         }
         
+        // Pull selector and type from metadata if they were recorded during discovery
+        if (plan.hasMetadata("found_selector")) {
+            locator.selector((String) plan.getMetadataValue("found_selector"));
+        } else if (plan.getActionType() != null && (plan.getActionType().contains("navigate") || plan.getActionType().contains("browser_state") || plan.getActionType().contains("wait"))) {
+            locator.selector("N/A (Browser Action)");
+        }
+        
+        if (plan.hasMetadata("found_element_type")) {
+            locator.elementType((String) plan.getMetadataValue("found_element_type"));
+        } else if (plan.getActionType() != null) {
+            if (plan.getActionType().contains("navigate") || plan.getActionType().contains("browser_state") || plan.getActionType().contains("wait")) {
+                locator.elementType("WINDOW/SYSTEM");
+            } else {
+                // Fallback for element type based on action
+                locator.elementType(plan.getActionType().contains("click") ? "button" : "field");
+            }
+        }
+        
         if (plan.getLocatorStrategy() != null) {
             locator.matchStrategy(plan.getLocatorStrategy());
         } else if (plan.hasMetadata("intelligent_locator")) {

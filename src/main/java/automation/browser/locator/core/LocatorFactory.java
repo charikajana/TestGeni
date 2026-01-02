@@ -10,9 +10,23 @@ public class LocatorFactory {
     private static final LoggerUtil logger = LoggerUtil.getLogger(LocatorFactory.class);
     
     private final Page page;
+    private String lastSelector;
+    private String lastTag;
 
     public LocatorFactory(Page page) {
         this.page = page;
+    }
+    
+    /**
+     * Record the details of the last discovered element to the action plan
+     */
+    public void recordMatch(automation.planner.ActionPlan plan) {
+        if (lastSelector != null) {
+            plan.setMetadataValue("found_selector", lastSelector);
+        }
+        if (lastTag != null) {
+            plan.setMetadataValue("found_element_type", lastTag);
+        }
     }
 
     public Locator createLocator(ElementCandidate element, double score, String parsedType) {
@@ -24,9 +38,12 @@ public class LocatorFactory {
          String foundTag = element.tag;
          String foundText = element.text;
          String foundFor = element.forAttr;
-         
+
          logger.debug("Found Winner: <{}> Text:'{}' ID:'{}' (Score: {})", foundTag, foundText, foundId, score);
          
+         this.lastTag = foundTag;
+         this.lastSelector = (foundId != null && !foundId.isEmpty()) ? foundTag + "#" + foundId : foundTag + ":has-text(\"" + foundText + "\")";
+
          Locator finalLocator = null;
          
          // Helper to create base locator (either from page or scope)

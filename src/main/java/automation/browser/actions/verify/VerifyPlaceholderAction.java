@@ -21,41 +21,47 @@ public class VerifyPlaceholderAction implements BrowserAction {
         
         logger.info("Verifying {} field has placeholder: '{}'", fieldName, expectedPlaceholder);
         
+        automation.reporting.StepExecutionReport.ValidationResult result = 
+            new automation.reporting.StepExecutionReport.ValidationResult()
+                .expected(expectedPlaceholder)
+                .comparisonType("TEXT_MATCH");
+
         try {
             // Find input field by label, name, id, or placeholder
             Locator field = findInputField(page, fieldName);
             
             if (field == null) {
+                result.match(false).elementFound(false).details("Could not find input field: " + fieldName);
+                plan.setMetadataValue("validation", result);
                 throw new RuntimeException("Could not find input field: " + fieldName);
             }
             
             // Get placeholder attribute
             String actualPlaceholder = field.getAttribute("placeholder");
-            
+            result.actual(actualPlaceholder != null ? actualPlaceholder : "[No Placeholder]").elementFound(true);
+
             if (actualPlaceholder == null) {
                 logger.error("FAILURE: Field '{}' has no placeholder attribute", fieldName);
+                result.match(false).details("Field has no placeholder attribute");
+                plan.setMetadataValue("validation", result);
                 throw new RuntimeException("Field '" + fieldName + "' has no placeholder attribute");
             }
             
             // Verify placeholder value
-            if (actualPlaceholder.trim().equalsIgnoreCase(expectedPlaceholder.trim())) {
+            boolean match = actualPlaceholder.trim().equalsIgnoreCase(expectedPlaceholder.trim()) || 
+                          actualPlaceholder.toLowerCase().contains(expectedPlaceholder.toLowerCase());
+            
+            result.match(match);
+            plan.setMetadataValue("validation", result);
+
+            if (match) {
                 logger.info("\n--------------------------------------------------");
                 logger.info(" PLACEHOLDER VERIFICATION SUCCESS");
                 logger.info("--------------------------------------------------");
                 logger.info(" Field: {}", fieldName);
                 logger.info(" Expected: {}", expectedPlaceholder);
                 logger.info(" Actual: {}", actualPlaceholder);
-                logger.info(" Match: EXACT");
-                logger.info("--------------------------------------------------");
-                return true;
-            } else if (actualPlaceholder.toLowerCase().contains(expectedPlaceholder.toLowerCase())) {
-                logger.info("\n--------------------------------------------------");
-                logger.info(" PLACEHOLDER VERIFICATION SUCCESS");
-                logger.info("--------------------------------------------------");
-                logger.info(" Field: {}", fieldName);
-                logger.info(" Expected: {}", expectedPlaceholder);
-                logger.info(" Actual: {}", actualPlaceholder);
-                logger.info(" Match: CONTAINS");
+                logger.info(" Match: {}", actualPlaceholder.trim().equalsIgnoreCase(expectedPlaceholder.trim()) ? "EXACT" : "CONTAINS");
                 logger.info("--------------------------------------------------");
                 return true;
             } else {
@@ -68,6 +74,10 @@ public class VerifyPlaceholderAction implements BrowserAction {
             }
             
         } catch (Exception e) {
+            if (!plan.hasMetadata("validation")) {
+                result.match(false).details("Error: " + e.getMessage());
+                plan.setMetadataValue("validation", result);
+            }
             logger.error("Error during placeholder verification: {}", e.getMessage());
             throw new RuntimeException("Placeholder verification failed: " + e.getMessage(), e);
         }

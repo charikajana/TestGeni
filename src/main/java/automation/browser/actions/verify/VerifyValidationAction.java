@@ -18,11 +18,18 @@ public class VerifyValidationAction implements BrowserAction {
     public boolean execute(Page page, SmartLocator locator, ActionPlan plan) {
         String targetName = plan.getElementName();
         
+        automation.reporting.StepExecutionReport.ValidationResult result = 
+            new automation.reporting.StepExecutionReport.ValidationResult()
+                .expected("INVALID/ERROR STATE")
+                .comparisonType("BOOLEAN");
+
         // Find the element
         Locator element = locator.waitForSmartElement(targetName, "field", null, plan.getFrameAnchor());
         
         if (element == null) {
             logger.failure("Field not found for validation check: {}", targetName);
+            result.match(false).elementFound(false).details("Field not found: " + targetName);
+            plan.setMetadataValue("validation", result);
             return false;
         }
 
@@ -41,6 +48,9 @@ public class VerifyValidationAction implements BrowserAction {
                 "  return isRed || hasErrorClass || (wasValidated && isHTMLInvalid);" +
                 "}");
 
+            result.actual(isInvalid ? "INVALID" : "VALID").match(isInvalid).elementFound(true);
+            plan.setMetadataValue("validation", result);
+
             if (isInvalid) {
                 logger.success("Field '{}' is correctly identified as invalid (red border/error state)", targetName);
                 return true;
@@ -50,6 +60,8 @@ public class VerifyValidationAction implements BrowserAction {
             }
         } catch (Exception e) {
             logger.error("Error checking validation for {}: {}", targetName, e.getMessage());
+            result.match(false).details("Error: " + e.getMessage());
+            plan.setMetadataValue("validation", result);
             return false;
         }
     }

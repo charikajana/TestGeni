@@ -54,6 +54,7 @@ public class ClickAction implements BrowserAction {
         Locator clickable = locator.waitForSmartElement(targetName, "button", scope, plan.getFrameAnchor());
         
         if (clickable != null) {
+            locator.recordMatch(plan);
             return performClick(clickable, targetName);
         }
         

@@ -43,7 +43,7 @@ public class SmartLocator {
      */
     public Locator waitForSmartElement(String name, String type, Locator scope, String frameAnchor, boolean includeHidden) {
         long deadline = System.currentTimeMillis() + 30000; 
-        int maxRetries = 60; 
+        int maxRetries = 5; 
         int retryCount = 0;
         long lastLogTime = 0;
         
@@ -234,7 +234,7 @@ public class SmartLocator {
                 .limit(10)
                 .forEach(el -> {
                     double s = scorer.score(el, name, parsedType);
-                    logger.debug("   - {} {} {} {} -> score={}",
+                    logger.debug("- {} {} {} {} -> score={}",
                         el.tag,
                         (el.text.isEmpty() ? "" : " text='" + el.text.substring(0, Math.min(20, el.text.length())) + "'"),
                         (el.title.isEmpty() ? "" : " title='" + el.title + "'"),
@@ -280,6 +280,15 @@ public class SmartLocator {
             this.page = newPage;
             // Re-initialize factory with new page
             this.locatorFactory = new LocatorFactory(newPage);
+        }
+    }
+    
+    /**
+     * Record the details of the last discovered element to the action plan
+     */
+    public void recordMatch(automation.planner.ActionPlan plan) {
+        if (locatorFactory != null) {
+            locatorFactory.recordMatch(plan);
         }
     }
 }

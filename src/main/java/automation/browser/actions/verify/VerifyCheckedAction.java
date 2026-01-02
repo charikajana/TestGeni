@@ -54,6 +54,8 @@ public class VerifyCheckedAction implements BrowserAction {
         }
 
         boolean allMatched = true;
+        java.util.List<String> actualStates = new java.util.ArrayList<>();
+        
         for (String itemText : items) {
             String target = itemText.trim();
             if (target.isEmpty()) continue;
@@ -74,72 +76,66 @@ public class VerifyCheckedAction implements BrowserAction {
 
                     // Use generic, framework-agnostic detection methods
                     if (isMultiValueComponent(element)) {
-                        // Multi-value components (tags/chips) - check visibility
                         isChecked = element.isVisible();
-                        logger.debug("Multi-value component detected - checking visibility: {}", isChecked);
                     } else if (isSelectableListItem(element)) {
-                        // Selectable list items - check for active/selected state
                         isChecked = hasActiveOrSelectedState(element);
-                        logger.debug("Selectable list item detected - active/selected state: {}", isChecked);
                     } else {
-                        // REGULAR CASE: Checkboxes, radios, and other interactive elements
                         try {
                             String tagName = (String) element.evaluate("el => el.tagName");
-                            
                             if ("INPUT".equalsIgnoreCase(tagName)) {
-                                // For INPUT elements, use Playwright's built-in isChecked()
                                 isChecked = element.isChecked();
-                                logger.debug("INPUT element - using isChecked(): {}", isChecked);
                             } else {
-                                // For other elements, check for selection indicators
                                 String className = (String) element.evaluate("el => el.className || ''");
                                 String ariaChecked = (String) element.evaluate("el => el.getAttribute('aria-checked') || ''");
                                 String ariaSelected = (String) element.evaluate("el => el.getAttribute('aria-selected') || ''");
-                                
-                                isChecked = "true".equals(ariaChecked) || 
-                                           "true".equals(ariaSelected) ||
-                                           (className != null && (className.toLowerCase().contains("active") ||
-                                                                 className.toLowerCase().contains("selected") ||
-                                                                 className.toLowerCase().contains("checked")));
-                                logger.debug("Non-INPUT element - className: {}, aria-checked: {}, aria-selected: {}, isChecked: {}", 
-                                            className, ariaChecked, ariaSelected, isChecked);
+                                isChecked = "true".equals(ariaChecked) || "true".equals(ariaSelected) || (className != null && (className.toLowerCase().contains("active") || className.toLowerCase().contains("selected") || className.toLowerCase().contains("checked")));
                             }
                         } catch (Exception evalEx) {
-                            logger.warn("Error evaluating element state: {}", evalEx.getMessage());
-                            // Fallback to checking visibility for non-checkbox elements
                             isChecked = element.isVisible();
                         }
                     }
                 } catch (Exception e) {
                     if (!expectChecked) {
                         logger.success(" Element '{}' is not checkable - correctly NOT SELECTED", target);
+                        actualStates.add(target + ": Unchecked");
                         continue;
                     } else {
                         logger.failure("Element '{}' check failed. Info: {}. Error: {}", target, debugInfo, e.getMessage());
+                        actualStates.add(target + ": Error");
                         allMatched = false;
                         continue;
                     }
                 }
 
+                actualStates.add(target + ": " + (isChecked ? "Checked" : "Unchecked"));
                 if (isChecked == expectChecked) {
                     logger.success(" Element '{}' matches expected state: {}", target, expectChecked ? "CHECKED/SELECTED" : "UNCHECKED/NOT SELECTED");
                 } else {
                     logger.error(" Element '{}' state mismatch. Info: {}. Expected: {}, Actual: {}", 
-                        target, 
-                        debugInfo,
-                        expectChecked ? "CHECKED/SELECTED" : "UNCHECKED/NOT SELECTED",
-                        isChecked ? "CHECKED/SELECTED" : "UNCHECKED/NOT SELECTED");
+                        target, debugInfo, expectChecked ? "CHECKED/SELECTED" : "UNCHECKED/NOT SELECTED", isChecked ? "CHECKED/SELECTED" : "UNCHECKED/NOT SELECTED");
                     allMatched = false;
                 }
             } else {
                  if (!expectChecked) {
                      logger.success(" Element '{}' not found - correctly NOT SELECTED", target);
+                     actualStates.add(target + ": Not Found");
                  } else {
                      logger.failure("Element not found for state check: {}", target);
+                     actualStates.add(target + ": Not Found");
                      allMatched = false;
                  }
             }
         }
+        
+        automation.reporting.StepExecutionReport.ValidationResult result = 
+            new automation.reporting.StepExecutionReport.ValidationResult()
+                .expected(expectChecked ? "CHECKED" : "UNCHECKED")
+                .actual(String.join(", ", actualStates))
+                .match(allMatched)
+                .comparisonType("BOOLEAN")
+                .details(allMatched ? "All elements matched expected state" : "One or more elements failed state verification");
+        
+        plan.setMetadataValue("validation", result);
         
         if (allMatched) {
             logger.section("VALIDATION SUCCESS");

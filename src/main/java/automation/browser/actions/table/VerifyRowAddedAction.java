@@ -34,6 +34,11 @@ public class VerifyRowAddedAction implements BrowserAction {
         
         logger.info("Verifying row exists with '{}' in '{}' column", expectedValue, columnName);
         
+        automation.reporting.StepExecutionReport.ValidationResult result = 
+            new automation.reporting.StepExecutionReport.ValidationResult()
+                .expected(String.format("Row with '%s' in '%s' column", expectedValue, columnName))
+                .comparisonType("ROW_EXISTS");
+
         try {
             // Wait 100ms for form submission to complete and row to be added
             Thread.sleep(200);
@@ -52,19 +57,24 @@ public class VerifyRowAddedAction implements BrowserAction {
             
             // Search for the value in the appropriate column
             boolean found = false;
+            String lastRowText = null;
             for (int i = 0; i < rowCount; i++) {
                 Locator row = tableRows.nth(i);
-                String rowText = row.innerText().toLowerCase();
+                String rowText = row.innerText();
+                lastRowText = rowText;
                 
                 // Check if the row contains the expected value
-                if (rowText.contains(expectedValue.toLowerCase())) {
+                if (rowText.toLowerCase().contains(expectedValue.toLowerCase())) {
                     logger.success("Found row containing '{}'", expectedValue);
-                    logger.debug("  Row text: {}", row.innerText().replaceAll("\n", " | "));
+                    logger.debug("  Row text: {}", rowText.replaceAll("\n", " | "));
                     found = true;
                     break;
                 }
             }
             
+            result.match(found).actual(found ? "Row found" : (rowCount > 0 ? "Row not found in " + rowCount + " rows" : "No rows found"));
+            plan.setMetadataValue("validation", result);
+
             if (!found) {
                 logger.section("VALIDATION FAILED");
                 logger.error(" Expected: Row with '{}' in '{}' column", expectedValue, columnName);
@@ -83,6 +93,8 @@ public class VerifyRowAddedAction implements BrowserAction {
             logger.section("VALIDATION FAILED");
             logger.error(" Error: {}", e.getMessage());
             logger.info("--------------------------------------------------");
+            result.match(false).details("Error: " + e.getMessage());
+            plan.setMetadataValue("validation", result);
             return false;
         }
     }

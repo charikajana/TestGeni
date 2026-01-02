@@ -29,20 +29,28 @@ public class VerifyRowNotExistsAction implements BrowserAction {
             return false;
         }
         
-        logger.info("Verifying row does NOT exist where '{}' = '{}'", columnName, columnValue);
-        
+        automation.reporting.StepExecutionReport.ValidationResult result = 
+            new automation.reporting.StepExecutionReport.ValidationResult()
+                .expected(String.format("Row where '%s' = '%s' should NOT exist", columnName, columnValue))
+                .comparisonType("ROW_ABSENCE");
+
         // Use XPath builder to check if row exists
         DynamicTableXPathBuilder builder = new DynamicTableXPathBuilder(page);
         String xpath = builder.buildRowXPath(columnName, columnValue);
         
         if (xpath == null) {
             logger.failure("Could not build XPath for row validation");
+            result.match(false).details("Could not build XPath for row validation");
+            plan.setMetadataValue("validation", result);
             return false;
         }
         
         Locator row = page.locator(xpath);
         int rowCount = row.count();
         
+        result.match(rowCount == 0).actual(rowCount == 0 ? "Row not found" : "Row still exists");
+        plan.setMetadataValue("validation", result);
+
         if (rowCount == 0) {
             // Row does NOT exist - SUCCESS!
             logger.section("VALIDATION SUCCESS");
