@@ -44,12 +44,19 @@ public class VerifySelectionAction implements BrowserAction {
         List<String> selectedItems = getSelectedItems(page);
         logger.debug("Currently selected items: {}", selectedItems);
         
+        automation.reporting.StepExecutionReport.ValidationResult result = 
+            new automation.reporting.StepExecutionReport.ValidationResult()
+                .expected(expectedItems + (expectSelected ? " should be selected" : " should NOT be selected"))
+                .comparisonType("LIST_MATCH");
+
         // Verify each expected item
         boolean allValid = true;
+        List<String> actualStates = new ArrayList<>();
         for (String expectedItem : expectedItems) {
             boolean isCurrentlySelected = selectedItems.contains(expectedItem);
             boolean matches = (expectSelected == isCurrentlySelected);
             
+            actualStates.add(expectedItem + ": " + (isCurrentlySelected ? "Selected" : "Not Selected"));
             if (matches) {
                 logger.success("Item '{}' is {} selected (as expected)", 
                     expectedItem, 
@@ -62,6 +69,9 @@ public class VerifySelectionAction implements BrowserAction {
                 allValid = false;
             }
         }
+        
+        result.actual(String.join(", ", actualStates)).match(allValid);
+        plan.setMetadataValue("validation", result);
         
         return allValid;
     }

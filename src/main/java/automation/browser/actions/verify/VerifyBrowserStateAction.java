@@ -21,20 +21,25 @@ public class VerifyBrowserStateAction implements BrowserAction {
         
         switch (actionType) {
             case "verify_url":
-                return verifyUrl(page, expectedValue, plan.getTarget().toLowerCase());
+                return verifyUrl(page, expectedValue, plan.getTarget().toLowerCase(), plan);
             case "verify_page_title":
-                return verifyTitle(page, expectedValue, plan.getTarget().toLowerCase());
+                return verifyTitle(page, expectedValue, plan.getTarget().toLowerCase(), plan);
             default:
                 logger.error("Unknown browser state verification: {}", actionType);
                 return false;
         }
     }
-
-    private boolean verifyUrl(Page page, String expectedValue, String stepText) {
+    
+    private boolean verifyUrl(Page page, String expectedValue, String stepText, ActionPlan plan) {
         long startTime = System.currentTimeMillis();
         long timeout = 5000;
         boolean success = false;
         String currentUrl = "";
+        
+        automation.reporting.StepExecutionReport.ValidationResult result = 
+            new automation.reporting.StepExecutionReport.ValidationResult()
+                .expected(expectedValue != null ? expectedValue : "homepage")
+                .comparisonType("URL_MATCH");
 
         logger.info("Verifying URL: Expected='{}' (with 5s polling)", expectedValue != null ? expectedValue : "homepage");
 
@@ -46,6 +51,9 @@ public class VerifyBrowserStateAction implements BrowserAction {
             }
             try { Thread.sleep(500); } catch (InterruptedException e) { break; }
         }
+
+        result.actual(currentUrl).match(success);
+        plan.setMetadataValue("validation", result);
 
         if (success) {
             logger.success("URL verification successful: '{}'", currentUrl);
@@ -83,9 +91,16 @@ public class VerifyBrowserStateAction implements BrowserAction {
         } catch (Exception e) { return false; }
     }
 
-    private boolean verifyTitle(Page page, String expectedTitle, String stepText) {
+    private boolean verifyTitle(Page page, String expectedTitle, String stepText, ActionPlan plan) {
+        automation.reporting.StepExecutionReport.ValidationResult result = 
+            new automation.reporting.StepExecutionReport.ValidationResult()
+                .expected(expectedTitle)
+                .comparisonType("TITLE_MATCH");
+
         if (expectedTitle == null || expectedTitle.trim().isEmpty()) {
             logger.failure("Page title verification failed: No expected title specified");
+            result.match(false).details("No expected title specified");
+            plan.setMetadataValue("validation", result);
             return false;
         }
 
@@ -94,6 +109,9 @@ public class VerifyBrowserStateAction implements BrowserAction {
 
         boolean match = stepText.contains("contains") ? actualTitle.contains(expectedTitle) : actualTitle.equals(expectedTitle);
         
+        result.actual(actualTitle).match(match);
+        plan.setMetadataValue("validation", result);
+
         if (match) {
             logger.success("Page title verification successful: '{}'", expectedTitle);
             return true;

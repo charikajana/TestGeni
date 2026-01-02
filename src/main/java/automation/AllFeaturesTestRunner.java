@@ -147,6 +147,9 @@ public class AllFeaturesTestRunner {
                     
                     automation.reporting.StepExecutionReport subReport = browserService.executeAction(subAction);
                     
+                    // Log JSON report for sub-action
+                    logger.info("STEP EXECUTION REPORT:\n{}", subReport.toJson());
+                    
                     if ("PASSED".equals(subReport.getStatus())) {
                         logger.success("Sub-action {} succeeded", subIndex);
                     } else {
@@ -165,6 +168,9 @@ public class AllFeaturesTestRunner {
                 }
             } else {
                 automation.reporting.StepExecutionReport report = browserService.executeAction(plan);
+                
+                // Log JSON report
+                logger.info("STEP EXECUTION REPORT:\n{}", report.toJson());
                 
                 if ("PASSED".equals(report.getStatus())) {
                     passed++;

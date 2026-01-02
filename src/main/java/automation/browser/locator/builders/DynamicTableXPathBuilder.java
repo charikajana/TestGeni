@@ -106,6 +106,8 @@ public class DynamicTableXPathBuilder {
             "*[class*='thead'] *[class*='cell']"  // Generic nested
         };
         
+        String targetNormalized = columnName.replaceAll("\\s+", "").toLowerCase();
+        
         for (String selector : headerSelectors) {
             Locator headers = page.locator(selector);
             if (headers.count() == 0) continue;
@@ -113,7 +115,8 @@ public class DynamicTableXPathBuilder {
             for (int i = 0; i < headers.count(); i++) {
                 try {
                     String headerText = headers.nth(i).innerText().trim();
-                    if (headerText.equalsIgnoreCase(columnName)) {
+                    String headerNormalized = headerText.replaceAll("\\s+", "").toLowerCase();
+                    if (headerNormalized.equals(targetNormalized)) {
                         return i + 1; // XPath is 1-indexed
                     }
                 } catch (Exception e) {

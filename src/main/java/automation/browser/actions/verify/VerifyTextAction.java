@@ -19,8 +19,15 @@ public class VerifyTextAction implements BrowserAction {
         String textToVerify = (value != null && !value.isEmpty()) ? value : targetName;
         boolean isNegated = plan.isNegated() || "verify_not".equals(plan.getActionType());
         
+        automation.reporting.StepExecutionReport.ValidationResult result = 
+            new automation.reporting.StepExecutionReport.ValidationResult()
+                .expected(isNegated ? "NOT " + textToVerify : textToVerify)
+                .comparisonType("TEXT_MATCH");
+        
         if (textToVerify == null) {
             logger.failure("Verification failed - No text specified");
+            result.match(false).details("No text specified");
+            plan.setMetadataValue("validation", result);
             return false;
         }
 
@@ -37,6 +44,8 @@ public class VerifyTextAction implements BrowserAction {
              searchScope = navigator.findRowByAnchor(page, plan.getRowAnchor());
              if (searchScope == null) {
                  logger.failure("Row not found for anchor: {}", plan.getRowAnchor());
+                 result.match(false).elementFound(false).details("Row not found for anchor: " + plan.getRowAnchor());
+                 plan.setMetadataValue("validation", result);
                  return false;
              }
         }
@@ -44,6 +53,7 @@ public class VerifyTextAction implements BrowserAction {
         // Retry logic for robustness
         long deadline = System.currentTimeMillis() + 10000; // 10s timeout for verification
         int attempt = 1;
+        String lastFoundText = null;
         
         while (System.currentTimeMillis() < deadline) {
             // 1. Handle Frame Scoping
@@ -51,35 +61,45 @@ public class VerifyTextAction implements BrowserAction {
             if (frameAnchor != null) {
                 com.microsoft.playwright.Frame frame = locator.findFrame(frameAnchor);
                 if (frame != null) {
-                    boolean found = performVerification(frame, null, textToVerify);
+                    Object[] verificationResult = performVerificationInternal(frame, null, textToVerify);
+                    boolean found = (boolean) verificationResult[0];
+                    lastFoundText = (String) verificationResult[1];
+                    
                     if (isNegated) {
-                        // For negative verification, we want NOT found
                         if (!found) {
                             logger.section("VALIDATION SUCCESS (Negative)");
-                            logger.info(" Expected: Text '{}' should NOT be present", textToVerify);
-                            logger.info(" Result: Text not found (as expected)");
-                            logger.info("--------------------------------------------------");
+                            result.match(true).actual("Text not found").details("Text not found as expected");
+                            plan.setMetadataValue("validation", result);
                             return true;
                         }
                     } else {
-                        if (found) return true;
+                        if (found) {
+                            result.match(true).actual(lastFoundText).elementFound(true).elementVisible(true);
+                            plan.setMetadataValue("validation", result);
+                            return true;
+                        }
                     }
                 }
             }
 
             // 2. Standard verification (Main Page or Scope)
-            boolean found = performVerification(page, searchScope, textToVerify);
+            Object[] verificationResult = performVerificationInternal(page, searchScope, textToVerify);
+            boolean found = (boolean) verificationResult[0];
+            lastFoundText = (String) verificationResult[1];
+            
             if (isNegated) {
-                // For negative verification, we want NOT found
                 if (!found) {
                     logger.section("VALIDATION SUCCESS (Negative)");
-                    logger.info(" Expected: Text '{}' should NOT be present", textToVerify);
-                    logger.info(" Result: Text not found (as expected)");
-                    logger.info("--------------------------------------------------");
+                    result.match(true).actual("Text not found").details("Text not found as expected");
+                    plan.setMetadataValue("validation", result);
                     return true;
                 }
             } else {
-                if (found) return true;
+                if (found) {
+                    result.match(true).actual(lastFoundText).elementFound(true).elementVisible(true);
+                    plan.setMetadataValue("validation", result);
+                    return true;
+                }
             }
 
             // 3. Automatic Cross-Frame verification fallback
@@ -90,28 +110,27 @@ public class VerifyTextAction implements BrowserAction {
                         if (frame.isDetached()) continue;
                         
                         try {
-                            found = performVerification(frame, null, textToVerify);
+                            verificationResult = performVerificationInternal(frame, null, textToVerify);
+                            found = (boolean) verificationResult[0];
+                            lastFoundText = (String) verificationResult[1];
+                            
                             if (isNegated) {
                                 if (!found) {
                                     logger.section("VALIDATION SUCCESS (Negative)");
-                                    logger.info(" Expected: Text '{}' should NOT be present", textToVerify);
-                                    logger.info(" Result: Text not found (as expected)");
-                                    logger.info("--------------------------------------------------");
+                                    result.match(true).actual("Text not found").details("Text not found as expected");
+                                    plan.setMetadataValue("validation", result);
                                     return true;
                                 }
                             } else {
                                 if (found) {
-                                    logger.success("Found text '{}' inside iframe: '{}'", textToVerify, frame.name().isEmpty() ? frame.url() : frame.name());
+                                    result.match(true).actual(lastFoundText).elementFound(true).elementVisible(true);
+                                    plan.setMetadataValue("validation", result);
                                     return true;
                                 }
                             }
-                        } catch (Exception e) {
-                            // Ignore errors for specific frame verification (e.g. detached during check)
-                        }
+                        } catch (Exception e) {}
                     }
-                } catch (Exception e) {
-                    // Ignore errors in frame enumeration
-                }
+                } catch (Exception e) {}
             }
             
             try {
@@ -124,17 +143,19 @@ public class VerifyTextAction implements BrowserAction {
             }
         }
 
+        result.match(false).actual(lastFoundText != null ? lastFoundText : "Text not found");
         if (isNegated) {
-            // Negative verification failed - text WAS found when it shouldn't be
             logger.failure("Negative verification failed: Text '{}' WAS found (should NOT be present)", textToVerify);
+            result.details("Text was found when it should not be");
         } else {
-            // Positive verification failed - text NOT found
             logger.failure("Verification timed out: Text '{}' not found after 10 seconds", textToVerify);
+            result.details("Text not found after 10s timeout");
         }
+        plan.setMetadataValue("validation", result);
         return false;
     }
 
-    private boolean performVerification(Object context, Locator searchScope, String textToVerify) {
+    private Object[] performVerificationInternal(Object context, Locator searchScope, String textToVerify) {
         // Try multiple strategies for maximum compatibility
         String foundText = null;
         String matchType = null;
@@ -192,10 +213,10 @@ public class VerifyTextAction implements BrowserAction {
                     storeBookingReference(foundText);
                 }
                 
-                return true;
+                return new Object[] { true, foundText };
             }
         }
-        return false;
+        return new Object[] { false, foundText };
     }
 
     /**
