@@ -43,7 +43,7 @@ public class SmartLocator {
      */
     public Locator waitForSmartElement(String name, String type, Locator scope, String frameAnchor, boolean includeHidden) {
         long deadline = System.currentTimeMillis() + 30000; 
-        int maxRetries = 60; 
+        int maxRetries = 5; 
         int retryCount = 0;
         long lastLogTime = 0;
         

@@ -51,7 +51,7 @@ public class VerifyTextAction implements BrowserAction {
         }
         
         // Retry logic for robustness
-        long deadline = System.currentTimeMillis() + 10000; // 10s timeout for verification
+        long deadline = System.currentTimeMillis() + 5000; // 10s timeout for verification
         int attempt = 1;
         String lastFoundText = null;
         
