@@ -12,6 +12,9 @@ public class ElementCandidate {
     public String role = "";
     public String className = "";
     public String forAttr = "";
+    public String dataQa = "";
+    public String dataTestId = "";
+    public String alt = "";
     public boolean visible = false;
 
     public ElementCandidate() {}

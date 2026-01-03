@@ -52,18 +52,38 @@ public class DomScanner {
                 "    const isStyleVisible = window.getComputedStyle(el).visibility !== 'hidden' && window.getComputedStyle(el).display !== 'none';" +
                 "    const isVisible = hasDimension && isStyleVisible;" +
                 "    if (!includeHidden && !isVisible) return null;" +
+                "    " +
+                "    let labelText = '';" +
+                "    if (['input', 'select', 'textarea'].includes(el.tagName.toLowerCase())) {" +
+                "      // 1. Try label with 'for' attribute\n" +
+                "      if (el.id) {" +
+                "        const label = document.querySelector('label[for=\"' + el.id + '\"]');" +
+                "        if (label) labelText = label.innerText || label.textContent;" +
+                "      }" +
+                "      // 2. Try parent label\n" +
+                "      if (!labelText) {" +
+                "        const parentLabel = el.closest('label');" +
+                "        if (parentLabel) labelText = parentLabel.innerText || parentLabel.textContent;" +
+                "      }" +
+                "      // 3. Try aria-label from el or context\n" +
+                "      if (!labelText) labelText = el.getAttribute('aria-label') || '';" +
+                "    }" +
+                "" +
                 "    return {" +
                 "      tag: el.tagName ? el.tagName.toLowerCase() : ''," +
                 "      id: el.id || ''," +
                 "      forAttr: el.getAttribute ? el.getAttribute('for') || '' : ''," +
                 "      name: el.name || ''," +
-                "      text: el.innerText || el.textContent || ''," +
+                "      text: (el.innerText || el.textContent || '').trim().substring(0, 1000)," +
                 "      placeholder: el.placeholder || ''," +
-                "      label: el.getAttribute ? el.getAttribute('aria-label') || '' : ''," +
+                "      label: (labelText || el.getAttribute('aria-label') || '').trim()," +
                 "      title: el.getAttribute ? el.getAttribute('title') || '' : ''," +
                 "      type: el.type || ''," +
                 "      role: el.getAttribute ? el.getAttribute('role') || '' : ''," +
                 "      class: typeof el.className === 'string' ? el.className : (el.getAttribute ? el.getAttribute('class') || '' : '')," +
+                "      dataQa: el.getAttribute ? el.getAttribute('data-qa') || '' : ''," +
+                "      dataTestId: el.getAttribute ? el.getAttribute('data-testid') || '' : ''," +
+                "      alt: el.alt || (el.getAttribute ? el.getAttribute('alt') || '' : '')," +
                 "      visible: isVisible" +
                 "    };" +
                 "  }).filter(item => item !== null);" +
@@ -106,6 +126,9 @@ public class DomScanner {
             c.role = String.valueOf(map.getOrDefault("role", ""));
             c.className = String.valueOf(map.getOrDefault("class", ""));
             c.forAttr = String.valueOf(map.getOrDefault("forAttr", ""));
+            c.dataQa = String.valueOf(map.getOrDefault("dataQa", ""));
+            c.dataTestId = String.valueOf(map.getOrDefault("dataTestId", ""));
+            c.alt = String.valueOf(map.getOrDefault("alt", ""));
             Object vis = map.get("visible");
             c.visible = vis != null && Boolean.parseBoolean(String.valueOf(vis));
             candidates.add(c);

@@ -166,6 +166,8 @@ public class FillSemanticMatcher extends BaseSemanticMatcher {
                 String name = (String) candidate.getLocator().evaluate("el => el.name || ''");
                 String id = (String) candidate.getLocator().evaluate("el => el.id || ''");
                 String ariaLabel = (String) candidate.getLocator().evaluate("el => el.getAttribute('aria-label') || ''");
+                String dataQa = (String) candidate.getLocator().evaluate("el => el.getAttribute('data-qa') || ''");
+                String dataTestId = (String) candidate.getLocator().evaluate("el => el.getAttribute('data-testid') || ''");
                 String tagName = (String) candidate.getLocator().evaluate("el => el.tagName.toLowerCase() || ''");
                 Boolean isDisabled = (Boolean) candidate.getLocator().evaluate("el => el.disabled || el.readOnly");
                 
@@ -212,10 +214,32 @@ public class FillSemanticMatcher extends BaseSemanticMatcher {
                     logger.debug("EXACT placeholder match '{}' == '{}' - added +240", placeholder, targetDesc);
                 }
                 
+                if (dataQa.toLowerCase().equals(targetLower) || dataQa.toLowerCase().equals(targetLowerNoSpaces)) {
+                    score += 260; 
+                    logger.debug("EXACT data-qa match '{}' == '{}' - added +260", dataQa, targetDesc);
+                }
+                
+                if (dataTestId.toLowerCase().equals(targetLower) || dataTestId.toLowerCase().equals(targetLowerNoSpaces)) {
+                    score += 260;
+                    logger.debug("EXACT data-testid match '{}' == '{}' - added +260", dataTestId, targetDesc);
+                }
+                
                 // SECONDARY: Word-by-word matching (only if no exact match found)
                 String[] targetWords = targetLower.split("\\s+");
                 for (String word : targetWords) {
                     if (word.equals("field")) continue;  // Skip the word "field"
+                    
+                    // Check if data-qa contains this word
+                    if (dataQa.toLowerCase().contains(word)) {
+                        score += 55;
+                        logger.debug("data-qa '{}' contains target word '{}' - added +55", dataQa, word);
+                    }
+                    
+                    // Check if data-testid contains this word
+                    if (dataTestId.toLowerCase().contains(word)) {
+                        score += 55;
+                        logger.debug("data-testid '{}' contains target word '{}' - added +55", dataTestId, word);
+                    }
                     
                     // Check if ID contains this word (HIGH PRIORITY but less than exact match)
                     if (idLower.contains(word)) {
