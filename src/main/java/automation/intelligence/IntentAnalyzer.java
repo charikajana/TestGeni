@@ -332,9 +332,9 @@ public class IntentAnalyzer {
         // PRIORITY 2: Special handling for 'select/choose' with list/grid context
         // "Select 'X' from list" should be SELECT, not a simple CLICK on a "list" element
         if (lowerStep.contains("select ") || lowerStep.contains("choose ")) {
-            if (lowerStep.contains("from list") || lowerStep.contains("from grid") || 
-                lowerStep.contains("from the list") || lowerStep.contains("from the grid") ||
-                lowerStep.contains("multiple items")) {
+            if (lowerStep.contains("from ") || lowerStep.contains(" in ") || lowerStep.contains(" for ") ||
+                lowerStep.contains("list") || lowerStep.contains("grid") || 
+                lowerStep.contains("dropdown") || lowerStep.contains("menu")) {
                 return ActionType.SELECT;
             }
         }
@@ -384,11 +384,17 @@ public class IntentAnalyzer {
         }
 
         // PRIORITY 5: Check if the value looks like a date (even if verb is 'enter' or 'fill')
-        // BUT avoid false positives for phone numbers
+        // BUT avoid false positives for phone numbers and dropdown selections
         String value = extractValue(step);
         if (value != null && isDateValue(value)) {
-            // Additional context check: If the field name suggests phone/mobile/number, don't treat as date
-            if (!lowerStep.contains("phone") && 
+            // Check if this is likely a dropdown selection rather than a datepicker interaction
+            boolean isSelectVerb = lowerStep.startsWith("select") || lowerStep.startsWith("choose") || 
+                                 lowerStep.contains(" select ") || lowerStep.contains(" choose ");
+            
+            // If it's a select verb and matches "select 'value' from 'target'" pattern, keep it as SELECT
+            if (isSelectVerb && lowerStep.contains(" from ")) {
+                // Let it fall through to the ACTION_VERBS check or the SELECT check below
+            } else if (!lowerStep.contains("phone") && 
                 !lowerStep.contains("mobile") && 
                 !lowerStep.contains("tel") && 
                 !lowerStep.contains("number") &&

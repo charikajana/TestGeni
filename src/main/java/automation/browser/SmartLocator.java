@@ -42,15 +42,22 @@ public class SmartLocator {
      * Wait for an element to appear, with optional scope and frame anchor
      */
     public Locator waitForSmartElement(String name, String type, Locator scope, String frameAnchor, boolean includeHidden) {
-        long deadline = System.currentTimeMillis() + 500; 
-        int maxRetries = 5; 
+        long deadline = System.currentTimeMillis() + 5000; 
+        int maxRetries = 20; 
         int retryCount = 0;
-        long lastLogTime = 0;
         
         while (System.currentTimeMillis() < deadline && retryCount < maxRetries) {
             Locator loc = findSmartElement(name, type, scope, frameAnchor, includeHidden);
-            if (loc != null && (includeHidden || loc.isVisible())) {
-                return loc;
+            if (loc != null) {
+                if (includeHidden || loc.isVisible()) {
+                    return loc;
+                } else {
+                    if (retryCount > 10) {
+                        logger.warning("Element '{}' found in DOM but remains invisible to Playwright (possibly obscured). Returning for interaction attempts.", name);
+                        return loc;
+                    }
+                    logger.debug("Element '{}' found but is not visible according to Playwright. Retrying... ({} / {})", name, retryCount, maxRetries);
+                }
             }
             
             retryCount++;

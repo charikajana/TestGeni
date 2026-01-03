@@ -57,6 +57,14 @@ public class AllFeaturesTestRunner {
             
             boolean featureSuccess = runFeature(featurePath);
             
+            // Clean up locator cache before next feature to prevent state pollution
+            try {
+                java.nio.file.Files.deleteIfExists(new File("locator_cache.json").toPath());
+                logger.debug("Cleared locator cache for next feature");
+            } catch (Exception e) {
+                logger.debug("Could not delete cache (might not exist): {}", e.getMessage());
+            }
+            
             // Small delay between features for system cleanup
             Thread.sleep(1000);
             

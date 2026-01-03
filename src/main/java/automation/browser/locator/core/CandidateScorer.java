@@ -1,13 +1,23 @@
 package automation.browser.locator.core;
 
 import automation.utils.FuzzyMatch;
+import automation.utils.LoggerUtil;
 import automation.utils.SelectorUtil;
 
 public class CandidateScorer {
 
+    private static final LoggerUtil logger = LoggerUtil.getLogger(CandidateScorer.class);
+
     public double score(ElementCandidate el, String targetName, String parsedType) {
         String name = targetName.trim();
         String lowerName = name.toLowerCase();
+        
+        // DEBUG LOGGING
+        boolean debug = lowerName.contains("years") || lowerName.contains("months") || lowerName.contains("days") 
+            || lowerName.contains("newsletter") || lowerName.contains("partners");
+        if (debug) {
+            logger.debug("[SCORER DEBUG] Target: {} Tag: {} ID: {} dataQa: {} Text: '{}' Label: '{}'", targetName, el.tag, el.id, el.dataQa, el.text, el.label);
+        }
         // pre-calculate clean name? Or do it here. 
         // Optimization: Clean name could be passed in, but doing it here keeps interface simple.
         // Enhanced clean name - remove common suffixes like "icon", "button", etc.
@@ -40,7 +50,19 @@ public class CandidateScorer {
         String cleanTargetCleaned = cleanName.replaceAll("\\s+", " ").trim().toLowerCase();
         
         boolean matchedExact = false;
-        if (cleanTarget.equals(cleanElText) || cleanTargetCleaned.equals(cleanElText)) {
+        if (name.equalsIgnoreCase(el.id) || cleanName.equalsIgnoreCase(el.id)) {
+            score += 160; // ID is very strong
+            matchedExact = true;
+        } else if (name.equalsIgnoreCase(el.dataQa) || cleanName.equalsIgnoreCase(el.dataQa)) {
+            score += 160; // data-qa is very strong
+            matchedExact = true;
+        } else if (name.equalsIgnoreCase(el.dataTestId) || cleanName.equalsIgnoreCase(el.dataTestId)) {
+            score += 160;
+            matchedExact = true;
+        } else if (name.equalsIgnoreCase(el.name) || cleanName.equalsIgnoreCase(el.name)) {
+            score += 145;
+            matchedExact = true;
+        } else if (cleanTarget.equals(cleanElText) || cleanTargetCleaned.equals(cleanElText)) {
             score += 150;
             matchedExact = true;
         } else if (name.equalsIgnoreCase(el.label) || cleanName.equalsIgnoreCase(lowerLabel)) {
@@ -52,12 +74,17 @@ public class CandidateScorer {
         } else if (name.equalsIgnoreCase(el.title) || cleanName.equalsIgnoreCase(lowerTitle)) {
             score += 140;
             matchedExact = true;
+        } else if (name.equalsIgnoreCase(el.alt) || cleanName.equalsIgnoreCase(el.alt)) {
+            score += 140;
+            matchedExact = true;
         }
         
         // Boost for specific indicator tags when looking for form elements
         if (isFill || "select".equals(parsedType) || isSlider) {
             String tag = el.tag.toLowerCase();
-            if (tag.equals("label") || tag.equals("b") || tag.equals("strong") || tag.equals("p") || tag.equals("span")) {
+            if ("select".equals(tag)) {
+                score += 50; // Native selects get a high boost for SELECT actions
+            } else if (tag.equals("label") || tag.equals("b") || tag.equals("strong") || tag.equals("p") || tag.equals("span")) {
                 score += 30; // Boost label-like elements
             }
         }
@@ -72,17 +99,10 @@ public class CandidateScorer {
                 score += 110;
             } else if (!el.placeholder.isEmpty() && (lowerName.contains(el.placeholder.toLowerCase()) || el.placeholder.toLowerCase().contains(lowerName))) {
                 score += 100;
-            } else if (name.equalsIgnoreCase(el.id) || cleanName.equalsIgnoreCase(el.id)) {
-                score += 100;
-                // STABILITY CHECK: Penalize dynamic IDs to prefer text/label matches
-                if (SelectorUtil.isDynamic(el.id)) {
-                    score -= 80; // Net boost only +20 for dynamic IDs
-                }
-            } else if (name.equalsIgnoreCase(el.name) || cleanName.equalsIgnoreCase(el.name)) {
-                score += 100;
-                if (SelectorUtil.isDynamic(el.name)) {
-                    score -= 80;
-                }
+            } else if (!el.dataQa.isEmpty() && (el.dataQa.toLowerCase().contains(lowerName) || el.dataQa.toLowerCase().contains(cleanName))) {
+                score += 110;
+            } else if (!el.dataTestId.isEmpty() && (el.dataTestId.toLowerCase().contains(lowerName) || el.dataTestId.toLowerCase().contains(cleanName))) {
+                score += 110;
             }
         }
 
@@ -137,9 +157,32 @@ public class CandidateScorer {
         }
         if (isCheck) {
             if ("input".equals(el.tag) && ("checkbox".equals(el.type) || "radio".equals(el.type))) {
-                score += 100;
+                // Check if we have ANY kind of match with the target name
+                boolean hasAnyMatch = matchedExact || lowerText.contains(lowerName) || lowerLabel.contains(lowerName) 
+                    || el.id.toLowerCase().contains(lowerName) || el.name.toLowerCase().contains(lowerName)
+                    || el.dataQa.toLowerCase().contains(lowerName);
+
+                if (hasAnyMatch) {
+                    score += 100;
+                    // Extra boost if the text or label of this checkbox EXACTLY matches
+                    if (cleanTarget.equals(cleanElText) || cleanTarget.equals(lowerLabel)) {
+                        score += 200; // Strong match for checkbox
+                    } else if (lowerText.contains(lowerName) || lowerLabel.contains(lowerName)) {
+                        score += 150; // Partial match
+                    }
+                } else {
+                    // IF we are looking for a specific name but this input has NO match, penalize it
+                    // This prevents generic radio buttons (like id_gender1) from winning just because they are inputs
+                    score -= 50; 
+                }
             } else {
-                score -= 100; // Penalize non-checkboxes for CHECK
+                // Allow common chip/tag containers with a smaller penalty
+                String tag = el.tag.toLowerCase();
+                if ("span".equals(tag) || "div".equals(tag) || "li".equals(tag) || "b".equals(tag) || "strong".equals(tag)) {
+                    score -= 50; // Smaller penalty for potential chips
+                } else {
+                    score -= 150; // Increased penalty for other non-checkboxes
+                }
             }
         }
         if (isClick) {
@@ -175,8 +218,13 @@ public class CandidateScorer {
         }
         
         // Penalty for giant containers (too much text compared to target)
-        if (text.length() > 100 && text.length() > name.length() * 5) {
-            score -= 150; // Heavy penalty for "giant" containers like root div
+        // EXEMPT: select elements because their text content is the concatenation of options
+        if (text.length() > 200 && text.length() > name.length() * 5 && !"select".equals(el.tag)) {
+            score -= 150; // Reverted to more conservative penalty
+        }
+        
+        if (debug && score > 0) {
+            logger.debug("[SCORER DEBUG] Result: {}#{} -> Score: {}", el.tag, el.id, score);
         }
         
         return score;

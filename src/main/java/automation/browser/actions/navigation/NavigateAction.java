@@ -22,7 +22,7 @@ public class NavigateAction implements BrowserAction {
         if (url != null) {
             String finalUrl = resolveUrl(page, url);
             logger.browserAction("Navigate", finalUrl);
-            page.navigate(finalUrl);
+            page.navigate(finalUrl, new com.microsoft.playwright.Page.NavigateOptions().setWaitUntil(com.microsoft.playwright.options.WaitUntilState.DOMCONTENTLOADED));
             logger.success("Navigated to: {}", finalUrl);
         } else {
             // Fallback: Try to use SmartLocator to find the element and click it
