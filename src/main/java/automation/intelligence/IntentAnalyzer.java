@@ -64,8 +64,8 @@ public class IntentAnalyzer {
         ACTION_VERBS.put("disable", ActionType.CLICK);
         
         // Expand/Collapse actions
-        ACTION_VERBS.put("expand", ActionType.CLICK);
-        ACTION_VERBS.put("collapse", ActionType.CLICK);
+        ACTION_VERBS.put("expand", ActionType.EXPAND);
+        ACTION_VERBS.put("collapse", ActionType.COLLAPSE);
         ACTION_VERBS.put("show", ActionType.CLICK);
         ACTION_VERBS.put("hide", ActionType.CLICK);
         ACTION_VERBS.put("reveal", ActionType.CLICK);
@@ -716,6 +716,8 @@ public class IntentAnalyzer {
         HOVER,
         SCROLL,
         DATE_SET,
+        EXPAND,
+        COLLAPSE,
         UNKNOWN
     }
 }

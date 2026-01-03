@@ -95,6 +95,99 @@ public class SmartLocator {
         return findSmartElement(name, parsedType, scope, frameAnchor, false);
     }
 
+    public Locator buildSmartLocator(String name, String parsedType, Locator scope, String frameAnchor, boolean includeHidden) {
+        if (name == null) return null;
+
+        String cleanName = name.trim();
+        String detectedType = parsedType;
+        
+        if (cleanName.matches("(?i).*\\s+(link|button|icon|checkbox|check box|radio|element|field|input|dropdown|drop down|select|textarea|text area|slider|range|progress bar|progressbar)$")) {
+            String[] parts = cleanName.split("\\s+");
+            String typeHint;
+            if (cleanName.toLowerCase().endsWith("progress bar")) {
+                typeHint = "progressbar";
+            } else {
+                typeHint = parts[parts.length - 1].toLowerCase();
+            }
+            
+            String mappedType = switch (typeHint) {
+                case "link" -> "link";
+                case "button" -> "button";
+                case "checkbox", "check box" -> "checkbox";
+                case "radio" -> "radio";
+                case "input", "field" -> "input";
+                case "dropdown", "drop down", "select" -> "select";
+                case "textarea", "text area" -> "textarea";
+                case "slider", "range" -> "slider";
+                case "progressbar", "progress bar" -> "progressbar";
+                case "icon" -> "element";
+                default -> parsedType;
+            };
+            
+            if (mappedType != null && !mappedType.equals(parsedType)) {
+                detectedType = mappedType;
+            }
+            cleanName = cleanName.replaceAll("(?i)\\s+(link|button|icon|checkbox|radio|element|field|input|dropdown|select|textarea|slider|range|progress bar|progressbar)$", "").trim();
+        }
+        
+        final String searchName = cleanName;
+        final String searchType = detectedType;
+        
+        if (frameAnchor != null) {
+            Frame frame = findFrame(frameAnchor);
+            if (frame != null) {
+                return findMatchesInContext(searchName, searchType, frame, null, includeHidden);
+            }
+        }
+
+        Locator loc = findMatchesInContext(searchName, searchType, null, scope, includeHidden);
+        if (loc != null && loc.count() > 0) return loc;
+
+        if (scope == null) {
+            for (Frame frame : page.frames()) {
+                if (frame == page.mainFrame()) continue;
+                if (frame.isDetached()) continue;
+                
+                loc = findMatchesInContext(searchName, searchType, frame, null, includeHidden);
+                if (loc != null && loc.count() > 0) return loc;
+            }
+        }
+
+        return null;
+    }
+
+    private Locator findMatchesInContext(String name, String parsedType, Frame frame, Locator scope, boolean includeHidden) {
+        List<ElementCandidate> elements;
+        if (scope != null) {
+            elements = docScanner.scan(scope, includeHidden);
+        } else if (frame != null) {
+            elements = docScanner.scan(frame, includeHidden);
+        } else {
+            elements = docScanner.scan(page, includeHidden);
+        }
+
+        StringBuilder xpathBuilder = new StringBuilder();
+        int foundCount = 0;
+
+        for (ElementCandidate el : elements) {
+            double score = scorer.score(el, name, parsedType);
+            if (score > 30) {
+                if (foundCount > 0) xpathBuilder.append(" | ");
+                xpathBuilder.append("(").append(el.xpath).append(")");
+                foundCount++;
+            }
+        }
+
+        if (foundCount > 0) {
+            String combinedXpath = xpathBuilder.toString();
+            if (scope != null) return scope.locator("xpath=" + combinedXpath);
+            if (frame != null) return frame.locator("xpath=" + combinedXpath);
+            return page.locator("xpath=" + combinedXpath);
+        }
+        
+        return null;
+    }
+
     public Locator findSmartElement(String name, String parsedType, Locator scope, String frameAnchor, boolean includeHidden) {
         if (name == null) return null;
 

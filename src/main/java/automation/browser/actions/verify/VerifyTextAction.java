@@ -50,8 +50,8 @@ public class VerifyTextAction implements BrowserAction {
              }
         }
         
-        // Retry logic for robustness - Extreme speed mode
-        long deadline = System.currentTimeMillis() + 500; 
+        // Retry logic for robustness - Increased timeout to 2 seconds
+        long deadline = System.currentTimeMillis() + 2000; 
         int attempt = 1;
         String lastFoundText = null;
         
@@ -126,8 +126,8 @@ public class VerifyTextAction implements BrowserAction {
             return true;
         } else {
             // Reached timeout without finding it - FAILURE
-            logger.failure("Verification failed: Text '{}' not found within 500ms", textToVerify);
-            result.match(false).actual(lastFoundText != null ? lastFoundText : "Text not found").details("Text not found after 500ms");
+            logger.failure("Verification failed: Text '{}' not found within 2 seconds", textToVerify);
+            result.match(false).actual(lastFoundText != null ? lastFoundText : "Text not found").details("Text not found after 2 seconds");
             plan.setMetadataValue("validation", result);
             return false;
         }
@@ -137,87 +137,88 @@ public class VerifyTextAction implements BrowserAction {
         // Try multiple strategies for maximum compatibility
         String foundText = null;
         String matchType = null;
-        Locator foundElement = null;
+        Locator allFound = null;
         
         // Strategy 1: Exact text match
-        foundElement = tryFindText(context, searchScope, textToVerify, true);
-        if (foundElement != null && foundElement.count() > 0) {
-            foundText = getElementText(foundElement);
+        allFound = tryFindText(context, searchScope, textToVerify, true);
+        if (allFound != null && allFound.count() > 0) {
             matchType = "EXACT";
+            Object[] result = findVisibleCandidate(allFound, matchType, textToVerify, plan);
+            if ((boolean)result[0]) return result;
         }
         
         // Strategy 2: Contains match
-        if (foundElement == null || foundElement.count() == 0) {
-            foundElement = tryFindText(context, searchScope, textToVerify, false);
-            if (foundElement != null && foundElement.count() > 0) {
-                foundText = getElementText(foundElement);
-                matchType = "CONTAINS";
-            }
+        allFound = tryFindText(context, searchScope, textToVerify, false);
+        if (allFound != null && allFound.count() > 0) {
+            matchType = "CONTAINS";
+            Object[] result = findVisibleCandidate(allFound, matchType, textToVerify, plan);
+            if ((boolean)result[0]) return result;
         }
         
         // Strategy 3: Case-insensitive match
-        if (foundElement == null || foundElement.count() == 0) {
-            foundElement = tryFindTextCaseInsensitive(context, searchScope, textToVerify);
-            if (foundElement != null && foundElement.count() > 0) {
-                foundText = getElementText(foundElement);
-                matchType = "CASE-INSENSITIVE";
-            }
+        allFound = tryFindTextCaseInsensitive(context, searchScope, textToVerify);
+        if (allFound != null && allFound.count() > 0) {
+            matchType = "CASE-INSENSITIVE";
+            Object[] result = findVisibleCandidate(allFound, matchType, textToVerify, plan);
+            if ((boolean)result[0]) return result;
         }
         
-        // Strategy 4: Value/XPath match
-        if (foundElement == null || foundElement.count() == 0) {
-            String xpath = String.format("//*[(@value='%s' or .='%s')]", textToVerify, textToVerify);
-            foundElement = getLocator(context, searchScope, xpath);
-            if (foundElement != null && foundElement.count() > 0) {
-                foundText = getElementText(foundElement);
-                matchType = "VALUE/XPATH";
-            }
+        // Strategy 4: Value match
+        String xpath = String.format("//*[(@value='%s' or .='%s')]", textToVerify, textToVerify);
+        allFound = getLocator(context, searchScope, xpath); 
+        if (allFound != null && allFound.count() > 0) {
+            matchType = "VALUE/XPATH";
+            Object[] result = findVisibleCandidate(allFound, matchType, textToVerify, plan);
+            if ((boolean)result[0]) return result;
         }
         
-        // Validate result
-        if (foundElement != null && foundElement.count() > 0) {
-            boolean visible = false;
-            try { visible = foundElement.isVisible(); } catch (Exception e) {}
+        return new Object[] { false, null };
+    }
 
-            if (visible || "VALUE/XPATH".equals(matchType) || "option".equalsIgnoreCase((String)foundElement.evaluate("el => el.tagName"))) {
+    private Object[] findVisibleCandidate(Locator allFound, String matchType, String textToVerify, ActionPlan plan) {
+        int count = allFound.count();
+        String firstHiddenText = null;
+        
+        for (int i = 0; i < count; i++) {
+            Locator candidate = allFound.nth(i);
+            boolean visible = false;
+            try { visible = candidate.isVisible(); } catch (Exception e) {}
+            
+            String foundText = getElementText(candidate);
+            if (i == 0) firstHiddenText = foundText;
+
+            if (visible || "VALUE/XPATH".equals(matchType) || "option".equalsIgnoreCase((String)candidate.evaluate("el => el.tagName"))) {
                 logger.section("VALIDATION SUCCESS");
                 logger.info(" Expected: {}", textToVerify);
                 logger.info(" Found in Element: {}", foundText);
-                logger.info(" Match Strategy: {}", matchType + (visible ? "" : " (Hidden/Value)"));
+                logger.info(" Match Strategy: {} (Candidate {}/{})", matchType, (i+1), count);
                 logger.info("--------------------------------------------------");
                 
-                plan.setMetadataValue("found_element_type", foundElement.evaluate("el => el.tagName.toLowerCase()"));
+                plan.setMetadataValue("found_element_type", candidate.evaluate("el => el.tagName.toLowerCase()"));
                 plan.setMetadataValue("found_selector", "text=\"" + foundText + "\"");
                 
-                // Phase 3: Auto-store booking references to context
-                if (isBookingReference(foundText)) {
-                    storeBookingReference(foundText);
-                }
-                
+                if (isBookingReference(foundText)) storeBookingReference(foundText);
                 return new Object[] { true, foundText };
             }
         }
-        return new Object[] { false, foundText };
+        return new Object[] { false, firstHiddenText };
     }
 
     /**
      * Helper to get locator from Page or Frame
      */
     private Locator getLocator(Object context, Locator scope, String selector) {
-        if (scope != null) return scope.locator(selector).first();
-        if (context instanceof Page) return ((Page)context).locator(selector).first();
-        if (context instanceof com.microsoft.playwright.Frame) return ((com.microsoft.playwright.Frame)context).locator(selector).first();
+        if (scope != null) return scope.locator(selector);
+        if (context instanceof Page) return ((Page)context).locator(selector);
+        if (context instanceof com.microsoft.playwright.Frame) return ((com.microsoft.playwright.Frame)context).locator(selector);
         return null;
     }
-
-    /**
-     * Try to find text using exact or contains match
-     */
+    
     private Locator tryFindText(Object context, Locator scope, String text, boolean exact) {
         try {
-            if (scope != null) return scope.getByText(text, new Locator.GetByTextOptions().setExact(exact)).first();
-            if (context instanceof Page) return ((Page)context).getByText(text, new Page.GetByTextOptions().setExact(exact)).first();
-            if (context instanceof com.microsoft.playwright.Frame) return ((com.microsoft.playwright.Frame)context).getByText(text, new com.microsoft.playwright.Frame.GetByTextOptions().setExact(exact)).first();
+            if (scope != null) return scope.getByText(text, new Locator.GetByTextOptions().setExact(exact));
+            if (context instanceof Page) return ((Page)context).getByText(text, new Page.GetByTextOptions().setExact(exact));
+            if (context instanceof com.microsoft.playwright.Frame) return ((com.microsoft.playwright.Frame)context).getByText(text, new com.microsoft.playwright.Frame.GetByTextOptions().setExact(exact));
         } catch (Exception e) {}
         return null;
     }

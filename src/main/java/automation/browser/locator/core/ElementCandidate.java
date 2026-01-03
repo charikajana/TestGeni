@@ -15,6 +15,7 @@ public class ElementCandidate {
     public String dataQa = "";
     public String dataTestId = "";
     public String alt = "";
+    public String xpath = "";
     public boolean visible = false;
 
     public ElementCandidate() {}

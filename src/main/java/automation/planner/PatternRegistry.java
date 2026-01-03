@@ -42,7 +42,16 @@ public class PatternRegistry {
         register.add("navigate_app", 
             "(?i)^(?:given|when|then|and|but)?\\s*(?:I|user|we|he|she|they)?\\s*(?:open|launch)\\s+(?:the\\s+)?browser\\s+and\\s+navigate\\s+to\\s+(.+)$", 
             1, -1, -1);
-
+        
+        // Expand/Collapse Patterns
+        register.add("expand",
+            "(?i)^(?:given|when|then|and|but)?\\s*(?:I|user|we|he|she|they)?\\s*(?:expand|unfold|open)\\s+(?:the\\s+)?[\"']?([^\"']+)[\"']?",
+            1, -1, -1);
+            
+        register.add("collapse",
+            "(?i)^(?:given|when|then|and|but)?\\s*(?:I|user|we|he|she|they)?\\s*(?:collapse|fold|close)\\s+(?:the\\s+)?[\"']?([^\"']+)[\"']?",
+            1, -1, -1);
+ 
         // ========================================
         // SCROLL PATTERNS
         // ========================================

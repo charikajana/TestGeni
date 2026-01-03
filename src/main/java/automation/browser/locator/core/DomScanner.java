@@ -46,6 +46,21 @@ public class DomScanner {
                 "    includeHidden = maybeHidden || false;" +
                 "  }" +
                 "  const candidates = Array.from(base.querySelectorAll('button, a, input, textarea, select, [role=\"button\"], label, li, span, div, p, h1, h2, h3, h4, h5, h6, b, strong, i, em'));" +
+                        "  const getXPath = (el) => {" +
+                "    if (!el) return null;" +
+                "    if (el.id) return `//*[@id=\"${el.id}\"]`;" +
+                "    const parts = [];" +
+                "    while (el && el.nodeType === 1) {" +
+                "      let index = 0;" +
+                "      for (let sibling = el.previousSibling; sibling; sibling = sibling.previousSibling) {" +
+                "        if (sibling.nodeType === 1 && sibling.tagName === el.tagName) index++;" +
+                "      }" +
+                "      parts.unshift(`${el.tagName.toLowerCase()}[${index + 1}]`);" +
+                "      el = el.parentNode;" +
+                "    }" +
+                "    return parts.length ? `/${parts.join('/')}` : null;" +
+                "  };" +
+                "  " +
                 "  return candidates.map(el => {" +
                 "    const rect = el.getBoundingClientRect();" +
                 "    const hasDimension = rect.width > 0 && rect.height > 0;" +
@@ -55,17 +70,14 @@ public class DomScanner {
                 "    " +
                 "    let labelText = '';" +
                 "    if (['input', 'select', 'textarea'].includes(el.tagName.toLowerCase())) {" +
-                "      // 1. Try label with 'for' attribute\n" +
                 "      if (el.id) {" +
                 "        const label = document.querySelector('label[for=\"' + el.id + '\"]');" +
                 "        if (label) labelText = label.innerText || label.textContent;" +
                 "      }" +
-                "      // 2. Try parent label\n" +
                 "      if (!labelText) {" +
                 "        const parentLabel = el.closest('label');" +
                 "        if (parentLabel) labelText = parentLabel.innerText || parentLabel.textContent;" +
                 "      }" +
-                "      // 3. Try aria-label from el or context\n" +
                 "      if (!labelText) labelText = el.getAttribute('aria-label') || '';" +
                 "    }" +
                 "" +
@@ -84,6 +96,7 @@ public class DomScanner {
                 "      dataQa: el.getAttribute ? el.getAttribute('data-qa') || '' : ''," +
                 "      dataTestId: el.getAttribute ? el.getAttribute('data-testid') || '' : ''," +
                 "      alt: el.alt || (el.getAttribute ? el.getAttribute('alt') || '' : '')," +
+                "      xpath: getXPath(el)," +
                 "      visible: isVisible" +
                 "    };" +
                 "  }).filter(item => item !== null);" +
@@ -92,20 +105,15 @@ public class DomScanner {
         Object result = new ArrayList<>();
         try {
             if (scope != null) {
-                // calls js(element, includeHidden)
                 result = scope.evaluate(js, includeHidden);
             } else if (frame != null) {
                 if (!frame.isDetached()) {
-                    // calls js(includeHidden)
                     result = frame.evaluate(js, includeHidden);
                 }
             } else {
-                // calls js(includeHidden)
                 result = page.evaluate(js, includeHidden);
             }
         } catch (Exception e) {
-            // Log and return empty results for detached frames or cross-origin issues
-            // System.err.println("Warning: Frame detachment or security error during scan: " + e.getMessage());
             return new ArrayList<>();
         }
 
@@ -129,6 +137,7 @@ public class DomScanner {
             c.dataQa = String.valueOf(map.getOrDefault("dataQa", ""));
             c.dataTestId = String.valueOf(map.getOrDefault("dataTestId", ""));
             c.alt = String.valueOf(map.getOrDefault("alt", ""));
+            c.xpath = String.valueOf(map.getOrDefault("xpath", ""));
             Object vis = map.get("visible");
             c.visible = vis != null && Boolean.parseBoolean(String.valueOf(vis));
             candidates.add(c);

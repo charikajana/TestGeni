@@ -191,7 +191,9 @@ public class IntelligentStepProcessor {
                 
             case HOVER:
             case SCROLL:
-                // Hover and Scroll use same element selection logic as Click
+            case EXPAND:
+            case COLLAPSE:
+                // Hover, Scroll, Expand, and Collapse use same element selection logic as Click
                 return clickMatcher.findBestMatch(page, intent);
                 
             default:
@@ -208,6 +210,8 @@ public class IntelligentStepProcessor {
                action == IntentAnalyzer.ActionType.VERIFY ||
                action == IntentAnalyzer.ActionType.HOVER ||
                action == IntentAnalyzer.ActionType.SCROLL ||
+               action == IntentAnalyzer.ActionType.EXPAND ||
+               action == IntentAnalyzer.ActionType.COLLAPSE ||
                action == IntentAnalyzer.ActionType.DATE_SET;
     }
     
@@ -260,6 +264,8 @@ public class IntelligentStepProcessor {
             case HOVER: return "hover";
             case SCROLL: return "scroll";
             case DATE_SET: return "set_date";
+            case EXPAND: return "expand";
+            case COLLAPSE: return "collapse";
             default: return "unknown";
         }
     }
