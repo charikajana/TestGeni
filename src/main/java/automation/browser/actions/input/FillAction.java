@@ -83,7 +83,7 @@ public class FillAction implements BrowserAction {
                                 targetLower.contains(idLower) || targetLower.contains(nameLower);
             
             if (!matchFound && !actualId.isEmpty()) {
-                logger.warn("⚠️ POTENTIAL FALSE POSITIVE: Target='{}' but filling field ID='{}' name='{}'. These don't match!",
+                logger.warn("POTENTIAL FALSE POSITIVE: Target='{}' but filling field ID='{}' name='{}'. These don't match!",
                     targetName, actualId, actualName);
             }
             
