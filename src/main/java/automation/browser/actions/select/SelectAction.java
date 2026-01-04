@@ -36,7 +36,7 @@ public class SelectAction implements BrowserAction {
         logger.info("Finding element: '{}'", dropdownLabel);
         
         // Step 1: Find the element using smart locator
-        Locator dropdownWrapper = locator.waitForSmartElement(dropdownLabel, "select", scope, plan.getFrameAnchor());
+        Locator dropdownWrapper = locator.waitForSmartElement(dropdownLabel, "select", scope, plan.getFrameAnchor(), plan.getParentAnchor());
         
         if (dropdownWrapper != null) {
             locator.recordMatch(plan);

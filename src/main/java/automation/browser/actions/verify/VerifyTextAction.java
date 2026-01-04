@@ -39,6 +39,8 @@ public class VerifyTextAction implements BrowserAction {
         
         // Determine search scope once
         Locator searchScope = null;
+        
+        // 1. Row scoping (highest priority)
         if (plan.getRowAnchor() != null) {
              TableNavigator navigator = new TableNavigator();
              searchScope = navigator.findRowByAnchor(page, plan.getRowAnchor());
@@ -47,6 +49,15 @@ public class VerifyTextAction implements BrowserAction {
                  result.match(false).elementFound(false).details("Row not found for anchor: " + plan.getRowAnchor());
                  plan.setMetadataValue("validation", result);
                  return false;
+             }
+        }
+        
+        // 2. Parent/Element scoping (next priority)
+        if (plan.getParentAnchor() != null && searchScope == null) {
+             logger.debug("Scoping verification to parent: '{}'", plan.getParentAnchor());
+             searchScope = locator.findSmartElement(plan.getParentAnchor(), "element", null, plan.getFrameAnchor(), null, true);
+             if (searchScope == null) {
+                  logger.warning("Parent anchor '{}' not found for verification. Searching globally...", plan.getParentAnchor());
              }
         }
         

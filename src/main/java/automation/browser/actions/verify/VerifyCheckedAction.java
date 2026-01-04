@@ -60,7 +60,7 @@ public class VerifyCheckedAction implements BrowserAction {
             String target = itemText.trim();
             if (target.isEmpty()) continue;
 
-            Locator element = locator.waitForSmartElement(target, "checkbox", scope, plan.getFrameAnchor(), true);
+            Locator element = locator.waitForSmartElement(target, "checkbox", scope, plan.getFrameAnchor(), plan.getParentAnchor(), true);
             
             if (element != null) {
                 // Small wait to allow state change if it was just clicked

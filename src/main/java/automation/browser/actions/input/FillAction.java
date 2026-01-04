@@ -49,7 +49,7 @@ public class FillAction implements BrowserAction {
         }
         
         // 3. Find element using SmartLocator
-        Locator input = locator.waitForSmartElement(targetName, "input", scope, plan.getFrameAnchor());
+        Locator input = locator.waitForSmartElement(targetName, "input", scope, plan.getFrameAnchor(), plan.getParentAnchor());
         if (input != null) {
             locator.recordMatch(plan);
             return performFill(input, targetName, value);
@@ -65,6 +65,28 @@ public class FillAction implements BrowserAction {
     private boolean performFill(Locator input, String targetName, String value) {
         String expectedValue = value != null ? value : "";
         try {
+            // Get the actual field information for validation logging
+            String actualId = (String) input.evaluate("el => el.id || ''");
+            String actualName = (String) input.evaluate("el => el.name || ''");
+            String actualPlaceholder = (String) input.evaluate("el => el.placeholder || ''");
+            
+            // CRITICAL: Log what field we're actually filling to detect false positives
+            logger.info("Filling field: Target='{}', ActualID='{}', ActualName='{}', Placeholder='{}'", 
+                targetName, actualId, actualName, actualPlaceholder);
+            
+            // VALIDATION: Warn if target doesn't match actual field
+            String targetLower = targetName.toLowerCase().replaceAll("\\s+", "");
+            String idLower = actualId.toLowerCase();
+            String nameLower = actualName.toLowerCase();
+            
+            boolean matchFound = idLower.contains(targetLower) || nameLower.contains(targetLower) || 
+                                targetLower.contains(idLower) || targetLower.contains(nameLower);
+            
+            if (!matchFound && !actualId.isEmpty()) {
+                logger.warn("⚠️ POTENTIAL FALSE POSITIVE: Target='{}' but filling field ID='{}' name='{}'. These don't match!",
+                    targetName, actualId, actualName);
+            }
+            
             // Perform the fill
             input.fill(expectedValue);
             

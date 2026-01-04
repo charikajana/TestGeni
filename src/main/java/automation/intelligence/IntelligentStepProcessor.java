@@ -106,11 +106,24 @@ public class IntelligentStepProcessor {
      * @return ActionPlan ready for execution
      */
     public ActionPlan processStep(String step, Page page, SmartLocator smartLocator) {
-        // Try intelligent processing
-        ActionPlan intelligentPlan = tryIntelligentProcessing(step, page);
+        long startTime = System.currentTimeMillis();
+        long HARD_TIMEOUT_MS = 2000; // Strict 2 second limit for intelligence layer
         
-        if (intelligentPlan != null && intelligentPlan.isValid()) {
-            return intelligentPlan;
+        try {
+            // Try intelligent processing
+            ActionPlan intelligentPlan = tryIntelligentProcessing(step, page);
+            
+            long duration = System.currentTimeMillis() - startTime;
+            if (duration > HARD_TIMEOUT_MS) {
+                logger.warn("Intelligence layer EXCEEDED timeout ({}ms) for step: {}", duration, step);
+                return null; // Force fallback
+            }
+
+            if (intelligentPlan != null && intelligentPlan.isValid()) {
+                return intelligentPlan;
+            }
+        } catch (Exception e) {
+            logger.warn("Intelligence layer failed: {} - falling back to patterns", e.getMessage());
         }
         
         // Return null to signal fallback needed (handled by SmartStepParser)
@@ -223,12 +236,18 @@ public class IntelligentStepProcessor {
         plan.setTarget(intent.getOriginalStep());
         
         // Map intelligent action type to legacy action type
-        String actionType = mapActionType(intent.getActionType());
+        String actionType = mapActionType(intent);
         plan.setActionType(actionType);
         
         // Set element and value
         plan.setElementName(intent.getTargetDescription());
         plan.setValue(intent.getValue());
+        
+        // Pass parent/scope information (avoid redundant scoping if target == parent)
+        if (intent.getParentReference() != null && 
+            (intent.getTargetDescription() == null || !intent.getParentReference().equalsIgnoreCase(intent.getTargetDescription()))) {
+            plan.setParentAnchor(intent.getParentReference());
+        }
         
         // Set negation flag (for negative assertions like "not displayed")
         plan.setNegated(intent.isNegated());
@@ -253,11 +272,17 @@ public class IntelligentStepProcessor {
     /**
      * Map intelligent action type to legacy system
      */
-    private String mapActionType(IntentAnalyzer.ActionType actionType) {
+    private String mapActionType(StepIntent intent) {
+        IntentAnalyzer.ActionType actionType = intent.getActionType();
         switch (actionType) {
             case CLICK: return "click";
             case FILL: return "fill";
-            case VERIFY: return "verify";
+            case VERIFY: 
+                // If we have both an element and a value, it's likely a verify_value action
+                if (intent.getTargetDescription() != null && intent.getValue() != null) {
+                    return "verify_value";
+                }
+                return "verify";
             case SELECT: return "select";
             case NAVIGATE: return "navigate";
             case WAIT: return "wait";
@@ -286,10 +311,10 @@ public class IntelligentStepProcessor {
     private boolean isBrowserLevelAction(String step) {
         String lowerStep = step.toLowerCase();
         
-        // Alert/confirm/prompt keywords
+        // Alert/confirm/prompt/screenshot keywords
         String[] browserKeywords = {
             "alert", "confirm", "prompt", 
-            "dialog", "popup",
+            "dialog", "popup", "screenshot", "screen shot",
             "accept alert", "dismiss alert", "verify alert",
             "accept confirm", "dismiss confirm",
             

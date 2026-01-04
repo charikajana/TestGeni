@@ -83,14 +83,14 @@ Feature: Comprehensive Dropdown/Select Testing - All Frameworks
 
   Scenario: Test React-Select Single Selection Dropdown
     # React-Select for title selection
-    When Select "Dr." from "Select One"
+    When Select "Dr." from Select One
     Then Verify "Dr." is displayed
     
-    When Select "Mr." from "Select One"
+    When Select "Mr." from Select One
     Then Verify "Mr." is displayed
     
-    When Select "Mrs." from "Select One"
+    When Select "Mrs." from Select One
     Then Verify "Mrs." is displayed
     
-    When Select "Prof." from "Select One"
+    When Select "Prof." from Select One
     Then Verify "Prof." is displayed   

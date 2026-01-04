@@ -6,5 +6,6 @@ Feature: Hover and Mouse Interactions
     When user places cursor on "Electronics"
     And focus on "Powerbank"
     And I click on "Powerbank"
+    And wait for 5 seconds
     Then Verify URL contains "power-banks"
 

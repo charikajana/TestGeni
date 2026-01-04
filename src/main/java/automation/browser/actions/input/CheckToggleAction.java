@@ -23,7 +23,7 @@ public class CheckToggleAction implements BrowserAction {
         
         logger.info("{} element: {}", isCheck ? "Checking" : "Unchecking", targetName);
         
-        Locator checkbox = locator.waitForSmartElement(targetName, "checkbox", null, plan.getFrameAnchor(), true);
+        Locator checkbox = locator.waitForSmartElement(targetName, "checkbox", null, plan.getFrameAnchor(), plan.getParentAnchor(), true);
         
         if (checkbox == null) {
             logger.failure("Checkbox not found: {}", targetName);

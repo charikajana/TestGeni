@@ -47,7 +47,7 @@ public class VerifyEnablementAction implements BrowserAction {
         }
 
         // Find the element
-        Locator element = locator.waitForSmartElement(targetName, null, scope, plan.getFrameAnchor(), true);
+        Locator element = locator.waitForSmartElement(targetName, null, scope, plan.getFrameAnchor(), plan.getParentAnchor(), true);
         
         automation.reporting.StepExecutionReport.ValidationResult result = 
             new automation.reporting.StepExecutionReport.ValidationResult()

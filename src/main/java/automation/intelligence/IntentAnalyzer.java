@@ -253,6 +253,10 @@ public class IntentAnalyzer {
         String elementType = extractElementType(cleanStep);
         intent.setElementType(elementType);
         
+        // Extract parent reference (e.g., "inside 'Form'")
+        String parentRef = extractParentReference(cleanStep);
+        intent.setParentReference(parentRef);
+        
         logger.info("Intent: {} -> Target='{}' Values={} Type='{}'", 
             actionType, target, values, elementType);
         
@@ -391,10 +395,15 @@ public class IntentAnalyzer {
             boolean isSelectVerb = lowerStep.startsWith("select") || lowerStep.startsWith("choose") || 
                                  lowerStep.contains(" select ") || lowerStep.contains(" choose ");
             
+            // For date-like values, we only want to classify as DATE_SET if the verb is associated with setting/filling
+            boolean isFillVerb = lowerStep.startsWith("enter") || lowerStep.startsWith("fill") || lowerStep.startsWith("set") ||
+                                lowerStep.startsWith("type") || lowerStep.contains(" enter ") || lowerStep.contains(" fill ") || 
+                                lowerStep.contains(" set ") || lowerStep.contains(" type ");
+
             // If it's a select verb and matches "select 'value' from 'target'" pattern, keep it as SELECT
             if (isSelectVerb && lowerStep.contains(" from ")) {
-                // Let it fall through to the ACTION_VERBS check or the SELECT check below
-            } else if (!lowerStep.contains("phone") && 
+                // Let it fall through
+            } else if (isFillVerb && !lowerStep.contains("phone") && 
                 !lowerStep.contains("mobile") && 
                 !lowerStep.contains("tel") && 
                 !lowerStep.contains("number") &&
@@ -457,7 +466,7 @@ public class IntentAnalyzer {
             
             // Preposition Pivot: Find the last preposition that likely separates values/verbs from the target
             // e.g. "Select 'A' and 'B' FROM 'Dropdown'" or "Set value TO 'X'"
-            Pattern pivotPattern = Pattern.compile("(?i)(.*)\\b(from|in|into|of|for|within|on|to|at)\\b\\s+(.+)$");
+            Pattern pivotPattern = Pattern.compile("(?i)(.*)\\b(from|in|into|of|for|within|inside|on|to|at|as)\\b\\s+(.+)$");
             Matcher pivotMatcher = pivotPattern.matcher(target);
             
             if (pivotMatcher.find()) {
@@ -466,7 +475,7 @@ public class IntentAnalyzer {
                 String targetPart = pivotMatcher.group(3);
                 
                 // Rule-based target selection
-                if (prep.equals("to") || prep.equals("as") || prep.equals("at")) {
+                if (prep.equals("to") || prep.equals("at")) {
                     // "Set [TARGET] to [VALUE]" or "Enter [VALUE] at [TARGET]"
                     // If targetPart is quoted, it's likely the value. So target is contextPart.
                     if (targetPart.contains("\"") || targetPart.contains("'")) {
@@ -475,6 +484,23 @@ public class IntentAnalyzer {
                         // "Enter [VALUE] as [TARGET]"
                         target = targetPart;
                     } else {
+                        target = contextPart;
+                    }
+                } else if (prep.equals("as")) {
+                    // "Enter [VALUE] as [TARGET]"
+                    // If contextPart contains common field names, it's likely the target
+                    if (contextPart.toLowerCase().contains("name") || contextPart.toLowerCase().contains("email") || contextPart.toLowerCase().contains("phone")) {
+                         target = contextPart;
+                    } else {
+                         target = targetPart;
+                    }
+                } else if (prep.equals("inside") || prep.equals("within") || prep.equals("on") || prep.equals("under")) {
+                    // "Click [TARGET] inside [PARENT]" or "Fill [VALUE] inside [TARGET]"
+                    // If it's a FILL action, contextPart is likely the VALUE, so target is targetPart
+                    if (actionType == ActionType.FILL || actionType == ActionType.DATE_SET) {
+                        target = targetPart;
+                    } else {
+                        // For CLICK, VERIFY, HOVER, etc., contextPart is the TARGET
                         target = contextPart;
                     }
                 } else {
@@ -510,7 +536,7 @@ public class IntentAnalyzer {
         // Remove trailing "as" keyword (for "Enter First Name as 'value'" syntax)
         target = target.replaceAll("(?i)\\s+as\\s*$", "").trim();
         // Also remove "as" + everything after it (handles "First Name as Doe" after value extraction)
-        target = target.replaceAll("(?i)\\s+as\\s+.*$", "").trim();
+        target = target.replaceAll("(?i)\\s+as(?:\\s+.*)?$", "").trim();
         
         // Remove container phrases (e.g., "in the left menu", "on the sidebar")
         target = target.replaceAll("(?i)\\b(in|on|within|inside)\\s+(?:the\\s+)?(left\\s+menu|right\\s+menu|sidebar|navbar|header|footer|menu|top\\s+bar|toolbar|main\\s+content)\\b", "").trim();
@@ -520,6 +546,10 @@ public class IntentAnalyzer {
         
         // Normalize whitespace (reduce multiple spaces to single space)
         target = target.replaceAll("\\s+", " ").trim();
+        
+        // Remove parent scoping phrases if they exist (e.g. "inside 'Form'")
+        // We match (inside|within|on|in|under) ["']?Parent["']?
+        target = target.replaceAll("(?i)\\b(inside|within|on|under)\\s+[\"']?([^\"']+)[\"']?", "").trim();
         
         // For FILL/DATE_SET/VERIFY actions, extract text after "in"/"into"/"for" BEFORE removing pronouns
         // This is critical because pronouns may appear before "in" (e.g., "I in full name")
@@ -663,6 +693,27 @@ public class IntentAnalyzer {
             if (lowerStep.contains(type)) {
                 return type;
             }
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Extract parent reference from phrases like "inside 'Form'", "within the sidebar"
+     */
+    private String extractParentReference(String step) {
+        // Priority 1: Quoted parent after scoping word
+        Pattern quotedParent = Pattern.compile("(?i)\\b(inside|within|on|under|at)\\s+(?:the\\s+)?(?:element|section|container|block|div|span|area|group|form)?\\s*[\"']([^\"']+)[\"']", Pattern.CASE_INSENSITIVE);
+        Matcher m1 = quotedParent.matcher(step);
+        if (m1.find()) {
+            return m1.group(2);
+        }
+        
+        // Priority 2: Named common containers (legacy/semantic)
+        Pattern namedParent = Pattern.compile("(?i)\\b(inside|within|on|in)\\s+(?:the\\s+)?(left\\s+menu|right\\s+menu|sidebar|navbar|header|footer|menu|top\\s+bar|toolbar|main\\s+content|registration\\s+form|login\\s+box|search\\s+bar|nav)\\b", Pattern.CASE_INSENSITIVE);
+        Matcher m2 = namedParent.matcher(step);
+        if (m2.find()) {
+            return m2.group(2);
         }
         
         return null;

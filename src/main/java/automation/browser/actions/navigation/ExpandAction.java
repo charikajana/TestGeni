@@ -24,7 +24,7 @@ public class ExpandAction implements BrowserAction {
         }
         
         logger.info("Expanding: '{}'", elementName);
-        Locator allMatches = locator.buildSmartLocator(elementName, "button", null, plan.getFrameAnchor(), true);
+        Locator allMatches = locator.buildSmartLocator(elementName, "button", null, plan.getFrameAnchor(), plan.getParentAnchor(), true);
         
         if (allMatches == null || allMatches.count() == 0) {
             logger.failure("Could not find any element matching '{}' to expand", elementName);
@@ -117,70 +117,68 @@ public class ExpandAction implements BrowserAction {
                "  };" +
                "  \n" +
                "  const checkState = () => {" +
-               "    // Priority: aria-expanded\n" +
+               "    // Priority: Explicit aria states\n" +
                "    if (el.getAttribute('aria-expanded') === 'true') return true;" +
                "    if (el.tagName === 'DETAILS' && el.open) return true;" +
                "    \n" +
-               "    // Priority: Sub-content visibility (ARIA controls)\n" +
-               "    const controls = el.getAttribute('aria-controls') || el.getAttribute('aria-owns');" +
-               "    if (controls && isVisible(document.getElementById(controls))) return true;" +
-               "    \n" +
-               "    // Priority: Immediate next sibling visibility (Deque/Common pattern)\n" +
-               "    const next = el.nextElementSibling;" +
-               "    if (next && (next.tagName === 'CODE' || next.tagName === 'PRE' || next.classList.contains('compblock') || next.classList.contains('content'))) {" +
-               "      if (isVisible(next)) return true;" +
-               "    }" +
-               "    \n" +
-               "    // Priority: Nested group visibility\n" +
-               "    const group = el.querySelector('ul, ol, [role=\"group\"], [role=\"menu\"], .submenu, .collapse.show');" +
-               "    if (group && isVisible(group)) return true;" +
-               "    \n" +
-               "    // Priority: Parent container checkbox/radio hack\n" +
+               "    // Priority: Checkbox hack (EvilTester pattern)\n" +
                "    const container = el.closest('li') || el.closest('section') || el.parentElement;" +
                "    const cb = container?.querySelector('input[type=\"checkbox\"], input[type=\"radio\"]');" +
                "    if (cb && cb.checked) return true;" +
                "    \n" +
-               "    // Fallback: Class-based open indicators (riskier)\n" +
-               "    const openClasses = ['expanded', 'open', 'is-open', 'active', 'show'];" +
+               "    // Priority: Child/Sibling visibility\n" +
+               "    const controls = el.getAttribute('aria-controls') || el.getAttribute('aria-owns');" +
+               "    if (controls && isVisible(document.getElementById(controls))) return true;" +
+               "    \n" +
+               "    const next = el.nextElementSibling || el.parentElement?.nextElementSibling;" +
+               "    if (next && (next.tagName === 'UL' || next.tagName === 'DIV' || next.tagName === 'CODE' || next.classList.contains('foldable')) && isVisible(next)) return true;" +
+               "    \n" +
+               "    // Priority: Internal group\n" +
+               "    const group = el.querySelector('ul, [role=\"group\"], .submenu, .collapse.show');" +
+               "    if (group && isVisible(group)) return true;" +
+               "    \n" +
+               "    // Fallback: Class-based open indicators (EXCLUDING 'active' for reliability)\n" +
+               "    const openClasses = ['expanded', 'open', 'is-open', 'collapse.show', 'submenu-visible'];" +
                "    const myClasses = [...el.classList, ...(el.parentElement?.classList || [])];" +
-               "    if (myClasses.some(c => openClasses.some(o => c.toLowerCase().includes(o)))) {" +
-               "       // Only trust class-based if we have aria-expanded check above or exact text match later\n" +
-               "       return true;" +
-               "    }\n" +
+               "    if (myClasses.some(c => openClasses.some(o => c.toLowerCase().includes(o)))) return true;" +
+               "    \n" +
                "    return false;" +
                "  };" +
                "  \n" +
                "  const text = norm(el.innerText || el.textContent);" +
                "  const name = norm(el.getAttribute('name') || el.getAttribute('aria-label') || el.id);" +
-               "  const isExactMatch = (text === t || name === t || text.includes(t));" +
+               "  const isMatch = (text === t || name === t || text.includes(t) || name.includes(t));" +
                "  \n" +
                "  // If already expanded AND matches the target text, return success\n" +
-               "  if (checkState() && isExactMatch) return true;" +
-               "  \n" +
-               "  // If it doesn't match the target text and it's just some random button, skip it to avoid false positive\n" +
-               "  if (!isExactMatch && !el.hasAttribute('aria-expanded')) return false;" +
+               "  if (checkState() && isMatch) return true;" +
                "  \n" +
                "  // Interaction\n" +
                "  try {\n" +
-               "    const icon = el.querySelector('i, svg, [class*=\"icon\"], [class*=\"arrow\"], [class*=\"plus\"]');\n" +
-               "    if (icon && isVisible(icon)) icon.click();\n" +
-               "    else el.click();\n" +
+               "    // Detect checkbox hack and find correct toggle target\n" +
+               "    const container = el.closest('li') || el.closest('section') || el.parentElement;" +
+               "    const cb = container?.querySelector('input[type=\"checkbox\"], input[type=\"radio\"]');" +
+               "    const labelForCb = cb && cb.id ? document.querySelector(`label[for=\"${cb.id}\"]`) : null;" +
+               "    const icon = el.querySelector('i, svg, [class*=\"icon\"], [class*=\"arrow\"], [class*=\"chevron\"], [class*=\"toggle\"]');" +
                "    \n" +
-               "    // Label support\n" +
-               "    if (el.tagName === 'LABEL' && el.htmlFor) {\n" +
-               "      const cb = document.getElementById(el.htmlFor);\n" +
-               "      if (cb) cb.checked = true;\n" +
-               "    }\n" +
-               "  } catch(e) {}\n" +
+               "    if (icon && isVisible(icon)) {" +
+               "       icon.click();" +
+               "    } else if (labelForCb && isVisible(labelForCb)) {" +
+               "       labelForCb.click();" +
+               "    } else if (el.tagName === 'A' && el.parentElement.tagName === 'LABEL') {" +
+               "       el.parentElement.click();" +
+               "    } else {" +
+               "       el.click();" +
+               "    }" +
+               "  } catch(e) {}" +
                "  \n" +
                "  return new Promise(resolve => {\n" +
                "    let start = Date.now();\n" +
                "    const poll = () => {\n" +
                "      if (checkState()) return resolve(true);\n" +
-               "      if (Date.now() - start > 2500) return resolve(false);\n" +
+               "      if (Date.now() - start > 3000) return resolve(false);\n" +
                "      requestAnimationFrame(poll);\n" +
                "    };\n" +
-               "    poll();\n" +
+               "    poll();" +
                "  });" +
                "}";
     }

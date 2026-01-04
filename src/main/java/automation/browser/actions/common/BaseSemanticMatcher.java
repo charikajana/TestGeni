@@ -117,21 +117,49 @@ public abstract class BaseSemanticMatcher {
     }
     
     /**
-     * Helper class to store elements with their scores
+     * Helper class to store elements with their scores.
+     * Supports both Playwright Locator and offline ElementCandidate data for performance.
      */
     public static class ScoredElement {
         private final Locator locator;
         private final String type;
         private String text;
-        
+        private String id;
+        private String className;
+        private String name;
+        private String placeholder;
+        private String label;
+        private String title;
+        private String dataQa;
+
         public ScoredElement(Locator locator, String type) {
             this.locator = locator;
             this.type = type;
         }
-        
+
+        public ScoredElement(Locator locator, automation.browser.locator.core.ElementCandidate candidate) {
+            this.locator = locator;
+            this.type = candidate.tag;
+            this.text = candidate.text;
+            this.id = candidate.id;
+            this.className = candidate.className;
+            this.name = candidate.name;
+            this.placeholder = candidate.placeholder;
+            this.label = candidate.label;
+            this.title = candidate.title;
+            this.dataQa = candidate.dataQa;
+        }
+
         public Locator getLocator() { return locator; }
         public String getType() { return type; }
-        
+        public String getId() { return id != null ? id : ""; }
+        public String getClassName() { return className != null ? className : ""; }
+        public String getName() { return name != null ? name : ""; }
+        public String getPlaceholder() { return placeholder != null ? placeholder : ""; }
+        public String getLabel() { return label != null ? label : ""; }
+        public String getTitle() { return title != null ? title : ""; }
+        public String getDataQa() { return dataQa != null ? dataQa : ""; }
+
         public String getText() {
             if (text == null) {
                 try {

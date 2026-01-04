@@ -16,6 +16,7 @@ public class StepIntent {
     private String value;
     private java.util.List<String> values = new java.util.ArrayList<>();
     private String elementType;
+    private String parentReference; // NEW: For "Click X inside Y"
     private boolean isNegated = false;  // For negative assertions (e.g., "not displayed")
     private Map<String, String> modifiers;
     
@@ -87,6 +88,14 @@ public class StepIntent {
     
     public void setElementType(String elementType) {
         this.elementType = elementType;
+    }
+    
+    public String getParentReference() {
+        return parentReference;
+    }
+    
+    public void setParentReference(String parentReference) {
+        this.parentReference = parentReference;
     }
     
     public boolean isNegated() {

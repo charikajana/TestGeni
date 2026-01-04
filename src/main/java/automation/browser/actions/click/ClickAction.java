@@ -51,7 +51,7 @@ public class ClickAction implements BrowserAction {
          }
         
         // 3. Find element using SmartLocator
-        Locator clickable = locator.waitForSmartElement(targetName, "button", scope, plan.getFrameAnchor());
+        Locator clickable = locator.waitForSmartElement(targetName, "button", scope, plan.getFrameAnchor(), plan.getParentAnchor());
         
         if (clickable != null) {
             locator.recordMatch(plan);
@@ -73,13 +73,57 @@ public class ClickAction implements BrowserAction {
      */
     private boolean performClick(Locator clickable, String targetName) {
         try {
+            logger.debug("[PERFORMCLICK] Starting click on: {}", targetName);
             String tagName = (String) clickable.evaluate("el => el.tagName.toLowerCase()");
+            logger.debug("[PERFORMCLICK] Element tagName: {}", tagName);
             String type = (String) clickable.evaluate("el => el.type");
+            logger.debug("[PERFORMCLICK] Element type: {}", type);
 
             if ("input".equals(tagName) && ("radio".equals(type) || "checkbox".equals(type))) {
-                logger.debug("Target is input[type={}], using force click", type);
+                logger.debug("Target is input[type={}], attempting label-based click", type);
+                
+                // For radio/checkbox, ALWAYS try to click the label first (best practice)
+                // This works for both custom-styled and native radio/checkbox elements
+                
+                // Strategy 1: Try to find label by 'for' attribute
+                String inputId = (String) clickable.evaluate("el => el.id");
+                logger.debug("[PERFORMCLICK] Input ID: {}", inputId);
+                if (inputId != null && !inputId.isEmpty()) {
+                    try {
+                        Locator label = clickable.page().locator("label[for='" + inputId + "']");
+                        int labelCount = label.count();
+                        logger.debug("[PERFORMCLICK] Found {} label(s) for input#{}", labelCount, inputId);
+                        if (labelCount > 0) {
+                            logger.debug("Found label[for='{}'], clicking label instead of input", inputId);
+                            label.click();
+                            logger.browserAction("Click (via Label)", targetName);
+                            return true;
+                        }
+                    } catch (Exception e) {
+                        logger.debug("Could not find or click label[for='{}']: {}", inputId, e.getMessage());
+                    }
+                }
+                
+                // Strategy 2: Try to find parent label
+                try {
+                    Locator parentLabel = clickable.locator("xpath=ancestor::label[1]");
+                    int parentLabelCount = parentLabel.count();
+                    logger.debug("[PERFORMCLICK] Found {} parent label(s)", parentLabelCount);
+                    if (parentLabelCount > 0) {
+                        logger.debug("Found parent label, clicking it instead of input");
+                        parentLabel.click();
+                        logger.browserAction("Click (via Parent Label)", targetName);
+                        return true;
+                    }
+                } catch (Exception e) {
+                    logger.debug("No parent label found: {}", e.getMessage());
+                }
+                
+                // Strategy 3: No label found, click the input with force
+                logger.debug("No label found, clicking input[type={}] with force option", type);
                 clickable.click(new Locator.ClickOptions().setForce(true));
             } else {
+                logger.debug("[PERFORMCLICK] Standard element, doing normal click");
                 clickable.click();
             }
             logger.browserAction("Click", targetName);

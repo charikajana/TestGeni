@@ -21,3 +21,12 @@ Feature: Date Picker Interaction
     
     When Set "tomorrow" in datepicker2
     And Take the Screenshot
+
+    When Set "February 1, 2026" in DatePicker Disabled
+    Then Verify "01/02/2026" appears in DatePicker Disabled
+
+    When Set "01/03/2026" in DatePicker Enabled
+    And Take the Screenshot
+
+    When Set "90" in DatePicker Enabled
+    And Take the Screenshot

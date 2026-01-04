@@ -233,6 +233,16 @@ public class LocatorFactory {
                  logger.debug("Refining match to cousin input");
                  return cousin.first();
              }
+
+             // 5. Look for input in next row (common in horizontal form layouts where labels and inputs are in separate rows)
+             Locator nextRow = grandParent.locator("xpath=following-sibling::*[1]");
+             if (nextRow.count() > 0) {
+                 Locator nestedInNextRow = nextRow.locator("input, textarea").first();
+                 if (nestedInNextRow.count() > 0) {
+                     logger.debug("Found input in next row sibling of label row, refining to it");
+                     return nestedInNextRow.first();
+                 }
+             }
              
              logger.debug("Match found ({}) but not a valid input/textarea. Discarding", foundTag);
              return null;

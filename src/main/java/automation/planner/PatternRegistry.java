@@ -95,15 +95,21 @@ public class PatternRegistry {
             "(?i)^(?:given|when|then|and|but)?\\s*(?:I|user|we|he|she|they)?\\s*selects?\\s+(.+?)\\s+(\\d+)\\s+days?\\s+from\\s+(today|tomorrow)$", 
             1, 2, -1);
 
-        // Set absolute date
-        // Example: Set "05/20/2026" in "Select Date"
+        // Set absolute date - MUST have date-specific context
+        // Example: Set "05/20/2026" in "Select Date", Set date "05/20/2026" for "Birth Date"
+        // Requires EITHER "date" keyword OR date-named field (birth, arrival, departure, etc.)
         register.add("set_date",
-            "(?i)^(?:given|when|then|and|but)?\\s*(?:I|user|we|he|she|they)?\\s*(?:set|select|enter)\\s+(?:the\\s+)?(?:date\\s+)?[\"']([^\"']+)[\"']\\s+(?:in|for|into|to)\\s+(?:the\\s+)?(?:date\\s+picker|field|input)?\\s*[\"']?([^\"']+)[\"']?$",
+            "(?i)^(?:given|when|then|and|but)?\\s*(?:I|user|we|he|she|they)?\\s*(?:set|select)\\s+(?:the\\s+)?date\\s+[\"']([^\"']+)[\"']\\s+(?:in|for|into|to)\\s+(?:the\\s+)?[\"']?([^\"']+)[\"']?$",
             2, 1, -1);
         
+        // Flexible Date Pattern: Set "05/20/2026" in Select Date (No mandatory "date" keyword)
+        register.add("set_date",
+            "(?i)^(?:given|when|then|and|but)?\\s*(?:I|user|we|he|she|they)?\\s*(?:set|select)\\s+[\"']([^\"']+)[\"']\\s+(?:in|for|into|to)\\s+(?:the\\s+)?(?:Select|Birth|Arrival|Departure|Date|DatePicker|datepicker)?\\s*([\\w\\s]*Date[\\w\\s]*|datepicker\\d*|Select Date|Select Date Time)$",
+            2, 1, -1);
+
         // Natural language date: Select date "today" for "Birth Date"
         register.add("set_date",
-            "(?i)^(?:given|when|then|and|but)?\\s*(?:I|user|we|he|she|they)?\\s*(?:set|select|enter)\\s+(?:the\\s+)?(?:date\\s+)?(?:of\\s+)?(today|tomorrow|yesterday)\\s+(?:in|for|into|to)\\s+(?:the\\s+)?[\"']?([^\"']+)[\"']?$",
+            "(?i)^(?:given|when|then|and|but)?\\s*(?:I|user|we|he|she|they)?\\s*(?:set|select)\\s+(?:the\\s+)?date\\s+(?:of\\s+)?(today|tomorrow|yesterday)\\s+(?:in|for|into|to)\\s+(?:the\\s+)?[\"']?([^\"']+)[\"']?$",
             2, 1, -1);
         
         // ========================================
@@ -342,7 +348,59 @@ public class PatternRegistry {
         // (Must be checked before generic verify_value)
         // ========================================
         
-        // State verification (Enabled/Disabled)
+        // ========================================
+        // VALUE / PLACEHOLDER VERIFICATION (HIGH PRIORITY)
+        // ========================================
+        
+        // Handles: Verify "name@example.com" with Email placeholder
+        // Pattern: Verify  "value" with FieldName placeholder
+        register.add("verify_placeholder", 
+            "(?i)^(?:given|when|then|and|but)?\\s*(?:I|user|we|he|she|they)?\\s*(?:validate|verify|assert|check)\\s+[\"']([^\"']+)[\"']\\s+(?:with|in|for)\\s+(.+?)\\s+(?:place\\s*holder|placeholder|place holder)$", 
+            2, 1, -1);
+            
+        // Handles: Verify Full Name placeholder value "Full Name"
+        // Pattern: Verify FieldName placeholder value "value"
+        register.add("verify_placeholder", 
+            "(?i)^(?:given|when|then|and|but)?\\s*(?:I|user|we|he|she|they)?\\s*(?:validate|verify|assert|check)\\s+(.+?)\\s+(?:place\\s*holder|placeholder|place holder)\\s+(?:value|text|is)?\\s*[\"']([^\"']+)[\"']$", 
+            1, 2, -1);
+        
+        // Verify value in field: Verify "Alice" is filled in first name field
+        register.add("verify_value", 
+            "(?i)^(?:given|when|then|and|but)?\\s*(?:I|user|we|he|she|they)?\\s*(?:validate|verify|assert|check)\\s+[\"']?([^\"']+)[\"']?\\s+(?:is\\s+filled\\s+in|is|appears\\s+in)\\s+(?:the\\s+)?(.+?)(?:\\s+field|\\s+box|\\s+input)?$", 
+            2, 1, -1);
+
+
+        // ========================================
+        // TEXT VISIBILITY VERIFICATION (PRIORITY)
+        // ========================================
+        // Format: Then Validate "Target Text" [message/text] [should be] [visible/displayed]
+        register.add("verify", 
+            "(?i)^(?:given|when|then|and|but)?\\s*(?:I|user|we|he|she|they)?\\s*(?:validate|verify|assert|check|ensure|I\\s+see)\\s+[\"']([^\"']+)[\"'](?:\\s+(?:text|message|label|heading|info|message/text))?\\s*(?:is|are|should\\s+be|should\\s+be\\s+transparently)?\\s*(?:present|shown|displayed|visible|display|be\\s+displayed|be\\s+visible)$", 
+            1, -1, -1);
+        
+        // Format: Then Validate [the] [text/message] "Target Text" [is] [visible/displayed]
+        register.add("verify", 
+            "(?i)^(?:given|when|then|and|but)?\\s*(?:I|user|we|he|she|they)?\\s*(?:validate|verify|assert|check|ensure|I\\s+see)\\s+(?:the\\s+)?(?:text|message|label|heading|title|info|content|message/text)\\s+[\"']([^\"']+)[\"'](?:\\s+(?:is|are|should\\s+be)?\\s*(?:present|shown|displayed|visible|display|be\\s+displayed|be\\s+visible))?$", 
+            1, -1, -1);
+
+        register.add("verify_not", 
+            "(?i)^(?:given|when|then|and|but)?\\s*(?:I|user|we|he|she|they)?\\s*(?:validate|verify|assert|check)\\s+[\"']([^\"']+)[\"']\\s+(?:that\\s+)?(?:it\\s+)?(?:is\\s+)?not\\s+(?:displayed|visible|present|shown)$", 
+            -1, 1, -1);
+            
+        // Negative verification
+        register.add("verify_not", 
+            "(?i)^(?:given|when|then|and|but)?\\s*(?:I|user|we|he|she|they)?\\s*(?:validate|verify|assert|check)\\s+[\"']([^\"']+)[\"']\\s+(?:message|text)?\\s*(?:should\\s+not\\s+be|should\\s+not)\\s*(?:display|displayed|present|shown|visible)", 
+            -1, 1, -1);
+        
+        register.add("verify_not", 
+            "(?i)^(?:given|when|then|and|but)?\\s*(?:I|user|we|he|she|they)?\\s*(?:validate|verify|assert|check)\\s+[\"']([^\"']+)[\"']\\s+(?:this\\s+)?(?:text|message)\\s+(?:should\\s+)?not\\s+(?:be\\s+)?(?:display|displayed|present|shown|visible)", 
+            -1, 1, -1);
+
+
+        // ========================================
+        // STATE VERIFICATION (ENABLED/DISABLED/SELECTED)
+        // ========================================
+        
         // Specific phrasal variations first to avoid greedy capture issues
         register.add("verify_enabled", 
             "(?i)^(?:given|when|then|and|but)?\\s*(?:I|user|we|he|she|they)?\\s*(?:validate|verify|assert|check)\\s+(?:that\\s+)?(?:the\\s+)?(.+?)\\s+(?:is\\s+not\\s+disabled|should\\s+be\\s+enabled)(?:\\s+in\\s+(?:the\\s+)?(?:row|record)\\s+(?:identifying|for|with|containing)\\s+[\"']([^\"']+)[\"'])?$", 
@@ -374,23 +432,11 @@ public class PatternRegistry {
             "(?i)^(?:then|and|when)?\\s*(?:validate|verify|check|ensure)\\s+(?:the\\s+)?active\\s+menu\\s+item\\s+(?:is|should\\s+be)\\s+[\"']([^\"']+)[\"']$", 
             1, -1, -1);
             
-        // ========================================
-        // TEXT VISIBILITY VERIFICATION (PRIORITY)
-        // ========================================
-        // Format: Then Validate "Target Text" [message/text] [should be] [visible/displayed]
-        register.add("verify", 
-            "(?i)^(?:given|when|then|and|but)?\\s*(?:I|user|we|he|she|they)?\\s*(?:validate|verify|assert|check|ensure|I\\s+see)\\s+[\"']([^\"']+)[\"'](?:\\s+(?:text|message|label|heading|info|message/text))?\\s*(?:is|are|should\\s+be|should\\s+be\\s+transparently)?\\s*(?:present|shown|displayed|visible|display|be\\s+displayed|be\\s+visible)$", 
-            1, -1, -1);
         
-        // Format: Then Validate [the] [text/message] "Target Text" [is] [visible/displayed]
-        register.add("verify", 
-            "(?i)^(?:given|when|then|and|but)?\\s*(?:I|user|we|he|she|they)?\\s*(?:validate|verify|assert|check|ensure|I\\s+see)\\s+(?:the\\s+)?(?:text|message|label|heading|title|info|content|message/text)\\s+[\"']([^\"']+)[\"'](?:\\s+(?:is|are|should\\s+be)?\\s*(?:present|shown|displayed|visible|display|be\\s+displayed|be\\s+visible))?$", 
-            1, -1, -1);
+        // ========================================
+        // ELEMENT VISIBILITY (GREEDY)
+        // ========================================
 
-        register.add("verify_not", 
-            "(?i)^(?:given|when|then|and|but)?\\s*(?:I|user|we|he|she|they)?\\s*(?:validate|verify|assert|check)\\s+[\"']([^\"']+)[\"']\\s+(?:that\\s+)?(?:it\\s+)?(?:is\\s+)?not\\s+(?:displayed|visible|present|shown)$", 
-            -1, 1, -1);
-            
         // Greedy/Element-based visibility (LOW PRIORITY)
         register.add("verify_not", 
            "(?i)^(?:given|when|then|and|but)?\\s*(?:I|user|we|he|she|they)?\\s*(?:validate|verify|assert|check)\\s+(?:that\\s+)?(?:the\\s+)?(.+?)\\s+[\"']([^\"']+)[\"']\\s+(?:is\\s+)?not\\s+(?:displayed|visible|present|shown)", 
@@ -408,33 +454,6 @@ public class PatternRegistry {
            "(?i)^(?:given|when|then|and|but)?\\s*(?:I|user|we|he|she|they)?\\s*(?:validate|verify|assert|check|should\\s+be)\\s+(?:that\\s+)?(?:the\\s+)?(.+?)\\s+(?:is\\s+|are\\s+)?(?:displayed|visible|present|equals|contains)(?:\\s+[\"']([^\"']+)[\"'])?", 
            1, 2, -1);
 
-        // ========================================
-        // Handles: Verify "name@example.com" with Email placeholder
-        // Pattern: Verify  "value" with FieldName placeholder
-        register.add("verify_placeholder", 
-            "(?i)^(?:given|when|then|and|but)?\\s*(?:I|user|we|he|she|they)?\\s*(?:validate|verify|assert|check)\\s+[\"']([^\"']+)[\"']\\s+(?:with|in|for)\\s+(.+?)\\s+(?:place\\s*holder|placeholder|place holder)$", 
-            2, 1, -1);
-            
-        // Handles: Verify Full Name placeholder value "Full Name"
-        // Pattern: Verify FieldName placeholder value "value"
-        register.add("verify_placeholder", 
-            "(?i)^(?:given|when|then|and|but)?\\s*(?:I|user|we|he|she|they)?\\s*(?:validate|verify|assert|check)\\s+(.+?)\\s+(?:place\\s*holder|placeholder|place holder)\\s+(?:value|text|is)?\\s*[\"']([^\"']+)[\"']$", 
-            1, 2, -1);
-        
-        // Verify value in field: Verify "Alice" is filled in first name field
-        register.add("verify_value", 
-            "(?i)^(?:given|when|then|and|but)?\\s*(?:I|user|we|he|she|they)?\\s*(?:validate|verify|assert|check)\\s+[\"']?([^\"']+)[\"']?\\s+(?:is\\s+filled\\s+in|is|appears\\s+in)\\s+(?:the\\s+)?(.+?)(?:\\s+field|\\s+box|\\s+input)?$", 
-            2, 1, -1);
-            
-        
-        // Negative verification
-        register.add("verify_not", 
-            "(?i)^(?:given|when|then|and|but)?\\s*(?:I|user|we|he|she|they)?\\s*(?:validate|verify|assert|check)\\s+[\"']([^\"']+)[\"']\\s+(?:message|text)?\\s*(?:should\\s+not\\s+be|should\\s+not)\\s*(?:display|displayed|present|shown|visible)", 
-            -1, 1, -1);
-        
-        register.add("verify_not", 
-            "(?i)^(?:given|when|then|and|but)?\\s*(?:I|user|we|he|she|they)?\\s*(?:validate|verify|assert|check)\\s+[\"']([^\"']+)[\"']\\s+(?:this\\s+)?(?:text|message)\\s+(?:should\\s+)?not\\s+(?:be\\s+)?(?:display|displayed|present|shown|visible)", 
-            -1, 1, -1);
         
         // (State verification patterns moved up before verify_value)
         
@@ -444,7 +463,7 @@ public class PatternRegistry {
         // ========================================
         // Pattern 1: "Enter 'value' in element" (strict, most common)
         register.add("fill", 
-            "(?i)^(?:I|user|we|he|she|they)?\\s*(?:enter|fill|type|input)\\s+[\"']([^\"']+)[\"']\\s+(?:into|in|to|for)\\s+(?:the\\s+)?[\"']?([^\"']+)[\"']?", 
+            "(?i)^(?:I|user|we|he|she|they)?\\s*(?:enter|fill|type|input|set)\\s+[\"']([^\"']+)[\"']\\s+(?:into|in|to|for)\\s+(?:the\\s+)?[\"']?([^\"']+)[\"']?", 
             2, 1, -1);
         
         // Pattern 2: Natural language with filler words

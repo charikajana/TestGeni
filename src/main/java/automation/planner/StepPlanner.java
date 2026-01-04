@@ -78,7 +78,7 @@ public class StepPlanner {
             } else {
                 plan.setElementName(cleanStep.replaceAll("^(?i)(?:click|tap|press|hit)(?:\\s+on)?\\s+", "").trim());
             }
-        } else if (lower.contains("enter") || lower.contains("fill")) {
+        } else if (lower.contains("enter") || lower.contains("fill") || lower.contains("set")) {
             plan.setActionType("fill");
             List<String> q = extractAllQuoted(step);
             if (!q.isEmpty()) plan.setValue(q.get(0)); 
