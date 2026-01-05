@@ -25,7 +25,8 @@ public class TestGeniAgent {
      */
     public TestGeniAgent(Page page) {
         this.page = page;
-        this.smartLocator = new SmartLocator(page);
+        // Using CachedSmartLocator enables the intelligent caching layer
+        this.smartLocator = new automation.browser.locator.cache.CachedSmartLocator(page);
         this.browserService = new BrowserService(page, smartLocator);
         this.stepParser = new SmartStepParser();
         

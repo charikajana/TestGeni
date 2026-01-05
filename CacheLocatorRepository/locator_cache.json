@@ -1,0 +1,148 @@
+{
+  "version" : "2.0",
+  "lastSaved" : "2026-01-05T07:45:49.434451100Z",
+  "totalEntries" : 6,
+  "locators" : {
+    "https://demoqa.com/webtables::department field::input" : {
+      "orderedLocators" : {
+        "id" : "#department"
+      },
+      "elementKey" : "https://demoqa.com/webtables::department field::input",
+      "selector" : "#department",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#department"
+      },
+      "pageUrl" : "https://demoqa.com/webtables",
+      "createdAt" : "2026-01-05T07:45:23.577929700Z",
+      "lastAccessedAt" : "2026-01-05T07:45:27.903493600Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 1,
+      "elementAttributes" : {
+        "id" : "department",
+        "tag" : "input",
+        "placeholder" : "Department",
+        "type" : "text",
+        "class" : " mr-sm-2 form-control"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/webtables::Submit button::button" : {
+      "orderedLocators" : {
+        "id" : "#submit"
+      },
+      "elementKey" : "https://demoqa.com/webtables::Submit button::button",
+      "selector" : "#submit",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#submit"
+      },
+      "pageUrl" : "https://demoqa.com/webtables",
+      "createdAt" : "2026-01-05T07:45:23.860706700Z",
+      "lastAccessedAt" : "2026-01-05T07:45:28.089611400Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 1,
+      "elementAttributes" : {
+        "id" : "submit",
+        "tag" : "button",
+        "text" : "Submit",
+        "type" : "submit",
+        "class" : "btn btn-primary"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/::Elements::button" : {
+      "orderedLocators" : {
+        "text" : "h5:has-text(\"Elements\")"
+      },
+      "elementKey" : "https://demoqa.com/::Elements::button",
+      "selector" : "h5:has-text(\"Elements\")",
+      "locatorStrategy" : "text",
+      "allLocators" : {
+        "text" : "h5:has-text(\"Elements\")"
+      },
+      "pageUrl" : "https://demoqa.com/",
+      "createdAt" : "2026-01-05T07:45:20.021547500Z",
+      "lastAccessedAt" : "2026-01-05T07:45:20.021547500Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "tag" : "h5",
+        "text" : "Elements"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/webtables::Add button::button" : {
+      "orderedLocators" : {
+        "id" : "#addNewRecordButton"
+      },
+      "elementKey" : "https://demoqa.com/webtables::Add button::button",
+      "selector" : "#addNewRecordButton",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#addNewRecordButton"
+      },
+      "pageUrl" : "https://demoqa.com/webtables",
+      "createdAt" : "2026-01-05T07:45:21.297729500Z",
+      "lastAccessedAt" : "2026-01-05T07:45:21.297729500Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 0,
+      "elementAttributes" : {
+        "id" : "addNewRecordButton",
+        "tag" : "button",
+        "text" : "Add",
+        "type" : "button",
+        "class" : "btn btn-primary"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/webtables::salary field::input" : {
+      "orderedLocators" : {
+        "id" : "#salary"
+      },
+      "elementKey" : "https://demoqa.com/webtables::salary field::input",
+      "selector" : "#salary",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#salary"
+      },
+      "pageUrl" : "https://demoqa.com/webtables",
+      "createdAt" : "2026-01-05T07:45:23.275654400Z",
+      "lastAccessedAt" : "2026-01-05T07:45:27.725352800Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 1,
+      "elementAttributes" : {
+        "id" : "salary",
+        "tag" : "input",
+        "placeholder" : "Salary",
+        "type" : "text",
+        "class" : " mr-sm-2 form-control"
+      },
+      "verified" : true
+    },
+    "https://demoqa.com/webtables::age field::input" : {
+      "orderedLocators" : {
+        "id" : "#age"
+      },
+      "elementKey" : "https://demoqa.com/webtables::age field::input",
+      "selector" : "#age",
+      "locatorStrategy" : "id",
+      "allLocators" : {
+        "id" : "#age"
+      },
+      "pageUrl" : "https://demoqa.com/webtables",
+      "createdAt" : "2026-01-05T07:45:22.951731800Z",
+      "lastAccessedAt" : "2026-01-05T07:45:27.565822Z",
+      "ttlMillis" : 3600000,
+      "hitCount" : 1,
+      "elementAttributes" : {
+        "id" : "age",
+        "tag" : "input",
+        "placeholder" : "Age",
+        "type" : "text",
+        "class" : " mr-sm-2 form-control"
+      },
+      "verified" : true
+    }
+  }
+}

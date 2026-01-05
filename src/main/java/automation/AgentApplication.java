@@ -3,6 +3,7 @@ package automation;
 import automation.browser.BrowserService;
 import automation.browser.SmartLocator;
 import automation.feature.FeatureReader;
+import automation.browser.locator.cache.CachedSmartLocator;
 import automation.planner.ActionPlan;
 import automation.planner.SmartStepParser;
 import automation.utils.LoggerUtil;
@@ -29,7 +30,8 @@ public class AgentApplication {
             // Initialize services with the Page instance
             FeatureReader reader = new FeatureReader();
             SmartStepParser planner = new SmartStepParser();
-            SmartLocator smartLocator = new SmartLocator(page);
+            // Using CachedSmartLocator enables the intelligent caching layer
+            SmartLocator smartLocator = new CachedSmartLocator(page);
             BrowserService browserService = new BrowserService(page, smartLocator);
 
             String featurePath = "src/main/resources/features/WebTable.feature";
