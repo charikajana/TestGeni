@@ -5,7 +5,7 @@ Feature: Scroll Actions on Real Page
 
   Scenario: Scroll to specific element
     # The form is long, 'Submit' is at the bottom
-    When I scroll to "Submit"
+    When I scroll to Submit
     Then Verify "Submit" is displayed
 
   Scenario: Scroll to bottom of page

@@ -13,11 +13,12 @@ import java.util.*;
  */
 public class FillSemanticMatcher extends BaseSemanticMatcher {
     
-    private static final int SCORE_THRESHOLD = 50;
-    private static final int MAX_CANDIDATES = 30;
+    private static final int SCORE_THRESHOLD = 120; // Increased from 50 to prevent false positives
+    private static final int MAX_CANDIDATES = 100; // Increased from 30 to handle long forms
     
     @Override
     public Locator findBestMatch(Page page, StepIntent intent) {
+        long startTime = System.currentTimeMillis();
         List<ScoredElement> candidates = findCandidates(page, intent);
         
         if (candidates.isEmpty()) {
@@ -25,7 +26,7 @@ public class FillSemanticMatcher extends BaseSemanticMatcher {
             return null;
         }
         
-        // Score each candidate
+        // Score each candidate (OFFLINE SCORING - very fast)
         Map<ScoredElement, Double> scores = new HashMap<>();
         for (ScoredElement candidate : candidates) {
             double score = scoreCandidate(candidate, intent);
@@ -40,32 +41,8 @@ public class FillSemanticMatcher extends BaseSemanticMatcher {
         
         if (best != null) {
             double bestScore = scores.get(best);
-            
-            // DEBUG: Show which element was matched
-            try {
-                String elemId = (String) best.getLocator().evaluate("el => el.id || 'NO_ID'");
-                String elemName = (String) best.getLocator().evaluate("el => el.name || 'NO_NAME'");
-                String elemPlaceholder = (String) best.getLocator().evaluate("el => el.placeholder || 'NO_PLACEHOLDER'");
-                String elemType = (String) best.getLocator().evaluate("el => el.type || 'NO_TYPE'");
-                
-                logger.info("FILL Best match: Score={} ID='{}' Name='{}' Placeholder='{}' Type='{}' Text='{}'", 
-                    bestScore, elemId, elemName, elemPlaceholder, elemType, best.getText());
-            } catch (Exception e) {
-                logger.info("FILL Best match: Score={} Text='{}'", bestScore, best.getText());
-            }
-            
-            // Show top 3 candidates for comparison
-            logger.debug("Top 3 FILL candidates:");
-            scores.entrySet().stream()
-                .sorted(Map.Entry.<ScoredElement, Double>comparingByValue().reversed())
-                .limit(3)
-                .forEach(entry -> {
-                    try {
-                        String id = (String) entry.getKey().getLocator().evaluate("el => el.id || ''");
-                        String name = (String) entry.getKey().getLocator().evaluate("el => el.name || ''");
-                        logger.debug("  Score={} ID='{}' Name='{}'", entry.getValue(), id, name);
-                    } catch (Exception ignored) {}
-                });
+            logger.info("FILL Best match: Score={} ID='{}' Text='{}' (Analysis took {}ms)", 
+                bestScore, best.getId(), best.getText(), (System.currentTimeMillis() - startTime));
             
             if (bestScore >= SCORE_THRESHOLD) {
                 return best.getLocator();
@@ -78,256 +55,173 @@ public class FillSemanticMatcher extends BaseSemanticMatcher {
     }
     
     private List<ScoredElement> findCandidates(Page page, StepIntent intent) {
+        automation.browser.locator.core.DomScanner scanner = new automation.browser.locator.core.DomScanner();
+        List<automation.browser.locator.core.ElementCandidate> scanResults = scanner.scan(page);
+        
         List<ScoredElement> elements = new ArrayList<>();
+        Set<String> inputTags = new HashSet<>(Arrays.asList("input", "textarea", "select"));
         
-        // DEBUG: Log which page we're scanning
-        try {
-            String currentUrl = page.url();
-            logger.info("SCANNING PAGE: {}", currentUrl);
-        } catch (Exception e) {
-            logger.warn("Could not get page URL: {}", e.getMessage());
-        }
-        
-        // Focus on input elements AND contenteditable elements for FILL actions
-        // Many modern web apps use contenteditable divs for inline editing (e.g., table cells)
-        String[] selectors = {"input", "textarea", "select", "[contenteditable='true']", "[contenteditable]"};
-        
-        for (String selector : selectors) {
-            try {
-                // CRITICAL FIX: Use .all() to get ALL elements (visible + hidden)
-                // Playwright's page.locator() by default only returns VISIBLE elements
-                // This was causing us to miss form fields that are styled as hidden/off-screen
-                Locator locator = page.locator(selector);
-                List<Locator> allElements = locator.all(); // Returns ALL matching elements!
-                int count = Math.min(allElements.size(), 30);
-                
-                for (int i = 0; i < count; i++) {
-                    if (elements.size() >= MAX_CANDIDATES) break;
-                    try {
-                        Locator elem = allElements.get(i);
-                        
-                        // DEBUG: Log what we're finding
-                        try {
-                            String elemId = (String) elem.evaluate("el => el.id || ''");
-                            String elemName = (String) elem.evaluate("el => el.name || ''");
-                            String elemPlaceholder = (String) elem.evaluate("el => el.placeholder || ''");
-                            String elemTag = (String) elem.evaluate("el => el.tagName.toLowerCase()");
-                            logger.debug("  Found {} element: id='{}', name='{}', placeholder='{}'", 
-                                elemTag, elemId, elemName, elemPlaceholder);
-                        } catch (Exception ignored) {}
-                        
-                        elements.add(new ScoredElement(elem, selector));
-                    } catch (Exception ignored) {}
-                }
-            } catch (Exception e) {
-                logger.debug("Error finding {} elements: {}", selector, e.getMessage());
-            }
+        for (automation.browser.locator.core.ElementCandidate c : scanResults) {
+            // Filter candidates offline
+            String tag = c.tag.toLowerCase();
+            String role = c.role.toLowerCase();
             
-            if (elements.size() >= MAX_CANDIDATES) break;
+            boolean isInput = inputTags.contains(tag) || 
+                             "textbox".equals(role) || 
+                             "combobox".equals(role) ||
+                             "searchbox".equals(role);
+            
+            if (isInput) {
+                elements.add(new ScoredElement(page.locator("xpath=" + c.xpath).first(), c));
+                if (elements.size() >= MAX_CANDIDATES) break;
+            }
         }
         
-        logger.debug("Found {} input candidates for FILL action", elements.size());
         return elements;
     }
     
     /**
-     * FILL-specific scoring logic
+     * FILL-specific scoring logic (Offline-safe)
      */
     private double scoreCandidate(ScoredElement candidate, StepIntent intent) {
+        // Since we don't have the full ElementCandidate here (only some fields in ScoredElement),
+        // we should ideally pass the candidate to the constructor or use a better object.
+        // For more accurate matching, check multiple attributes
+        
         double score = 0.0;
         String candidateText = candidate.getText();
         String targetDesc = intent.getTargetDescription();
         
         if (targetDesc != null && !targetDesc.isEmpty()) {
             boolean hasText = candidateText != null && !candidateText.trim().isEmpty();
+            String targetLower = targetDesc.toLowerCase();
+            String targetLowerNoSpaces = targetLower.replaceAll("\\s+", "");
             
-            if (!hasText) {
-                score += 0;  // Neutral - empty fields are normal for filling
-            } else {
-                double textScore = scoreTextSimilarity(candidateText, targetDesc);
-                score += textScore * 40;
+            // Get element attributes from the candidate
+            String idLower = candidate.getId().toLowerCase();
+            String classLower = candidate.getClassName().toLowerCase();
+            String nameLower = candidate.getName().toLowerCase();
+            String placeholderLower = candidate.getPlaceholder().toLowerCase();
+            String labelLower = candidate.getLabel().toLowerCase();
+            String dataQaLower = candidate.getDataQa().toLowerCase();
+            
+            // 1. EXACT ID/Name/Placeholder Match (Highest Priority)
+            if (idLower.equals(targetLowerNoSpaces)) {
+                score += 500;
+            } else if (nameLower.equals(targetLowerNoSpaces)) {
+                score += 450;
+            } else if (placeholderLower.equals(targetLower)) {
+                score += 400;
+            }
+            
+            // 2. Word Boundary Matches
+            if (idLower.matches(".*\\b" + targetLowerNoSpaces + "\\b.*")) {
+                score += 250;
+            } else if (idLower.contains(targetLowerNoSpaces)) {
+                score += 80; // Partial ID match
+            }
+
+            if (nameLower.matches(".*\\b" + targetLowerNoSpaces + "\\b.*")) {
+                score += 200;
+            } else if (nameLower.contains(targetLowerNoSpaces)) {
+                score += 60; // Partial Name match
+            }
+
+            if (placeholderLower.contains(targetLower)) {
+                score += 100;
+            }
+            
+            // 3. GLOBAL KEYWORD MATCH (for disambiguation like 'Signup Email')
+            // If target has multiple words (e.g. "Signup", "Email"), reward candidates 
+            // that have these words in their attributes.
+            String[] targetWords = targetLower.split("\\s+");
+            if (targetWords.length > 1) {
+                int wordsFound = 0;
+                String allAttrs = (idLower + " " + classLower + " " + nameLower + " " + placeholderLower + " " + labelLower + " " + dataQaLower).toLowerCase();
                 
-                if (candidateText.equalsIgnoreCase(targetDesc)) {
-                    score += 20;
-                } else if (candidateText.toLowerCase().contains(targetDesc.toLowerCase())) {
-                    score += 10;
+                for (String word : targetWords) {
+                    if (word.length() < 3) continue; // Skip small words
+                    if (allAttrs.contains(word)) {
+                        wordsFound++;
+                        score += 50; // Bonus for each word from description found in element metadata
+                    }
                 }
                 
-                // CRITICAL: Heavily penalize elements with unrelated text
-                if (hasText && !candidateText.toLowerCase().contains(targetDesc.toLowerCase())) {
-                    score -= 60;  // Probably existing data, not an input field
+                // Extra bonus if ALL major words are found
+                if (wordsFound >= targetWords.length) {
+                    score += 100;
+                    logger.debug("Multi-word match bonus (+100) for '{}' in attributes of '{}'", targetLower, allAttrs);
                 }
             }
             
-            // Check all ways a field can be labeled
-            try {
-                String elemType = (String) candidate.getLocator().evaluate("el => el.type || ''");
-                String placeholder = (String) candidate.getLocator().evaluate("el => el.placeholder || ''");
-                String name = (String) candidate.getLocator().evaluate("el => el.name || ''");
-                String id = (String) candidate.getLocator().evaluate("el => el.id || ''");
-                String ariaLabel = (String) candidate.getLocator().evaluate("el => el.getAttribute('aria-label') || ''");
-                String dataQa = (String) candidate.getLocator().evaluate("el => el.getAttribute('data-qa') || ''");
-                String dataTestId = (String) candidate.getLocator().evaluate("el => el.getAttribute('data-testid') || ''");
-                String tagName = (String) candidate.getLocator().evaluate("el => el.tagName.toLowerCase() || ''");
-                Boolean isDisabled = (Boolean) candidate.getLocator().evaluate("el => el.disabled || el.readOnly");
-                
-                // Check for associated <label>
-                String associatedLabel = (String) candidate.getLocator().evaluate(
-                    "el => { " +
-                    "  const label = el.id ? document.querySelector(`label[for='${el.id}']`) : null; " +
-                    "  return label ? label.textContent.trim() : ''; " +
-                    "}"
-                );
-                
-                String targetLower = targetDesc.toLowerCase();
-                boolean isEmpty = !hasText;
-                boolean isInputElement = tagName.equals("input") || tagName.equals("textarea") || tagName.equals("select");
-                
-                // CRITICAL: Match field description to element attributes (HIGHEST PRIORITY!)
-                // Priority: 1. Exact/Full Match, 2. ID, 3. Name, 4. Label, 5. Placeholder
-                
-                String targetLowerNoSpaces = targetLower.replaceAll("\\s+", "");
-                String idLower = id.toLowerCase();
-                String nameLower = name.toLowerCase();
-                String labelLower = associatedLabel != null ? associatedLabel.toLowerCase() : "";
-                String placeholderLower = placeholder.toLowerCase();
-                
-                // HIGHEST PRIORITY: Check for exact/compound matches WITHOUT spaces
-                // This ensures "First Name" -> "firstName" gets highest score, not "lastName"
-                if (idLower.equals(targetLowerNoSpaces) || idLower.replaceAll("[-_]", "").equals(targetLowerNoSpaces)) {
-                    score += 300;  // Exact ID match without spaces (e.g., "firstname" == "firstName")
-                    logger.debug("EXACT ID match '{}' == '{}' - added +300", id, targetDesc);
+            // Check text/label similarity
+            if (hasText) {
+                double textScore = scoreTextSimilarity(candidateText, targetDesc);
+                score += textScore * 40;
+                if (candidateText.equalsIgnoreCase(targetDesc)) {
+                    score += 150; // Strong match for exact label text
                 }
-                
-                if (nameLower.equals(targetLowerNoSpaces) || nameLower.replaceAll("[-_]", "").equals(targetLowerNoSpaces)) {
-                    score += 280;  // Exact name match without spaces
-                    logger.debug("EXACT name match '{}' == '{}' - added +280", name, targetDesc);
+            } else if (!labelLower.isEmpty()) {
+                double labelScore = scoreTextSimilarity(labelLower, targetDesc);
+                score += labelScore * 40;
+                if (labelLower.equalsIgnoreCase(targetDesc)) {
+                    score += 150;
                 }
-                
-                if (labelLower.equals(targetLower) || labelLower.equals(targetLowerNoSpaces)) {
-                    score += 250;  // Exact label match (with or without spaces)
-                    logger.debug("EXACT label match '{}' == '{}' - added +250", associatedLabel, targetDesc);
-                }
-                
-                if (placeholderLower.equals(targetLower) || placeholderLower.equals(targetLowerNoSpaces)) {
-                    score += 240;  // Exact placeholder match (with or without spaces)
-                    logger.debug("EXACT placeholder match '{}' == '{}' - added +240", placeholder, targetDesc);
-                }
-                
-                if (dataQa.toLowerCase().equals(targetLower) || dataQa.toLowerCase().equals(targetLowerNoSpaces)) {
-                    score += 260; 
-                    logger.debug("EXACT data-qa match '{}' == '{}' - added +260", dataQa, targetDesc);
-                }
-                
-                if (dataTestId.toLowerCase().equals(targetLower) || dataTestId.toLowerCase().equals(targetLowerNoSpaces)) {
-                    score += 260;
-                    logger.debug("EXACT data-testid match '{}' == '{}' - added +260", dataTestId, targetDesc);
-                }
-                
-                // SECONDARY: Word-by-word matching (only if no exact match found)
-                String[] targetWords = targetLower.split("\\s+");
-                for (String word : targetWords) {
-                    if (word.equals("field")) continue;  // Skip the word "field"
-                    
-                    // Check if data-qa contains this word
-                    if (dataQa.toLowerCase().contains(word)) {
-                        score += 55;
-                        logger.debug("data-qa '{}' contains target word '{}' - added +55", dataQa, word);
-                    }
-                    
-                    // Check if data-testid contains this word
-                    if (dataTestId.toLowerCase().contains(word)) {
-                        score += 55;
-                        logger.debug("data-testid '{}' contains target word '{}' - added +55", dataTestId, word);
-                    }
-                    
-                    // Check if ID contains this word (HIGH PRIORITY but less than exact match)
-                    if (idLower.contains(word)) {
-                        score += 60;  // Reduced from 120 - word match is weaker than exact match
-                        logger.debug("ID '{}' contains target word '{}' - added +60", id, word);
-                    }
-                    
-                    // Check if name contains this word
-                    if (nameLower.contains(word)) {
-                        score += 50;  // Reduced from 100
-                        logger.debug("Name '{}' contains target word '{}' - added +50", name, word);
-                    }
-                    
-                    // Check if associated label contains this word
-                    if (!labelLower.isEmpty() && labelLower.contains(word)) {
-                        score += 45;  // Reduced from 90
-                        logger.debug("Label '{}' contains target word '{}' - added +45", labelLower, word);
-                    }
-                    
-                    // Check if placeholder contains this word
-                    if (placeholderLower.contains(word)) {
-                        score += 40;  // Reduced from 80
-                        logger.debug("Placeholder '{}' contains target word '{}' - added +40", placeholder, word);
+            }
+            
+            // Differentiator Bonus: If we have "Signup" in description and "signup" in attributes
+            // This is key for AutomationExercise-like pages
+            for (String word : targetWords) {
+                if (word.equals("signup") || word.equals("login") || word.equals("subscribe") || word.equals("email") || word.equals("phone") || word.equals("mobile")) {
+                    if (idLower.contains(word) || classLower.contains(word) || nameLower.contains(word) || dataQaLower.contains(word) || placeholderLower.contains(word)) {
+                        score += 150; // Strong differentiator bonus
+                        logger.debug("Differentiator bonus (+150) for '{}' found in attributes", word);
                     }
                 }
-                
-                // CRITICAL: Check if input is inside a visible modal - prioritize modal inputs!
-                try {
-                    Boolean isInModal = (Boolean) candidate.getLocator().evaluate(
-                        "el => { " +
-                        "  const modal = el.closest('[role=\"dialog\"], .modal'); " +
-                        "  return modal !== null && getComputedStyle(modal).display !== 'none'; " +
-                        "}"
-                    );
-                    
-                    if (isInModal) {
-                        score += 80;  // HUGE boost for inputs inside visible modals!
-                        logger.debug("Input '{}' is inside modal - added +80 boost", id);
-                    }
-                } catch (Exception ignored) {}
-                
-                // MASSIVE boost for empty input elements
-                if (isInputElement && isEmpty) {
-                    score += 50;
+            }
+
+            // 4. NUMERIC CONSTRAINT: If target has a number (e.g. "Address 2"), 
+            // penalize elements that don't have that specific number.
+            String targetDigits = targetLower.replaceAll("[^0-9]", "");
+            if (!targetDigits.isEmpty()) {
+                String allDigits = (idLower + " " + nameLower + " " + labelLower + " " + placeholderLower).replaceAll("[^0-9]", "");
+                if (allDigits.isEmpty() || !allDigits.contains(targetDigits)) {
+                    score -= 400; // Heavy penalty if expected number is missing
+                    logger.debug("Numeric mismatch penalty (-400) for target '{}' vs attributes", targetLower);
                 }
-                
-                // Heavy penalty for non-input elements when searching for "field"
-                if (targetLower.contains("field") && !isInputElement) {
-                    score -= 70;
+            } else {
+                // If target has NO digits, penalize elements that have "2" or "3" at the end of ID/Name/Label
+                // This prevents "Address" from matching "Address 2" if "Address 1" is available.
+                if (idLower.matches(".*[2-9]$") || nameLower.matches(".*[2-9]$") || labelLower.matches(".*[2-9]$")) {
+                    score -= 150; 
+                    logger.debug("Secondary field penalty (-150) for '{}' vs target '{}'", idLower, targetLower);
                 }
-                
-                // Check associated label (highest priority)
-                if (associatedLabel != null && !associatedLabel.isEmpty() && 
-                    associatedLabel.toLowerCase().contains(targetLower)) {
-                    score += 40;
+            }
+
+            // PENALTY: Logic from previous version to prevent common mismatches
+            if (targetLowerNoSpaces.contains("email") && !idLower.contains("email") && !nameLower.contains("email")) {
+                if (idLower.contains("name") || idLower.contains("first") || idLower.contains("last") || nameLower.contains("name") || placeholderLower.contains("name")) {
+                    score -= 500; // Increased penalty to ensure it's rejected
                 }
-                
-                // Check aria-label
-                if (ariaLabel.toLowerCase().contains(targetLower)) {
-                    score += 35;
-                }
-                
-                // Check placeholder/name/id
-                if (placeholder.toLowerCase().contains(targetLower) ||
-                    name.toLowerCase().contains(targetLower) ||
-                    id.toLowerCase().contains(targetLower)) {
-                    score += 30;
-                }
-                
-                // Penalize disabled fields
-                if (isDisabled) {
-                    score -= 40;
-                }
-                
-                // Email field special case
-                if (targetLower.contains("email")) {
-                    if (elemType.equalsIgnoreCase("email") || placeholder.contains("@")) {
-                        score += 30;
-                    }
-                }
-            } catch (Exception ignored) {}
+            }
+            
+            // Input/textarea type gets base score
+            if (candidate.getType().equals("input") || candidate.getType().equals("textarea")) {
+                score += 30;
+            }
         }
         
         // Type match scoring
         if (intent.getElementType() != null) {
-            score += scoreTypeSimilarity(candidate.getType(), intent.getElementType()) * 30;
+            score += scoreTypeSimilarity(candidate.getType(), intent.getElementType()) * 20; // Reduced from 30
         } else {
-            score += scoreActionTypeAffinity(candidate.getType(), IntentAnalyzer.ActionType.FILL) * 30;
+            score += scoreActionTypeAffinity(candidate.getType(), IntentAnalyzer.ActionType.FILL) * 20; // Reduced from 30
+        }
+        
+        // IMPORTANT: If score is too low, it's likely a mismatch
+        // We should be confident about the match
+        if (score < 100 && targetDesc != null && !targetDesc.isEmpty()) {
+            logger.debug("Low confidence score {} for target '{}', candidate ID='{}'", score, targetDesc, candidate.getId());
         }
         
         return score;

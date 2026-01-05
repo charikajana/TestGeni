@@ -106,11 +106,24 @@ public class IntelligentStepProcessor {
      * @return ActionPlan ready for execution
      */
     public ActionPlan processStep(String step, Page page, SmartLocator smartLocator) {
-        // Try intelligent processing
-        ActionPlan intelligentPlan = tryIntelligentProcessing(step, page);
+        long startTime = System.currentTimeMillis();
+        long HARD_TIMEOUT_MS = 2000; // Strict 2 second limit for intelligence layer
         
-        if (intelligentPlan != null && intelligentPlan.isValid()) {
-            return intelligentPlan;
+        try {
+            // Try intelligent processing
+            ActionPlan intelligentPlan = tryIntelligentProcessing(step, page);
+            
+            long duration = System.currentTimeMillis() - startTime;
+            if (duration > HARD_TIMEOUT_MS) {
+                logger.warn("Intelligence layer EXCEEDED timeout ({}ms) for step: {}", duration, step);
+                return null; // Force fallback
+            }
+
+            if (intelligentPlan != null && intelligentPlan.isValid()) {
+                return intelligentPlan;
+            }
+        } catch (Exception e) {
+            logger.warn("Intelligence layer failed: {} - falling back to patterns", e.getMessage());
         }
         
         // Return null to signal fallback needed (handled by SmartStepParser)
@@ -191,7 +204,9 @@ public class IntelligentStepProcessor {
                 
             case HOVER:
             case SCROLL:
-                // Hover and Scroll use same element selection logic as Click
+            case EXPAND:
+            case COLLAPSE:
+                // Hover, Scroll, Expand, and Collapse use same element selection logic as Click
                 return clickMatcher.findBestMatch(page, intent);
                 
             default:
@@ -208,6 +223,8 @@ public class IntelligentStepProcessor {
                action == IntentAnalyzer.ActionType.VERIFY ||
                action == IntentAnalyzer.ActionType.HOVER ||
                action == IntentAnalyzer.ActionType.SCROLL ||
+               action == IntentAnalyzer.ActionType.EXPAND ||
+               action == IntentAnalyzer.ActionType.COLLAPSE ||
                action == IntentAnalyzer.ActionType.DATE_SET;
     }
     
@@ -219,12 +236,18 @@ public class IntelligentStepProcessor {
         plan.setTarget(intent.getOriginalStep());
         
         // Map intelligent action type to legacy action type
-        String actionType = mapActionType(intent.getActionType());
+        String actionType = mapActionType(intent);
         plan.setActionType(actionType);
         
         // Set element and value
         plan.setElementName(intent.getTargetDescription());
         plan.setValue(intent.getValue());
+        
+        // Pass parent/scope information (avoid redundant scoping if target == parent)
+        if (intent.getParentReference() != null && 
+            (intent.getTargetDescription() == null || !intent.getParentReference().equalsIgnoreCase(intent.getTargetDescription()))) {
+            plan.setParentAnchor(intent.getParentReference());
+        }
         
         // Set negation flag (for negative assertions like "not displayed")
         plan.setNegated(intent.isNegated());
@@ -249,17 +272,36 @@ public class IntelligentStepProcessor {
     /**
      * Map intelligent action type to legacy system
      */
-    private String mapActionType(IntentAnalyzer.ActionType actionType) {
+    private String mapActionType(StepIntent intent) {
+        IntentAnalyzer.ActionType actionType = intent.getActionType();
         switch (actionType) {
             case CLICK: return "click";
             case FILL: return "fill";
-            case VERIFY: return "verify";
+            case VERIFY: 
+                String target = intent.getTargetDescription();
+                String stepLower = intent.getOriginalStep().toLowerCase();
+                // If it looks like a visibility/text check (generic visibility or contains "displayed"/"visible"), 
+                // use 'verify' (VerifyTextAction). Only use 'verify_value' for explicit field verification.
+                if (stepLower.contains("display") || stepLower.contains("visible") || 
+                    stepLower.contains("present") || stepLower.contains("appear") ||
+                    stepLower.contains("see") || stepLower.contains("shown") ||
+                    stepLower.contains("deleted") || stepLower.contains("removed") || stepLower.contains("gone") ||
+                    intent.isNegated() || target == null || target.isEmpty() ||
+                    target.toLowerCase().endsWith("text") || target.toLowerCase().endsWith("message")) {
+                    return "verify";
+                }
+                if (target != null && !target.trim().isEmpty() && intent.getValue() != null) {
+                    return "verify_value";
+                }
+                return "verify";
             case SELECT: return "select";
             case NAVIGATE: return "navigate";
             case WAIT: return "wait";
             case HOVER: return "hover";
             case SCROLL: return "scroll";
             case DATE_SET: return "set_date";
+            case EXPAND: return "expand";
+            case COLLAPSE: return "collapse";
             default: return "unknown";
         }
     }
@@ -280,10 +322,10 @@ public class IntelligentStepProcessor {
     private boolean isBrowserLevelAction(String step) {
         String lowerStep = step.toLowerCase();
         
-        // Alert/confirm/prompt keywords
+        // Alert/confirm/prompt/screenshot keywords
         String[] browserKeywords = {
             "alert", "confirm", "prompt", 
-            "dialog", "popup",
+            "dialog", "popup", "screenshot", "screen shot",
             "accept alert", "dismiss alert", "verify alert",
             "accept confirm", "dismiss confirm",
             
@@ -341,12 +383,7 @@ public class IntelligentStepProcessor {
         };
         
         for (String keyword : browserKeywords) {
-            // Use regex for whole-word boundary check on short keywords like "url"
-            if (keyword.length() <= 3) {
-                if (java.util.regex.Pattern.compile("\\b" + keyword + "\\b", java.util.regex.Pattern.CASE_INSENSITIVE).matcher(lowerStep).find()) {
-                    return true;
-                }
-            } else if (lowerStep.contains(keyword)) {
+            if (java.util.regex.Pattern.compile("\\b" + keyword.replace(" ", "\\s+") + "\\b", java.util.regex.Pattern.CASE_INSENSITIVE).matcher(lowerStep).find()) {
                 return true;
             }
         }

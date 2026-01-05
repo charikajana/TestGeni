@@ -175,6 +175,14 @@ public class SmartStepParser {
             }
             logger.debug("  Intelligence layer did not match");
         }
+
+        // STRATEGY 2.5: Check for parent-scoped actions ("Click 'Submit' inside 'Form'")
+        logger.debug("Trying: Parent-Scoped Actions");
+        ActionPlan parentScopedPlan = tryParentScoping(step, page, smartLocator);
+        if (parentScopedPlan != null) {
+            logger.success("Parsed via: PARENT-SCOPED PATTERN");
+            return parentScopedPlan;
+        }
         
         // STRATEGY 3: Try table-specific patterns first (new features)
         logger.debug("Trying: Table-Specific Patterns");
@@ -237,6 +245,78 @@ public class SmartStepParser {
     }
 
     /**
+     * Handles patterns like "Click 'Login' inside 'Navbar'" or "Fill 'Name' within 'Form'"
+     */
+    private ActionPlan tryParentScoping(String step, Page page, automation.browser.SmartLocator smartLocator) {
+        // Pattern: [Action] 'Element' (inside|within|on|in) [the] 'Parent'
+        // Examples: 
+        // - Click 'Submit' inside 'Registration Form'
+        // - Fill 'Email' within 'Login Box'
+        
+        // Pattern for fill/enter/type with INSIDE/WITHIN (not IN - that's for select)
+        Pattern fillScopingPattern = Pattern.compile("^(?i)(?:given|when|then|and|but)?\\s*(?:I|user|we|he|she|they)?\\s*(fill|enter|type|input|specify|set)\\s+[\"']?([^\"']+)[\"']?\\s+(?:inside|within|under|at)\\s+(?:the\\s+)?(?:element|section|container|block|div|span|area|group|form|field)?\\s*[\"']?([^\"']+)[\"']?$", Pattern.CASE_INSENSITIVE);
+        Matcher fillMatcher = fillScopingPattern.matcher(step);
+        
+        if (fillMatcher.find()) {
+            String actionVerb = fillMatcher.group(1).trim();
+            String elementValue = fillMatcher.group(2).trim();
+            String parentName = fillMatcher.group(3).trim();
+            
+            logger.info("Detected Parent Scoping (FILL): Enter '{}' inside '{}'", elementValue, parentName);
+            
+            // For fill, the first group is the VALUE, not the element name
+            // Construct: fill "elementName" with "value"
+            String simplifiedStep = "fill \"" + parentName + "\" with \"" + elementValue + "\"";
+            
+            ActionPlan plan = parseSingleAction(simplifiedStep, page, smartLocator);
+            
+            // No need for parent anchor since we're targeting the specific field
+            
+            return plan;
+        }
+        
+        // Matcher for: (click|tap|...) "element" (inside|within|on|in|at) "parent"
+        // NOTE: Excludes fill/enter/type/select/choose/set - handled by other patterns
+        Pattern p = Pattern.compile("^(?i)(?:given|when|then|and|but)?\\s*(?:I|user|we|he|she|they)?\\s*(click|tap|press|hit|hover|hover\\s+over|expand|collapse|verify|check|validate|ensure|see|find|expect)\\s+[\"']?([^\"']+)[\"']?\\s+(?:inside|within|on|in|under|at)\\s+(?:the\\s+)?(?:element|section|container|block|div|span|area|group|form)?\\s*[\"']?([^\"']+)[\"']?(?:\\s+element)?$", Pattern.CASE_INSENSITIVE);
+        Matcher m = p.matcher(step);
+        
+        if (m.find()) {
+            String actionVerb = m.group(1).trim();
+            String elementName = m.group(2).trim();
+            String parentName = m.group(3).trim();
+            
+            logger.info("Detected Parent Scoping: Find '{}' inside '{}'", elementName, parentName);
+            
+            // Reconstruct a simple step for the target element and parse it
+            String simplifiedStep = actionVerb + " \"" + elementName + "\"";
+            
+            ActionPlan plan = parseSingleAction(simplifiedStep, page, smartLocator);
+            
+            // Set the parent anchor
+            plan.setParentAnchor(parentName);
+            
+            // If it's a composite action plan, propagate the parent anchor to all sub-actions
+            if (plan instanceof CompositeActionPlan) {
+                for (ActionPlan sub : ((CompositeActionPlan) plan).getSubActions()) {
+                    sub.setParentAnchor(parentName);
+                }
+            }
+            
+            return plan;
+        }
+        return null;
+    }
+    
+    private String extractPrimaryVerb(String step) {
+        String lower = step.toLowerCase();
+        String[] verbs = {"click", "tap", "press", "hit", "enter", "fill", "type", "select", "choose", "hover", "expand", "collapse"};
+        for (String verb : verbs) {
+            if (lower.contains(verb)) return verb;
+        }
+        return "click"; // Default
+    }
+
+    /**
      * Detects if a step contains multiple actions chained together.
      * Looks for delimiters: "and", "also", "then", ",", "&"
      * 
@@ -266,7 +346,7 @@ public class SmartStepParser {
         
         // Define action-related keywords that indicate this is an action step
         // (not a table verification or other complex step)
-        String[] actionKeywords = {"enter", "click", "select", "type", "fill", "choose", "check", "uncheck", "close"};
+        String[] actionKeywords = {"enter", "click", "select", "type", "fill", "choose", "check", "uncheck", "close", "set"};
         
         boolean hasActionKeyword = false;
         String lowerStep = cleanStep.toLowerCase();
@@ -289,9 +369,9 @@ public class SmartStepParser {
         // Count potential action delimiters
         // Use regex to find patterns like: "Enter X and Enter Y" or "Click X also Click Y"
         Pattern combinedPattern = Pattern.compile(
-            "(enter|click|select|type|fill|choose|check|uncheck|close).*?" +  // First action
+            "(enter|click|select|type|fill|choose|check|uncheck|close|set).*?" +  // First action
             "\\s+(?:and|also|then|,|&)\\s+" +  // Delimiter
-            "(enter|click|select|type|fill|choose|check|uncheck|close)",  // Second action
+            "(enter|click|select|type|fill|choose|check|uncheck|close|set)",  // Second action
             Pattern.CASE_INSENSITIVE
         );
         

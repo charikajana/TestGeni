@@ -6,16 +6,18 @@ Feature: User Registration and Account Deletion
     
     # Step 4: Click on 'Signup / Login'
     When click on Signup / Login
+    And wait for 2 seconds
     
     # Step 5: Verify 'New User Signup!'
     Then Verify "New User Signup!" is displayed
     
     # Step 6: Enter name and email
     And enter "Test User" in Signup Name
-    And enter "testgeni_user_20260103_1120@example.com" in Signup Email Address
+    And enter "testgeni_user_20260104_1123@example.com" in Signup Email Address
     
     # Step 7: Click 'Signup'
     And click on Signup
+    And wait for 3 seconds
     
     # Step 8: Verify 'ENTER ACCOUNT INFORMATION'
     Then Verify "ENTER ACCOUNT INFORMATION" is displayed
@@ -51,6 +53,7 @@ Feature: User Registration and Account Deletion
     
     # Step 22: Click 'Continue' button
     And click on Continue
+    And wait for 2 seconds
     
     # Step 23: Verify that 'Logged in as username' is visible
     Then Verify "Logged in as Test User" is displayed
@@ -59,5 +62,6 @@ Feature: User Registration and Account Deletion
     When click on Delete Account
     
     # Step 25: Verify that 'ACCOUNT DELETED!' is visible and click 'Continue' button
+     And wait for 2 seconds
     Then Verify "ACCOUNT DELETED!" is displayed
     And click on Continue

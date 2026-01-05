@@ -69,6 +69,8 @@ public class ActionHandlerRegistry {
         handlers.put("browser_forward", navAction);
         
         handlers.put("select_menu", new SelectMenuAction());
+        handlers.put("expand", new ExpandAction());
+        handlers.put("collapse", new CollapseAction());
     }
     
     private void registerInputActions() {

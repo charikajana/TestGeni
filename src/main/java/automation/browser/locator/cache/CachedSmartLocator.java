@@ -66,13 +66,13 @@ public class CachedSmartLocator extends SmartLocator {
      */
     @Override
     public Locator findSmartElement(String name, String parsedType, Locator scope, 
-                                    String frameAnchor, boolean includeHidden) {
+                                    String frameAnchor, String parentAnchor, boolean includeHidden) {
         
         // Generate unique cache key
-        String cacheKey = generateCacheKey(name, parsedType, frameAnchor, scope);
+        String cacheKey = generateCacheKey(name, parsedType, frameAnchor, parentAnchor, scope);
         
         // Step 1: Try cache (if enabled and no scope - scoped searches always use SmartLocator)
-        if (cacheEnabled && scope == null && cacheManager.isEnabled()) {
+        if (cacheEnabled && scope == null && parentAnchor == null && cacheManager.isEnabled()) {
             Locator cachedLocator = tryCachedLocator(cacheKey, name, parsedType);
             if (cachedLocator != null) {
                 return cachedLocator; // FAST PATH SUCCESS
@@ -81,10 +81,10 @@ public class CachedSmartLocator extends SmartLocator {
         
         // Step 2: Cache miss or disabled - use SmartLocator (existing robust logic)
         logger.debug("Using SmartLocator for: '{}'", name);
-        Locator locator = super.findSmartElement(name, parsedType, scope, frameAnchor, includeHidden);
+        Locator locator = super.findSmartElement(name, parsedType, scope, frameAnchor, parentAnchor, includeHidden);
         
         // Step 3: Cache the successful locator (if found and caching enabled)
-        if (locator != null && cacheEnabled && scope == null && cacheManager.isEnabled()) {
+        if (locator != null && cacheEnabled && scope == null && parentAnchor == null && cacheManager.isEnabled()) {
             cacheNewLocator(cacheKey, locator, name, parsedType);
         }
         
@@ -228,8 +228,8 @@ public class CachedSmartLocator extends SmartLocator {
                                       CachedLocator oldCached) {
         logger.info("SELF-HEALING FULL SCAN: Rediscovering element '{}'", name);
         
-        // Use SmartLocator to find element again
-        Locator newLocator = super.findSmartElement(name, parsedType, null, null, false);
+        // Use SmartLocator to find element again (explicitly call 6-arg super to bypass cache)
+        Locator newLocator = super.findSmartElement(name, parsedType, null, null, null, false);
         
         if (newLocator != null) {
             // Extract ALL possible locator strategies
@@ -318,7 +318,7 @@ public class CachedSmartLocator extends SmartLocator {
     /**
      * Generate unique cache key for an element
      */
-    private String generateCacheKey(String name, String parsedType, String frameAnchor, Locator scope) {
+    private String generateCacheKey(String name, String parsedType, String frameAnchor, String parentAnchor, Locator scope) {
         // Format: "PageContext::ElementName::Type"
         // Example: "https://example.com/login::Username::input"
         // Example with frame: "https://example.com/payment::frame:payment-iframe::Card Number::input"
@@ -333,6 +333,11 @@ public class CachedSmartLocator extends SmartLocator {
         // Frame context (if applicable)
         if (frameAnchor != null) {
             key.append("frame:").append(frameAnchor).append("::");
+        }
+
+        // Parent context
+        if (parentAnchor != null) {
+            key.append("parent:").append(parentAnchor).append("::");
         }
         
         // Element identifier

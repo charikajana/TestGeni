@@ -67,8 +67,11 @@ public class LocatorFactory {
                     finalLocator = page.getByText(foundText, new Page.GetByTextOptions().setExact(true));
                  }
                  logger.debug("Prioritizing stable text locator for dynamic-id {}: '{}'", foundTag, foundText);
+             } else {
+                 // Fallback to tag-based if no text
+                 finalLocator = (scope != null) ? scope.locator(foundTag) : page.locator(foundTag);
              }
-         }
+         } 
          else if ("progressbar".equals(parsedType) || "progressbar".equals(element.role)) {
              // Priority for progress bars: Role or Tag, NOT text (which changes constantly)
              finalLocator = (scope != null) ? scope.locator("[role='progressbar']") : page.locator("[role='progressbar']");
@@ -101,6 +104,11 @@ public class LocatorFactory {
              finalLocator = (scope != null) ? scope.getByPlaceholder(element.placeholder) : page.getByPlaceholder(element.placeholder);
          }
          else {
+             finalLocator = (scope != null) ? scope.locator(foundTag) : page.locator(foundTag);
+         }
+
+         // Ensure finalLocator is not null before proceeding
+         if (finalLocator == null) {
              finalLocator = (scope != null) ? scope.locator(foundTag) : page.locator(foundTag);
          }
 
@@ -232,6 +240,16 @@ public class LocatorFactory {
              if (cousin.count() > 0) {
                  logger.debug("Refining match to cousin input");
                  return cousin.first();
+             }
+
+             // 5. Look for input in next row (common in horizontal form layouts where labels and inputs are in separate rows)
+             Locator nextRow = grandParent.locator("xpath=following-sibling::*[1]");
+             if (nextRow.count() > 0) {
+                 Locator nestedInNextRow = nextRow.locator("input, textarea").first();
+                 if (nestedInNextRow.count() > 0) {
+                     logger.debug("Found input in next row sibling of label row, refining to it");
+                     return nestedInNextRow.first();
+                 }
              }
              
              logger.debug("Match found ({}) but not a valid input/textarea. Discarding", foundTag);

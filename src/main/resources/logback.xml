@@ -19,7 +19,7 @@
     </appender>
     
     <!-- Set logging levels -->
-    <logger name="automation" level="WARN"/>
+    <logger name="automation" level="DEBUG"/>
     <logger name="com.microsoft.playwright" level="WARN"/>
     <logger name="org.slf4j" level="WARN"/>
     

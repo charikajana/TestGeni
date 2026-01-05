@@ -64,8 +64,8 @@ public class IntentAnalyzer {
         ACTION_VERBS.put("disable", ActionType.CLICK);
         
         // Expand/Collapse actions
-        ACTION_VERBS.put("expand", ActionType.CLICK);
-        ACTION_VERBS.put("collapse", ActionType.CLICK);
+        ACTION_VERBS.put("expand", ActionType.EXPAND);
+        ACTION_VERBS.put("collapse", ActionType.COLLAPSE);
         ACTION_VERBS.put("show", ActionType.CLICK);
         ACTION_VERBS.put("hide", ActionType.CLICK);
         ACTION_VERBS.put("reveal", ActionType.CLICK);
@@ -253,6 +253,10 @@ public class IntentAnalyzer {
         String elementType = extractElementType(cleanStep);
         intent.setElementType(elementType);
         
+        // Extract parent reference (e.g., "inside 'Form'")
+        String parentRef = extractParentReference(cleanStep);
+        intent.setParentReference(parentRef);
+        
         logger.info("Intent: {} -> Target='{}' Values={} Type='{}'", 
             actionType, target, values, elementType);
         
@@ -272,7 +276,7 @@ public class IntentAnalyzer {
             "should not", "shouldn't", "must not", "mustn't",
             "never", "no longer", "doesn't", "don't",
             "is not", "isn't", "are not", "aren't", "was not", "wasn't",
-            "not be", "cannot", "can't"
+            "not be", "cannot", "can't", "deleted", "removed", "gone", "absent"
         };
         
         for (String negationKeyword : negationKeywords) {
@@ -391,10 +395,15 @@ public class IntentAnalyzer {
             boolean isSelectVerb = lowerStep.startsWith("select") || lowerStep.startsWith("choose") || 
                                  lowerStep.contains(" select ") || lowerStep.contains(" choose ");
             
+            // For date-like values, we only want to classify as DATE_SET if the verb is associated with setting/filling
+            boolean isFillVerb = lowerStep.startsWith("enter") || lowerStep.startsWith("fill") || lowerStep.startsWith("set") ||
+                                lowerStep.startsWith("type") || lowerStep.contains(" enter ") || lowerStep.contains(" fill ") || 
+                                lowerStep.contains(" set ") || lowerStep.contains(" type ");
+
             // If it's a select verb and matches "select 'value' from 'target'" pattern, keep it as SELECT
             if (isSelectVerb && lowerStep.contains(" from ")) {
-                // Let it fall through to the ACTION_VERBS check or the SELECT check below
-            } else if (!lowerStep.contains("phone") && 
+                // Let it fall through
+            } else if (isFillVerb && !lowerStep.contains("phone") && 
                 !lowerStep.contains("mobile") && 
                 !lowerStep.contains("tel") && 
                 !lowerStep.contains("number") &&
@@ -452,12 +461,22 @@ public class IntentAnalyzer {
         
         // For FILL/SELECT/CLICK, identifying the target name
         if (actionType != ActionType.UNKNOWN) {
+            // Remove identified values specifically to prevent them from interfering with preposition pivoting
+            // e.g. "Verify 'Logged in as User' is displayed" -> the 'as' inside quotes shouldn't be a pivot.
+            if (valuesToExclude != null) {
+                for (String val : valuesToExclude) {
+                    target = target.replace("\"" + val + "\"", " ");
+                    target = target.replace("'" + val + "'", " ");
+                    target = target.replaceAll("(?i)\\b" + Pattern.quote(val) + "\\b", " ");
+                }
+            }
+
             // Remove Gherkin keywords
             target = target.replaceAll("(?i)^(Given|When|Then|And|But|User|I)\\s+", "").trim();
             
             // Preposition Pivot: Find the last preposition that likely separates values/verbs from the target
             // e.g. "Select 'A' and 'B' FROM 'Dropdown'" or "Set value TO 'X'"
-            Pattern pivotPattern = Pattern.compile("(?i)(.*)\\b(from|in|into|of|for|within|on|to|at)\\b\\s+(.+)$");
+            Pattern pivotPattern = Pattern.compile("(?i)(.*)\\b(from|in|into|of|for|within|inside|on|to|at|as)\\b\\s+(.+)$");
             Matcher pivotMatcher = pivotPattern.matcher(target);
             
             if (pivotMatcher.find()) {
@@ -466,7 +485,7 @@ public class IntentAnalyzer {
                 String targetPart = pivotMatcher.group(3);
                 
                 // Rule-based target selection
-                if (prep.equals("to") || prep.equals("as") || prep.equals("at")) {
+                if (prep.equals("to") || prep.equals("at")) {
                     // "Set [TARGET] to [VALUE]" or "Enter [VALUE] at [TARGET]"
                     // If targetPart is quoted, it's likely the value. So target is contextPart.
                     if (targetPart.contains("\"") || targetPart.contains("'")) {
@@ -475,6 +494,23 @@ public class IntentAnalyzer {
                         // "Enter [VALUE] as [TARGET]"
                         target = targetPart;
                     } else {
+                        target = contextPart;
+                    }
+                } else if (prep.equals("as")) {
+                    // "Enter [VALUE] as [TARGET]"
+                    // If contextPart contains common field names, it's likely the target
+                    if (contextPart.toLowerCase().contains("name") || contextPart.toLowerCase().contains("email") || contextPart.toLowerCase().contains("phone")) {
+                         target = contextPart;
+                    } else {
+                         target = targetPart;
+                    }
+                } else if (prep.equals("inside") || prep.equals("within") || prep.equals("on") || prep.equals("under")) {
+                    // "Click [TARGET] inside [PARENT]" or "Fill [VALUE] inside [TARGET]"
+                    // If it's a FILL action, contextPart is likely the VALUE, so target is targetPart
+                    if (actionType == ActionType.FILL || actionType == ActionType.DATE_SET) {
+                        target = targetPart;
+                    } else {
+                        // For CLICK, VERIFY, HOVER, etc., contextPart is the TARGET
                         target = contextPart;
                     }
                 } else {
@@ -510,7 +546,7 @@ public class IntentAnalyzer {
         // Remove trailing "as" keyword (for "Enter First Name as 'value'" syntax)
         target = target.replaceAll("(?i)\\s+as\\s*$", "").trim();
         // Also remove "as" + everything after it (handles "First Name as Doe" after value extraction)
-        target = target.replaceAll("(?i)\\s+as\\s+.*$", "").trim();
+        target = target.replaceAll("(?i)\\s+as(?:\\s+.*)?$", "").trim();
         
         // Remove container phrases (e.g., "in the left menu", "on the sidebar")
         target = target.replaceAll("(?i)\\b(in|on|within|inside)\\s+(?:the\\s+)?(left\\s+menu|right\\s+menu|sidebar|navbar|header|footer|menu|top\\s+bar|toolbar|main\\s+content)\\b", "").trim();
@@ -520,6 +556,10 @@ public class IntentAnalyzer {
         
         // Normalize whitespace (reduce multiple spaces to single space)
         target = target.replaceAll("\\s+", " ").trim();
+        
+        // Remove parent scoping phrases if they exist (e.g. "inside 'Form'")
+        // We match (inside|within|on|in|under) ["']?Parent["']?
+        target = target.replaceAll("(?i)\\b(inside|within|on|under)\\s+[\"']?([^\"']+)[\"']?", "").trim();
         
         // For FILL/DATE_SET/VERIFY actions, extract text after "in"/"into"/"for" BEFORE removing pronouns
         // This is critical because pronouns may appear before "in" (e.g., "I in full name")
@@ -546,6 +586,20 @@ public class IntentAnalyzer {
         
         // Remove trailing prepositions and noise
         target = target.replaceAll("(?i)\\s+(with|for|by|text)$", "");
+        
+        // Remove common verification status suffixes (e.g., "Login message is displayed" -> "Login message")
+        target = target.replaceAll("(?i)\\s+(is|are|should|must|was|were|be)?\\s*(be)?\\s*(displayed|visible|present|shown|display|appearing|active|hidden|gone|visibility|appeared)$", "").trim();
+        target = target.replaceAll("(?i)\\s+(text|message)\\s+(present|shown|displayed)$", "").trim();
+
+        // AESTHETIC FIX: If the target is just a state word (e.g. "displayed", "visible", "present"), 
+        // it's likely not the actual element name but part of the verification phrasing.
+        // We should return empty so the framework performs a broad search for the text.
+        String trimmedTarget = target.trim().toLowerCase();
+        if (trimmedTarget.equals("displayed") || trimmedTarget.equals("visible") || 
+            trimmedTarget.equals("present") || trimmedTarget.equals("shown") || 
+            trimmedTarget.equals("display") || trimmedTarget.equals("visibility")) {
+            return "";  // Return empty to signal broad search
+        }
         
         return target.trim();
     }
@@ -669,6 +723,27 @@ public class IntentAnalyzer {
     }
     
     /**
+     * Extract parent reference from phrases like "inside 'Form'", "within the sidebar"
+     */
+    private String extractParentReference(String step) {
+        // Priority 1: Quoted parent after scoping word
+        Pattern quotedParent = Pattern.compile("(?i)\\b(inside|within|on|under|at)\\s+(?:the\\s+)?(?:element|section|container|block|div|span|area|group|form)?\\s*[\"']([^\"']+)[\"']", Pattern.CASE_INSENSITIVE);
+        Matcher m1 = quotedParent.matcher(step);
+        if (m1.find()) {
+            return m1.group(2);
+        }
+        
+        // Priority 2: Named common containers (legacy/semantic)
+        Pattern namedParent = Pattern.compile("(?i)\\b(inside|within|on|in)\\s+(?:the\\s+)?(left\\s+menu|right\\s+menu|sidebar|navbar|header|footer|menu|top\\s+bar|toolbar|main\\s+content|registration\\s+form|login\\s+box|search\\s+bar|nav)\\b", Pattern.CASE_INSENSITIVE);
+        Matcher m2 = namedParent.matcher(step);
+        if (m2.find()) {
+            return m2.group(2);
+        }
+        
+        return null;
+    }
+    
+    /**
      * Check if a text looks like a date or relative date keyword
      */
     private boolean isDateValue(String text) {
@@ -716,6 +791,8 @@ public class IntentAnalyzer {
         HOVER,
         SCROLL,
         DATE_SET,
+        EXPAND,
+        COLLAPSE,
         UNKNOWN
     }
 }

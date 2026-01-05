@@ -53,68 +53,26 @@ public class VerifySemanticMatcher extends BaseSemanticMatcher {
     }
     
     private List<ScoredElement> findCandidates(Page page, StepIntent intent) {
+        automation.browser.locator.core.DomScanner scanner = new automation.browser.locator.core.DomScanner();
+        List<automation.browser.locator.core.ElementCandidate> scanResults = scanner.scan(page);
+        
         List<ScoredElement> elements = new ArrayList<>();
         String targetValue = intent.getValue();
+        String targetDesc = intent.getTargetDescription();
         
         if (targetValue == null || targetValue.isEmpty()) {
-            logger.debug("No value to verify - using broad search");
-            targetValue = intent.getTargetDescription();
+            targetValue = targetDesc;
         }
-        
-        // Strategy 1: Find elements containing the target text
-        try {
-            // Use text locator for initial candidates
-            String searchText = targetValue;
-            Locator textMatches = page.locator(String.format("text='%s'", searchText));
-            int count = Math.min(textMatches.count(), 20);
-            
-            for (int i = 0; i < count; i++) {
+
+        for (automation.browser.locator.core.ElementCandidate c : scanResults) {
+            // VERIFY can apply to almost anything, but we prefer visible elements with text
+            if (c.visible && c.text != null && !c.text.trim().isEmpty()) {
+                elements.add(new ScoredElement(page.locator("xpath=" + c.xpath).first(), c));
                 if (elements.size() >= MAX_CANDIDATES) break;
-                try {
-                    Locator elem = textMatches.nth(i);
-                    elements.add(new ScoredElement(elem, "text-match"));
-                } catch (Exception ignored) {}
-            }
-        } catch (Exception e) {
-            logger.debug("Text search failed: {}", e.getMessage());
-        }
-        
-        // Strategy 2: Find by common visible elements
-        String[] selectors = {
-            "h1, h2, h3, h4, h5, h6",  // Headings
-            "p",                         // Paragraphs
-            "span",                      // Spans
-            "div",                       // Divs
-            "label",                     // Labels
-            "[role='heading']",          // ARIA headings
-            "[role='alert']",            // Alerts
-            ".message, .notification"    // Common message classes
-        };
-        
-        for (String selector : selectors) {
-            if (elements.size() >= MAX_CANDIDATES) break;
-            
-            try {
-                Locator locator = page.locator(selector);
-                int count = Math.min(locator.count(), 10);
-                
-                for (int i = 0; i < count; i++) {
-                    if (elements.size() >= MAX_CANDIDATES) break;
-                    try {
-                        Locator elem = locator.nth(i);
-                        // Only add if it has some text content
-                        String text = elem.textContent();
-                        if (text != null && text.trim().length() > 0) {
-                            elements.add(new ScoredElement(elem, selector));
-                        }
-                    } catch (Exception ignored) {}
-                }
-            } catch (Exception e) {
-                logger.debug("Error finding {} elements: {}", selector, e.getMessage());
             }
         }
         
-        logger.debug("Found {} candidates for VERIFY action", elements.size());
+        logger.debug("Found {} candidates for VERIFY action using DomScanner", elements.size());
         return elements;
     }
     
@@ -137,11 +95,11 @@ public class VerifySemanticMatcher extends BaseSemanticMatcher {
             
             // Exact match gets highest score
             if (candidateText.equalsIgnoreCase(searchTarget)) {
-                score += 100;
+                score += 200; // Increased
             }
             // Contains match
             else if (textLower.contains(targetLower)) {
-                score += 80;
+                score += 100; // Increased
                 
                 // Bonus if it's a close match (target is significant portion of text)
                 double ratio = (double) targetLower.length() / textLower.length();
@@ -155,60 +113,18 @@ public class VerifySemanticMatcher extends BaseSemanticMatcher {
                 score += textScore * 40;
             }
             
-            try {
-                String tagName = (String) candidate.getLocator().evaluate("el => el.tagName.toLowerCase() || ''");
-                String role = (String) candidate.getLocator().evaluate("el => el.getAttribute('role') || ''");
-                String className = (String) candidate.getLocator().evaluate("el => el.className || ''");
-                
-                // Boost for heading elements (common verification targets)
-                if (tagName.matches("h[1-6]")) {
-                    score += 30;
-                }
-                
-                // Boost for ARIA roles
-                if (role.equals("heading") || role.equals("alert") || role.equals("status")) {
-                    score += 25;
-                }
-                
-                // Boost for message/notification classes
-                if (className.toLowerCase().contains("message") || 
-                    className.toLowerCase().contains("notification") ||
-                    className.toLowerCase().contains("alert")) {
-                    score += 20;
-                }
-                
-                // Check visibility - penalize hidden elements
-                Boolean isVisible = (Boolean) candidate.getLocator().evaluate(
-                    "el => { " +
-                    "  const style = getComputedStyle(el); " +
-                    "  return style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0'; " +
-                    "}"
-                );
-                
-                if (isVisible) {
-                    score += 15;  // Visible elements preferred
-                } else {
-                    score -= 50;  // Heavy penalty for hidden elements
-                }
-                
-                // Boost for elements in modals (if verifying modal content)
-                try {
-                    Boolean isInModal = (Boolean) candidate.getLocator().evaluate(
-                        "el => { " +
-                        "  const modal = el.closest('[role=\"dialog\"], .modal'); " +
-                        "  return modal !== null && getComputedStyle(modal).display !== 'none'; " +
-                        "}"
-                    );
-                    
-                    if (isInModal && targetDesc != null && 
-                        (targetDesc.toLowerCase().contains("modal") || 
-                         targetDesc.toLowerCase().contains("dialog") ||
-                         targetDesc.toLowerCase().contains("form"))) {
-                        score += 40;  // Boost if looking for modal content
-                    }
-                } catch (Exception ignored) {}
-                
-            } catch (Exception ignored) {}
+            String tagName = candidate.getType().toLowerCase();
+            String className = candidate.getClassName().toLowerCase();
+            
+            // Boost for heading elements (common verification targets)
+            if (tagName.matches("h[1-6]")) {
+                score += 30;
+            }
+            
+            // Boost for alert-like classes/text
+            if (className.contains("message") || className.contains("notification") || className.contains("alert") || className.contains("success")) {
+                score += 30;
+            }
         }
         
         // Type affinity scoring

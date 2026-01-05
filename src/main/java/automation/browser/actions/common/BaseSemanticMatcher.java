@@ -42,6 +42,17 @@ public abstract class BaseSemanticMatcher {
         // Simple word overlap scoring
         Set<String> words1 = new HashSet<>(Arrays.asList(t1.split("\\s+")));
         Set<String> words2 = new HashSet<>(Arrays.asList(t2.split("\\s+")));
+
+        // NUMERIC MISMATCH CHECK: If one has a number and the other doesn't, or different numbers
+        // This prevents "Address" from matching "Address 2" too strongly.
+        String n1 = t1.replaceAll("[^0-9]", "");
+        String n2 = t2.replaceAll("[^0-9]", "");
+        if (!n1.equals(n2)) {
+            // If one string specifies a number and the other has NO number or a DIFFERENT number, penalize
+            if (!n1.isEmpty() || !n2.isEmpty()) {
+                return -0.5; // Significant penalty for numeric mismatch
+            }
+        }
         
         Set<String> intersection = new HashSet<>(words1);
         intersection.retainAll(words2);
@@ -117,21 +128,49 @@ public abstract class BaseSemanticMatcher {
     }
     
     /**
-     * Helper class to store elements with their scores
+     * Helper class to store elements with their scores.
+     * Supports both Playwright Locator and offline ElementCandidate data for performance.
      */
     public static class ScoredElement {
         private final Locator locator;
         private final String type;
         private String text;
-        
+        private String id;
+        private String className;
+        private String name;
+        private String placeholder;
+        private String label;
+        private String title;
+        private String dataQa;
+
         public ScoredElement(Locator locator, String type) {
             this.locator = locator;
             this.type = type;
         }
-        
+
+        public ScoredElement(Locator locator, automation.browser.locator.core.ElementCandidate candidate) {
+            this.locator = locator;
+            this.type = candidate.tag;
+            this.text = candidate.text;
+            this.id = candidate.id;
+            this.className = candidate.className;
+            this.name = candidate.name;
+            this.placeholder = candidate.placeholder;
+            this.label = candidate.label;
+            this.title = candidate.title;
+            this.dataQa = candidate.dataQa;
+        }
+
         public Locator getLocator() { return locator; }
         public String getType() { return type; }
-        
+        public String getId() { return id != null ? id : ""; }
+        public String getClassName() { return className != null ? className : ""; }
+        public String getName() { return name != null ? name : ""; }
+        public String getPlaceholder() { return placeholder != null ? placeholder : ""; }
+        public String getLabel() { return label != null ? label : ""; }
+        public String getTitle() { return title != null ? title : ""; }
+        public String getDataQa() { return dataQa != null ? dataQa : ""; }
+
         public String getText() {
             if (text == null) {
                 try {

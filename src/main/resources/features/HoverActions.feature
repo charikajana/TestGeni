@@ -3,9 +3,9 @@ Feature: Hover and Mouse Interactions
 
   Scenario: Real World - Flipkart Electronics Hover
     Given Navigate to "https://www.flipkart.com/"
-    When user places cursor on "Electronics"
-    And focus on "Powerbank"
-    And I click on "Powerbank"
+    When user places cursor on Electronics
+    And focus on Powerbank
+    And I click on Powerbank
     And wait for 5 seconds
     Then Verify URL contains "power-banks"
 

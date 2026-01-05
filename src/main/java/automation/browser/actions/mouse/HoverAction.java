@@ -18,7 +18,7 @@ public class HoverAction implements BrowserAction {
         String elementName = plan.getElementName();
         logger.info("Hovering over: {}", elementName);
 
-        Locator element = smartLocator.waitForSmartElement(elementName, null);
+        Locator element = smartLocator.waitForSmartElement(elementName, null, null, plan.getFrameAnchor(), plan.getParentAnchor());
         if (element != null) {
             element.hover();
             logger.success("Hovered over: {}", elementName);
