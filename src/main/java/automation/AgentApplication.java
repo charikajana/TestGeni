@@ -32,7 +32,7 @@ public class AgentApplication {
             SmartLocator smartLocator = new SmartLocator(page);
             BrowserService browserService = new BrowserService(page, smartLocator);
 
-            String featurePath = "src/main/resources/features/ExpandableMenu.feature";
+            String featurePath = "src/main/resources/features/WebTable.feature";
             if (args != null && args.length > 0) {
                 featurePath = args[0];
             }

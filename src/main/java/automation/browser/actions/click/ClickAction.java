@@ -130,8 +130,8 @@ public class ClickAction implements BrowserAction {
             return true;
         } catch (Exception e) {
             try {
-                logger.debug("Standard click failed, trying force click: {}", e.getMessage());
-                clickable.click(new Locator.ClickOptions().setForce(true));
+                logger.debug("Standard click failed, trying force click (no wait): {}", e.getMessage());
+                clickable.click(new Locator.ClickOptions().setForce(true).setNoWaitAfter(true));
                 logger.browserAction("Force Click", targetName);
                 return true;
             } catch (Exception e2) {

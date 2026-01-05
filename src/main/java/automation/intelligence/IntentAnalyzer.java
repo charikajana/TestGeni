@@ -276,7 +276,7 @@ public class IntentAnalyzer {
             "should not", "shouldn't", "must not", "mustn't",
             "never", "no longer", "doesn't", "don't",
             "is not", "isn't", "are not", "aren't", "was not", "wasn't",
-            "not be", "cannot", "can't"
+            "not be", "cannot", "can't", "deleted", "removed", "gone", "absent"
         };
         
         for (String negationKeyword : negationKeywords) {
@@ -461,6 +461,16 @@ public class IntentAnalyzer {
         
         // For FILL/SELECT/CLICK, identifying the target name
         if (actionType != ActionType.UNKNOWN) {
+            // Remove identified values specifically to prevent them from interfering with preposition pivoting
+            // e.g. "Verify 'Logged in as User' is displayed" -> the 'as' inside quotes shouldn't be a pivot.
+            if (valuesToExclude != null) {
+                for (String val : valuesToExclude) {
+                    target = target.replace("\"" + val + "\"", " ");
+                    target = target.replace("'" + val + "'", " ");
+                    target = target.replaceAll("(?i)\\b" + Pattern.quote(val) + "\\b", " ");
+                }
+            }
+
             // Remove Gherkin keywords
             target = target.replaceAll("(?i)^(Given|When|Then|And|But|User|I)\\s+", "").trim();
             
@@ -576,6 +586,20 @@ public class IntentAnalyzer {
         
         // Remove trailing prepositions and noise
         target = target.replaceAll("(?i)\\s+(with|for|by|text)$", "");
+        
+        // Remove common verification status suffixes (e.g., "Login message is displayed" -> "Login message")
+        target = target.replaceAll("(?i)\\s+(is|are|should|must|was|were|be)?\\s*(be)?\\s*(displayed|visible|present|shown|display|appearing|active|hidden|gone|visibility|appeared)$", "").trim();
+        target = target.replaceAll("(?i)\\s+(text|message)\\s+(present|shown|displayed)$", "").trim();
+
+        // AESTHETIC FIX: If the target is just a state word (e.g. "displayed", "visible", "present"), 
+        // it's likely not the actual element name but part of the verification phrasing.
+        // We should return empty so the framework performs a broad search for the text.
+        String trimmedTarget = target.trim().toLowerCase();
+        if (trimmedTarget.equals("displayed") || trimmedTarget.equals("visible") || 
+            trimmedTarget.equals("present") || trimmedTarget.equals("shown") || 
+            trimmedTarget.equals("display") || trimmedTarget.equals("visibility")) {
+            return "";  // Return empty to signal broad search
+        }
         
         return target.trim();
     }

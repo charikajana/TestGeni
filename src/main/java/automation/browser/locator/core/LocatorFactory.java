@@ -67,8 +67,11 @@ public class LocatorFactory {
                     finalLocator = page.getByText(foundText, new Page.GetByTextOptions().setExact(true));
                  }
                  logger.debug("Prioritizing stable text locator for dynamic-id {}: '{}'", foundTag, foundText);
+             } else {
+                 // Fallback to tag-based if no text
+                 finalLocator = (scope != null) ? scope.locator(foundTag) : page.locator(foundTag);
              }
-         }
+         } 
          else if ("progressbar".equals(parsedType) || "progressbar".equals(element.role)) {
              // Priority for progress bars: Role or Tag, NOT text (which changes constantly)
              finalLocator = (scope != null) ? scope.locator("[role='progressbar']") : page.locator("[role='progressbar']");
@@ -101,6 +104,11 @@ public class LocatorFactory {
              finalLocator = (scope != null) ? scope.getByPlaceholder(element.placeholder) : page.getByPlaceholder(element.placeholder);
          }
          else {
+             finalLocator = (scope != null) ? scope.locator(foundTag) : page.locator(foundTag);
+         }
+
+         // Ensure finalLocator is not null before proceeding
+         if (finalLocator == null) {
              finalLocator = (scope != null) ? scope.locator(foundTag) : page.locator(foundTag);
          }
 

@@ -15,9 +15,9 @@ Feature: Intelligence Layer Demo
 
   Scenario: Navigate through Electronics Hover Menu
     Given Navigate to "https://www.flipkart.com/"
-    When I move mouse to "Electronics"
-    And I point to "MobileAccessory"
-    And I click on "MobileFlash"
+    When I move mouse to Electronics
+    And I point to MobileAccessory
+    And I click on MobileFlash
     Then Verify URL contains "mobile-flashes"
     And wait for 5 seconds
     And Verify "Mobile Flashes" is visible

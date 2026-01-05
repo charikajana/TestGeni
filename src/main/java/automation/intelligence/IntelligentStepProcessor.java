@@ -278,8 +278,19 @@ public class IntelligentStepProcessor {
             case CLICK: return "click";
             case FILL: return "fill";
             case VERIFY: 
-                // If we have both an element and a value, it's likely a verify_value action
-                if (intent.getTargetDescription() != null && intent.getValue() != null) {
+                String target = intent.getTargetDescription();
+                String stepLower = intent.getOriginalStep().toLowerCase();
+                // If it looks like a visibility/text check (generic visibility or contains "displayed"/"visible"), 
+                // use 'verify' (VerifyTextAction). Only use 'verify_value' for explicit field verification.
+                if (stepLower.contains("display") || stepLower.contains("visible") || 
+                    stepLower.contains("present") || stepLower.contains("appear") ||
+                    stepLower.contains("see") || stepLower.contains("shown") ||
+                    stepLower.contains("deleted") || stepLower.contains("removed") || stepLower.contains("gone") ||
+                    intent.isNegated() || target == null || target.isEmpty() ||
+                    target.toLowerCase().endsWith("text") || target.toLowerCase().endsWith("message")) {
+                    return "verify";
+                }
+                if (target != null && !target.trim().isEmpty() && intent.getValue() != null) {
                     return "verify_value";
                 }
                 return "verify";
@@ -372,12 +383,7 @@ public class IntelligentStepProcessor {
         };
         
         for (String keyword : browserKeywords) {
-            // Use regex for whole-word boundary check on short keywords like "url"
-            if (keyword.length() <= 3) {
-                if (java.util.regex.Pattern.compile("\\b" + keyword + "\\b", java.util.regex.Pattern.CASE_INSENSITIVE).matcher(lowerStep).find()) {
-                    return true;
-                }
-            } else if (lowerStep.contains(keyword)) {
+            if (java.util.regex.Pattern.compile("\\b" + keyword.replace(" ", "\\s+") + "\\b", java.util.regex.Pattern.CASE_INSENSITIVE).matcher(lowerStep).find()) {
                 return true;
             }
         }

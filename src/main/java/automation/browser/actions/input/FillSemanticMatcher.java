@@ -14,7 +14,7 @@ import java.util.*;
 public class FillSemanticMatcher extends BaseSemanticMatcher {
     
     private static final int SCORE_THRESHOLD = 120; // Increased from 50 to prevent false positives
-    private static final int MAX_CANDIDATES = 30;
+    private static final int MAX_CANDIDATES = 100; // Increased from 30 to handle long forms
     
     @Override
     public Locator findBestMatch(Page page, StepIntent intent) {
@@ -177,6 +177,24 @@ public class FillSemanticMatcher extends BaseSemanticMatcher {
                         score += 150; // Strong differentiator bonus
                         logger.debug("Differentiator bonus (+150) for '{}' found in attributes", word);
                     }
+                }
+            }
+
+            // 4. NUMERIC CONSTRAINT: If target has a number (e.g. "Address 2"), 
+            // penalize elements that don't have that specific number.
+            String targetDigits = targetLower.replaceAll("[^0-9]", "");
+            if (!targetDigits.isEmpty()) {
+                String allDigits = (idLower + " " + nameLower + " " + labelLower + " " + placeholderLower).replaceAll("[^0-9]", "");
+                if (allDigits.isEmpty() || !allDigits.contains(targetDigits)) {
+                    score -= 400; // Heavy penalty if expected number is missing
+                    logger.debug("Numeric mismatch penalty (-400) for target '{}' vs attributes", targetLower);
+                }
+            } else {
+                // If target has NO digits, penalize elements that have "2" or "3" at the end of ID/Name/Label
+                // This prevents "Address" from matching "Address 2" if "Address 1" is available.
+                if (idLower.matches(".*[2-9]$") || nameLower.matches(".*[2-9]$") || labelLower.matches(".*[2-9]$")) {
+                    score -= 150; 
+                    logger.debug("Secondary field penalty (-150) for '{}' vs target '{}'", idLower, targetLower);
                 }
             }
 

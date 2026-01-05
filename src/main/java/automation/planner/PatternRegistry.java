@@ -364,15 +364,7 @@ public class PatternRegistry {
             "(?i)^(?:given|when|then|and|but)?\\s*(?:I|user|we|he|she|they)?\\s*(?:validate|verify|assert|check)\\s+(.+?)\\s+(?:place\\s*holder|placeholder|place holder)\\s+(?:value|text|is)?\\s*[\"']([^\"']+)[\"']$", 
             1, 2, -1);
         
-        // Verify value in field: Verify "Alice" is filled in first name field
-        register.add("verify_value", 
-            "(?i)^(?:given|when|then|and|but)?\\s*(?:I|user|we|he|she|they)?\\s*(?:validate|verify|assert|check)\\s+[\"']?([^\"']+)[\"']?\\s+(?:is\\s+filled\\s+in|is|appears\\s+in)\\s+(?:the\\s+)?(.+?)(?:\\s+field|\\s+box|\\s+input)?$", 
-            2, 1, -1);
-
-
-        // ========================================
-        // TEXT VISIBILITY VERIFICATION (PRIORITY)
-        // ========================================
+        // Visibility patterns moved up to avoid being shadowed by verify_value
         // Format: Then Validate "Target Text" [message/text] [should be] [visible/displayed]
         register.add("verify", 
             "(?i)^(?:given|when|then|and|but)?\\s*(?:I|user|we|he|she|they)?\\s*(?:validate|verify|assert|check|ensure|I\\s+see)\\s+[\"']([^\"']+)[\"'](?:\\s+(?:text|message|label|heading|info|message/text))?\\s*(?:is|are|should\\s+be|should\\s+be\\s+transparently)?\\s*(?:present|shown|displayed|visible|display|be\\s+displayed|be\\s+visible)$", 
@@ -382,6 +374,13 @@ public class PatternRegistry {
         register.add("verify", 
             "(?i)^(?:given|when|then|and|but)?\\s*(?:I|user|we|he|she|they)?\\s*(?:validate|verify|assert|check|ensure|I\\s+see)\\s+(?:the\\s+)?(?:text|message|label|heading|title|info|content|message/text)\\s+[\"']([^\"']+)[\"'](?:\\s+(?:is|are|should\\s+be)?\\s*(?:present|shown|displayed|visible|display|be\\s+displayed|be\\s+visible))?$", 
             1, -1, -1);
+
+        // Value / Placeholder verification
+        register.add("verify_value", 
+            "(?i)^(?:given|when|then|and|but)?\\s*(?:I|user|we|he|she|they)?\\s*(?:validate|verify|assert|check)\\s+[\"']?([^\"']+)[\"']?\\s+(?:is\\s+filled\\s+in|is\\s+equal\\s+to|appears\\s+in)\\s+(?:the\\s+)?(.+?)(?:\\s+field|\\s+box|\\s+input)?$", 
+            2, 1, -1);
+
+
 
         register.add("verify_not", 
             "(?i)^(?:given|when|then|and|but)?\\s*(?:I|user|we|he|she|they)?\\s*(?:validate|verify|assert|check)\\s+[\"']([^\"']+)[\"']\\s+(?:that\\s+)?(?:it\\s+)?(?:is\\s+)?not\\s+(?:displayed|visible|present|shown)$", 
