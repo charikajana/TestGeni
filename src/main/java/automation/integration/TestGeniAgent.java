@@ -63,7 +63,26 @@ public class TestGeniAgent {
             return false;
         }
     }
-    
+
+    /**
+     * Automatically capture the current step name from Cucumber and execute it.
+     * Use this inside a Cucumber step definition to delegate execution to TestGeni.
+     * 
+     * @return StepExecutionReport with the outcome
+     */
+    public StepExecutionReport executeCurrentStep() {
+        String stepName = CucumberStepListener.getCurrentStepName();
+        if (stepName == null || stepName.trim().isEmpty()) {
+            logger.error("No active step name found from CucumberStepListener. Check your runner configuration.");
+            return new StepExecutionReport()
+                .status("FAILED")
+                .errorMessage("CucumberStepListener not active or step name empty");
+        }
+        
+        logger.info("Executing captured step: {}", stepName);
+        return executeWithReport(stepName);
+    }
+
     /**
      * Execute a step and return detailed execution report
      */
