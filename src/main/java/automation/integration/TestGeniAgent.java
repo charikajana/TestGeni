@@ -101,6 +101,15 @@ public class TestGeniAgent {
     }
     
     /**
+     * Switch context back to the first/main window.
+     * Useful if a previous step opened a new tab and you want to return to the home page.
+     */
+    public void switchToMainWindow() {
+        logger.info("Switching back to main window...");
+        execute("Switch to main window");
+    }
+
+    /**
      * Check if a step is supported by the framework WITHOUT executing it.
      * Useful for deciding between smart automation and custom fallback logic.
      * 

@@ -35,7 +35,7 @@ public class CachedSmartLocator extends SmartLocator {
     private static final LoggerUtil logger = LoggerUtil.getLogger(CachedSmartLocator.class);
     
     private final LocatorCacheManager cacheManager;
-    private final Page page;
+    private Page page;
     
     // Configuration
     private boolean cacheEnabled = true;
@@ -52,6 +52,12 @@ public class CachedSmartLocator extends SmartLocator {
         this.cacheManager = LocatorCacheManager.getInstance();
         logger.debug("CachedSmartLocator initialized (cache: {}, self-healing: {})", 
             cacheEnabled, selfHealingEnabled);
+    }
+    
+    @Override
+    public void setPage(Page page) {
+        super.setPage(page);
+        this.page = page;
     }
     
     /**
